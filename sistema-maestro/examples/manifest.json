@@ -1,0 +1,226 @@
+{
+  "schema_version": "4.0",
+  "institutions": [
+    {
+      "institution_id": "university-demo",
+      "name": "Universidad de ejemplo (datos sintéticos, NO UNAH)",
+      "locale": "es-HN",
+      "privacy_policy_status": "PENDING_REVIEW"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "syllabus-demo",
+      "kind": "SYLLABUS",
+      "edition": "DEMOSTRACIÓN SINTÉTICA",
+      "license_status": "OWNED",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "inspected_pages": [
+        1
+      ],
+      "verification": "OPENED"
+    }
+  ],
+  "courses": [
+    {
+      "course_id": "math-demo",
+      "institution_id": "university-demo",
+      "course_version": "0.1-demo",
+      "discipline": "MATH",
+      "syllabus_source_id": "syllabus-demo",
+      "objective_ids": [
+        "obj-linear"
+      ],
+      "route_ids": [
+        "route-linear"
+      ],
+      "review_status": "DRAFT"
+    }
+  ],
+  "objectives": [
+    {
+      "objective_id": "obj-linear",
+      "course_id": "math-demo",
+      "description": "Interpretar pendientes y cortes de una función lineal",
+      "prerequisite_ids": [],
+      "source_refs": [
+        {
+          "source_id": "syllabus-demo",
+          "pages": [
+            1
+          ]
+        }
+      ],
+      "misconception_ids": [
+        "mis-slope"
+      ]
+    }
+  ],
+  "oracles": [
+    {
+      "oracle_id": "oracle-linear",
+      "kind": "SYMBOLIC",
+      "fixture_ids": [
+        "fx-positive",
+        "fx-negative",
+        "fx-inconclusive"
+      ],
+      "has_negative": true,
+      "has_inconclusive": true,
+      "domain_policy": "Polinomios reales, igualdad en dominio completo",
+      "tolerance_policy": "Exacto simbólico",
+      "runtime_isolation": "PROCESS_LIMITED"
+    }
+  ],
+  "engines": [
+    {
+      "engine_id": "graph-engine",
+      "kind": "2D graph model",
+      "revision": "0.1"
+    }
+  ],
+  "misconceptions": [
+    {
+      "misconception_id": "mis-slope",
+      "objective_ids": [
+        "obj-linear"
+      ],
+      "hypothesis": "Confunde pendiente con ordenada al origen",
+      "diagnostic_question": "¿Qué valor indica el cambio de y por cada unidad de x?",
+      "remediation_strategy": "Comparar dos rectas con distintas pendientes y misma ordenada",
+      "verification_test_id": "test-mis-slope",
+      "status": "HYPOTHESIS"
+    }
+  ],
+  "activities": [
+    {
+      "activity_id": "act-linear",
+      "course_id": "math-demo",
+      "course_version": "0.1-demo",
+      "objective_ids": [
+        "obj-linear"
+      ],
+      "prerequisite_ids": [],
+      "source_refs": [
+        {
+          "source_id": "syllabus-demo",
+          "pages": [
+            1
+          ]
+        }
+      ],
+      "cognitive_operation": "Interpretar y transferir",
+      "scenario": "Comparar dos recorridos lineales",
+      "expected_reasoning": "La pendiente expresa variación entre dos variables",
+      "oracle_id": "oracle-linear",
+      "feedback_by_error": [
+        {
+          "misconception_id": "mis-slope",
+          "rule": "La pendiente es delta-y dividido entre delta-x",
+          "diagnostic_question": "¿Qué cambia entre dos puntos?",
+          "remediation": "Comparar cortes y pendientes por separado",
+          "explanation": "Elegir el intercepto no representa el cambio por unidad; calcula la razón de variación."
+        }
+      ],
+      "hint_policy_id": "hints-basic",
+      "difficulty_rubric": "Representación algebraica, gráfica y transferencia",
+      "transfer_variant_id": "v-transfer",
+      "accessibility_fallback": "Tabla accesible de pares (x,y) y descripción verbal",
+      "evidence_rationale": "Hipótesis de aprendizaje para validar en piloto, NO evidencia empírica de eficacia",
+      "interaction_type": "COMPARE_GRAPHS",
+      "revision": "1",
+      "variants": [
+        {
+          "variant_id": "v-alg",
+          "family": "algebraic",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "item-route"
+        },
+        {
+          "variant_id": "v-graph",
+          "family": "graphical",
+          "representation": "GRAPHICAL",
+          "role": "PRACTICE",
+          "item_id": "item-tutor"
+        },
+        {
+          "variant_id": "v-transfer",
+          "family": "transfer-context",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "item-exam"
+        }
+      ],
+      "mode_item_ids": {
+        "learning_path": [
+          "item-route"
+        ],
+        "practice_tutor": [
+          "item-tutor"
+        ],
+        "exam_preparation": [
+          "item-exam"
+        ]
+      }
+    }
+  ],
+  "labs": [
+    {
+      "lab_id": "lab-functions",
+      "engine_id": "graph-engine",
+      "course_objective_refs": [
+        "obj-linear"
+      ],
+      "scenario_ids": [
+        "sc-linear"
+      ],
+      "oracle_ids": [
+        "oracle-linear"
+      ],
+      "capabilities": [
+        "graph-linear"
+      ],
+      "accessibility_fallback": "Tabla y descripción de la gráfica",
+      "coverage_test_ids": [
+        "test-lab-linear"
+      ],
+      "status": "PROPOSED",
+      "reuse_decision": "CREATE",
+      "decision_adr": "ADR-001",
+      "considered_alternatives": "Se comparó actividad tabular sin simulación; se propone laboratorio de gráfica por manipulación significativa.",
+      "revision": "0.1"
+    }
+  ],
+  "modules": [
+    {
+      "module_id": "M1",
+      "course_id": "math-demo",
+      "objective_ids": [
+        "obj-linear"
+      ],
+      "depends_on": [],
+      "acceptance_test_ids": [
+        "test-activity",
+        "test-progression"
+      ],
+      "status": "PLANNED"
+    }
+  ],
+  "routes": [
+    {
+      "route_id": "route-linear",
+      "course_id": "math-demo",
+      "objective_id": "obj-linear",
+      "unlock_policy": "MASTERY",
+      "mastery_rule": {
+        "distinct_variant_families": 2,
+        "requires_transfer": true,
+        "unassisted_required": true
+      },
+      "diagnostic_oracle_id": "",
+      "diagnostic_evidence_required": false,
+      "repeat_access": true
+    }
+  ]
+}
