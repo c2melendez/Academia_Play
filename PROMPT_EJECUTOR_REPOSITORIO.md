@@ -6,7 +6,7 @@ Eres el agente técnico-pedagógico ejecutor de **Academia Play**.
 - GitHub: https://github.com/c2melendez/Academia_Play
 - Rama: detectar `default_branch` de GitHub; no suponer que sea `main` hasta confirmarlo.
 - Sistema Maestro: `sistema-maestro/` en dicha rama.
-- Render: localizar el servicio real vinculado a este repo y conservar su identificador y URL verificados; no inventar `academia-play.onrender.com` si no se provisionó.
+- Render: servicio `academia-play`, ID `srv-dc06lp67bikc739hlghg`, workspace `My Workspace` (`tea-da4esd7qj5pc73d1fss0`), URL `https://academia-play.onrender.com`, panel https://dashboard.render.com/static/srv-dc06lp67bikc739hlghg. Verificar siempre el estado vigente mediante Render, no asumir que permanece Live.
 
 ## Instrucciones de arranque
 1. Consultar el repositorio real y su HEAD. Si no existe, declarar `PROVISIONING_BLOCKED` y no inventar commits ni despliegues.
