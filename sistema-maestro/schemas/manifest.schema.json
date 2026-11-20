@@ -1,0 +1,918 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Academia Play Manifest v4",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "4.0"
+    },
+    "institutions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "institution_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "locale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "privacy_policy_status": {
+            "type": "string",
+            "enum": [
+              "REVIEWED",
+              "PENDING_REVIEW"
+            ]
+          }
+        },
+        "required": [
+          "institution_id",
+          "name",
+          "locale",
+          "privacy_policy_status"
+        ]
+      },
+      "minItems": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "SYLLABUS",
+              "TEXTBOOK",
+              "RESEARCH"
+            ]
+          },
+          "edition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "license_status": {
+            "type": "string",
+            "enum": [
+              "OWNED",
+              "LICENSED",
+              "STRUCTURE_ONLY",
+              "UNKNOWN"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "inspected_pages": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "verification": {
+            "type": "string",
+            "enum": [
+              "OPENED",
+              "NOT_VERIFIED",
+              "SOURCE_MISSING"
+            ]
+          }
+        },
+        "required": [
+          "source_id",
+          "kind",
+          "edition",
+          "license_status",
+          "sha256",
+          "inspected_pages",
+          "verification"
+        ]
+      },
+      "minItems": 1
+    },
+    "courses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "course_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "institution_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "course_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "discipline": {
+            "type": "string",
+            "enum": [
+              "MATH",
+              "PHYSICS",
+              "CHEMISTRY",
+              "ENGINEERING",
+              "OTHER"
+            ]
+          },
+          "syllabus_source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objective_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "route_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "review_status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "REVIEW_REQUIRED",
+              "REVIEWED"
+            ]
+          }
+        },
+        "required": [
+          "course_id",
+          "institution_id",
+          "course_version",
+          "discipline",
+          "syllabus_source_id",
+          "objective_ids",
+          "route_ids",
+          "review_status"
+        ]
+      },
+      "minItems": 1
+    },
+    "objectives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "objective_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "course_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "prerequisite_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pages": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "source_id",
+                "pages"
+              ]
+            },
+            "minItems": 1
+          },
+          "misconception_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "objective_id",
+          "course_id",
+          "description",
+          "prerequisite_ids",
+          "source_refs",
+          "misconception_ids"
+        ]
+      },
+      "minItems": 1
+    },
+    "oracles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "oracle_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "SYMBOLIC",
+              "NUMERICAL",
+              "DIMENSIONAL",
+              "PHYSICS",
+              "CHEMISTRY",
+              "ENGINEERING",
+              "HUMAN"
+            ]
+          },
+          "fixture_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "has_negative": {
+            "type": "boolean"
+          },
+          "has_inconclusive": {
+            "type": "boolean"
+          },
+          "domain_policy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tolerance_policy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runtime_isolation": {
+            "type": "string",
+            "enum": [
+              "PROCESS_LIMITED",
+              "PREVALIDATED",
+              "HUMAN_REVIEW"
+            ]
+          }
+        },
+        "required": [
+          "oracle_id",
+          "kind",
+          "fixture_ids",
+          "has_negative",
+          "has_inconclusive",
+          "domain_policy",
+          "tolerance_policy",
+          "runtime_isolation"
+        ]
+      },
+      "minItems": 1
+    },
+    "engines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "engine_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "engine_id",
+          "kind",
+          "revision"
+        ]
+      }
+    },
+    "misconceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "misconception_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objective_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "hypothesis": {
+            "type": "string",
+            "minLength": 1
+          },
+          "diagnostic_question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "remediation_strategy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "verification_test_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "HYPOTHESIS",
+              "EVIDENCE_SUPPORTED",
+              "REVIEWED"
+            ]
+          }
+        },
+        "required": [
+          "misconception_id",
+          "objective_ids",
+          "hypothesis",
+          "diagnostic_question",
+          "remediation_strategy",
+          "verification_test_id",
+          "status"
+        ]
+      },
+      "minItems": 1
+    },
+    "activities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "activity_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "course_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "course_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objective_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "prerequisite_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pages": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "source_id",
+                "pages"
+              ]
+            },
+            "minItems": 1
+          },
+          "cognitive_operation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scenario": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_reasoning": {
+            "type": "string",
+            "minLength": 1
+          },
+          "oracle_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "feedback_by_error": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "misconception_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "rule": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "diagnostic_question": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "explanation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "misconception_id",
+                "rule",
+                "diagnostic_question",
+                "remediation",
+                "explanation"
+              ]
+            },
+            "minItems": 1
+          },
+          "hint_policy_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "difficulty_rubric": {
+            "type": "string",
+            "minLength": 1
+          },
+          "transfer_variant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "accessibility_fallback": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "interaction_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "variant_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "family": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "representation": {
+                  "type": "string",
+                  "enum": [
+                    "ALGEBRAIC",
+                    "GRAPHICAL",
+                    "TABULAR",
+                    "VERBAL",
+                    "SIMULATION",
+                    "DIAGRAM",
+                    "OTHER"
+                  ]
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "PRACTICE",
+                    "TRANSFER",
+                    "EXAM",
+                    "LAB"
+                  ]
+                },
+                "item_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "variant_id",
+                "family",
+                "representation",
+                "role",
+                "item_id"
+              ]
+            },
+            "minItems": 3
+          },
+          "mode_item_ids": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "learning_path": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "practice_tutor": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "exam_preparation": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "learning_path",
+              "practice_tutor",
+              "exam_preparation"
+            ]
+          }
+        },
+        "required": [
+          "activity_id",
+          "course_id",
+          "course_version",
+          "objective_ids",
+          "prerequisite_ids",
+          "source_refs",
+          "cognitive_operation",
+          "scenario",
+          "expected_reasoning",
+          "oracle_id",
+          "feedback_by_error",
+          "hint_policy_id",
+          "difficulty_rubric",
+          "transfer_variant_id",
+          "accessibility_fallback",
+          "evidence_rationale",
+          "interaction_type",
+          "revision",
+          "variants",
+          "mode_item_ids"
+        ]
+      },
+      "minItems": 1
+    },
+    "labs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "lab_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "engine_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "course_objective_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "scenario_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "oracle_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "accessibility_fallback": {
+            "type": "string",
+            "minLength": 1
+          },
+          "coverage_test_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PROPOSED",
+              "IN_DEVELOPMENT",
+              "AVAILABLE",
+              "ARCHIVED"
+            ]
+          },
+          "reuse_decision": {
+            "type": "string",
+            "enum": [
+              "REUSE",
+              "EXTEND",
+              "CREATE"
+            ]
+          },
+          "decision_adr": {
+            "type": "string",
+            "minLength": 1
+          },
+          "considered_alternatives": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "lab_id",
+          "engine_id",
+          "course_objective_refs",
+          "scenario_ids",
+          "oracle_ids",
+          "capabilities",
+          "accessibility_fallback",
+          "coverage_test_ids",
+          "status",
+          "reuse_decision",
+          "decision_adr",
+          "considered_alternatives",
+          "revision"
+        ]
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "module_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "course_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objective_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "acceptance_test_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PLANNED",
+              "IN_PROGRESS",
+              "DONE_LOCAL",
+              "DONE_TECHNICAL",
+              "BLOCKED"
+            ]
+          }
+        },
+        "required": [
+          "module_id",
+          "course_id",
+          "objective_ids",
+          "depends_on",
+          "acceptance_test_ids",
+          "status"
+        ]
+      },
+      "minItems": 1
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "route_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "course_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objective_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unlock_policy": {
+            "type": "string",
+            "enum": [
+              "MASTERY",
+              "DIAGNOSTIC_EQUIVALENCE"
+            ]
+          },
+          "mastery_rule": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "distinct_variant_families": {
+                "type": "integer",
+                "minimum": 2
+              },
+              "requires_transfer": {
+                "type": "boolean"
+              },
+              "unassisted_required": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "distinct_variant_families",
+              "requires_transfer",
+              "unassisted_required"
+            ]
+          },
+          "diagnostic_oracle_id": {
+            "type": "string"
+          },
+          "diagnostic_evidence_required": {
+            "type": "boolean"
+          },
+          "repeat_access": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "route_id",
+          "course_id",
+          "objective_id",
+          "unlock_policy",
+          "mastery_rule",
+          "diagnostic_oracle_id",
+          "diagnostic_evidence_required",
+          "repeat_access"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "institutions",
+    "sources",
+    "courses",
+    "objectives",
+    "oracles",
+    "engines",
+    "misconceptions",
+    "activities",
+    "labs",
+    "modules",
+    "routes"
+  ]
+}
