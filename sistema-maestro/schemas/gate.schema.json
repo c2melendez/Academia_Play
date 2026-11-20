@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "gate_id": {
+      "type": "string",
+      "enum": [
+        "G-SOURCE",
+        "G-CURRICULUM",
+        "G-DESIGN",
+        "G-LAB",
+        "G-ORACLE",
+        "G-PEDAGOGY",
+        "G-PROGRESS",
+        "G-A11Y",
+        "G-SECURITY",
+        "G-REGRESSION",
+        "G-DEPLOY",
+        "G-ACADEMIC",
+        "G-EMPIRICAL"
+      ]
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptance_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "E1",
+        "E2",
+        "E3"
+      ]
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "DOC_PASS",
+        "PASS",
+        "FAIL",
+        "BLOCKED",
+        "NOT_RUN",
+        "PENDING_REVIEW"
+      ]
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "logs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "observed_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "commit_sha": {
+      "type": "string"
+    },
+    "workflow_run_id": {
+      "type": "string"
+    },
+    "deployment_sha": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "gate_id",
+    "module_id",
+    "input_hash",
+    "acceptance_revision",
+    "evidence_level",
+    "result",
+    "commands",
+    "logs",
+    "observed_at",
+    "reviewer",
+    "limitations",
+    "commit_sha",
+    "workflow_run_id",
+    "deployment_sha"
+  ]
+}
