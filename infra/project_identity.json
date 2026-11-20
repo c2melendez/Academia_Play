@@ -11,10 +11,14 @@
   },
   "deploy": {
     "provider": "render",
-    "service_id": null,
-    "service_url": null,
-    "workspace_id": null,
-    "status": "WORKSPACE_CONFIRMATION_REQUIRED"
+    "service_id": "srv-dc06lp67bikc739hlghg",
+    "service_url": "https://academia-play.onrender.com",
+    "workspace_id": "tea-da4esd7qj5pc73d1fss0",
+    "workspace_name": "My Workspace",
+    "dashboard_url": "https://dashboard.render.com/static/srv-dc06lp67bikc739hlghg",
+    "status": "LIVE",
+    "last_verified_deploy_id": "dep-dc06lpe7bikc739hlh5g",
+    "last_verified_deployed_commit": "31cde6cdd93c2f42f4f8415ce39bfb649cd523ce"
   },
   "supabase": {
     "project_id": null,
@@ -23,6 +27,7 @@
   "notes": [
     "Repo metadata verified through connected GitHub account",
     "Curricular design for first course not yet approved",
-    "Render workspace must be explicitly confirmed before provisioning"
+    "Render first deploy verified live through Render API",
+    "Current page is provisional; no course academic certification"
   ]
 }
