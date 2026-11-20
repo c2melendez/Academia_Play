@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "institution_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "course_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "node_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "access_grants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "grant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "granted_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "grant_id",
+          "granted_at",
+          "evidence_ids"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "mastery_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "variant_family": {
+            "type": "string",
+            "minLength": 1
+          },
+          "oracle_result": {
+            "type": "string",
+            "enum": [
+              "VERIFIED",
+              "REJECTED",
+              "INCONCLUSIVE"
+            ]
+          },
+          "assisted": {
+            "type": "boolean"
+          },
+          "idempotency_key": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "evidence_id",
+          "variant_family",
+          "oracle_result",
+          "assisted",
+          "idempotency_key"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "mastery_estimate": {
+      "type": "string",
+      "enum": [
+        "UNASSESSED",
+        "DEVELOPING",
+        "MASTERED",
+        "NEEDS_REVIEW"
+      ]
+    },
+    "updated_at": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "user_id",
+    "institution_id",
+    "course_version",
+    "node_id",
+    "access_grants",
+    "mastery_evidence",
+    "mastery_estimate",
+    "updated_at"
+  ]
+}
