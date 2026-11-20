@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: academia-play
+    runtime: static
+    buildCommand: mkdir -p dist && cp -R web/. dist/
+    staticPublishPath: dist
+    autoDeployTrigger: commit
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
