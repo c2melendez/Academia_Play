@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "project_id": "academia-play",
+  "display_name": "Academia Play",
+  "github": {
+    "repository_full_name": "c2melendez/Academia_Play",
+    "repository_url": "https://github.com/c2melendez/Academia_Play",
+    "default_branch": "main",
+    "visibility": "public",
+    "repository_id": "1465552993"
+  },
+  "deploy": {
+    "provider": "render",
+    "service_id": null,
+    "service_url": null,
+    "workspace_id": null,
+    "status": "WORKSPACE_CONFIRMATION_REQUIRED"
+  },
+  "supabase": {
+    "project_id": null,
+    "status": "NOT_PROVISIONED"
+  },
+  "notes": [
+    "Repo metadata verified through connected GitHub account",
+    "Curricular design for first course not yet approved",
+    "Render workspace must be explicitly confirmed before provisioning"
+  ]
+}
