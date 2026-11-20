@@ -1,0 +1,37 @@
+name: Academia Play v4 — contract QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - "sistema-maestro/**"
+      - ".github/workflows/academia-play-contracts.yml"
+  pull_request:
+    paths:
+      - "sistema-maestro/**"
+      - ".github/workflows/academia-play-contracts.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install validator dependencies
+        run: python -m pip install -r sistema-maestro/requirements-dev.txt
+      - name: Check generated schema parity
+        run: |
+          python sistema-maestro/scripts/build_contracts.py
+          git diff --exit-code -- sistema-maestro/schemas
+      - name: Run positive and negative contract tests
+        run: python -m unittest discover -s sistema-maestro/tests -v
+      - name: Validate example manifest
+        run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/manifest.json
+      - name: Validate example progress
+        run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/progress.json --kind progress
+      - name: Validate example gate
+        run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/gate.json --kind gate
