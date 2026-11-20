@@ -1,0 +1,18 @@
+{
+  "gate_id": "G-ORACLE",
+  "module_id": "M1",
+  "input_hash": "synthetic-demo",
+  "acceptance_revision": "v4.0",
+  "evidence_level": "E2",
+  "result": "NOT_RUN",
+  "commands": [],
+  "logs": [],
+  "observed_at": "2026-11-20T00:00:00Z",
+  "reviewer": "unassigned",
+  "limitations": [
+    "Demo: oracle engine not implemented"
+  ],
+  "commit_sha": "",
+  "workflow_run_id": "",
+  "deployment_sha": ""
+}
