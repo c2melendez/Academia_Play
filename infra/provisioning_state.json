@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "github_repository": "CREATED",
+  "github_default_branch": "main",
+  "canonical_master_prompt": "sistema-maestro/PROMPT_MAESTRO.md",
+  "entry_prompt": "PROMPT_EJECUTOR_REPOSITORIO.md",
+  "render": "PENDING_WORKSPACE_CONFIRMATION",
+  "render_service_id": null,
+  "render_url": null,
+  "render_blueprint_path": "render.yaml",
+  "supabase": "DEFERRED_UNTIL_REQUIRED",
+  "deployment_verified": false,
+  "qa_ci_verified": false,
+  "course_design_approved": false,
+  "description": "Distinguish actual GitHub publication from pending external deployment, CI and academic gates."
+}
