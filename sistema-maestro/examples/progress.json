@@ -1,0 +1,26 @@
+{
+  "user_id": "demo-user",
+  "institution_id": "university-demo",
+  "course_version": "0.1-demo",
+  "node_id": "route-linear",
+  "access_grants": [
+    {
+      "grant_id": "unlock-1",
+      "granted_at": "2026-11-20T00:00:00Z",
+      "evidence_ids": [
+        "ev-1"
+      ]
+    }
+  ],
+  "mastery_evidence": [
+    {
+      "evidence_id": "ev-1",
+      "variant_family": "algebraic",
+      "oracle_result": "VERIFIED",
+      "assisted": false,
+      "idempotency_key": "demo-idem-1"
+    }
+  ],
+  "mastery_estimate": "MASTERED",
+  "updated_at": "2026-11-20T00:00:00Z"
+}
