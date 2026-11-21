@@ -27,6 +27,31 @@ manifest={**base,'properties':{'schema_version':S('string',const='4.1'),'institu
 mastery_rule=obj({'distinct_variant_families':S('integer',minimum=2),'requires_transfer':S('boolean'),'unassisted_required':S('boolean')})
 review_event=obj({'event_id':string,'review_id':string,'kind':S('string',enum=['OPEN','RESOLVE'])})
 progress=obj({'user_id':string,'institution_id':string,'course_version':string,'node_id':string,'mastery_rule':mastery_rule,'access_grants':arr(obj({'grant_id':string,'granted_at':string,'evidence_ids':ids}),uniqueItems=True),'mastery_evidence':arr(obj({'evidence_id':string,'variant_family':string,'role':S('string',enum=['PRACTICE','TRANSFER','EXAM','LAB']),'oracle_result':S('string',enum=['VERIFIED','REJECTED','INCONCLUSIVE']),'assisted':S('boolean'),'idempotency_key':string}),uniqueItems=True),'review_events':arr(review_event,uniqueItems=True),'mastery_estimate':S('string',enum=['UNASSESSED','DEVELOPING','MASTERED','NEEDS_REVIEW']),'updated_at':string})
-gate=obj({'gate_id':S('string',enum=['G-SOURCE','G-CURRICULUM','G-DESIGN','G-LAB','G-ORACLE','G-PEDAGOGY','G-PROGRESS','G-A11Y','G-SECURITY','G-REGRESSION','G-DEPLOY','G-ACADEMIC','G-EMPIRICAL']),'module_id':string,'input_hash':string,'acceptance_revision':string,'evidence_level':S('string',enum=['E1','E2','E3']),'result':S('string',enum=['DOC_PASS','PASS','FAIL','BLOCKED','NOT_RUN','PENDING_REVIEW']),'commands':arr(string),'logs':arr(string),'observed_at':string,'reviewer':string,'limitations':arr(string),'commit_sha':S('string'),'workflow_run_id':S('string'),'deployment_sha':S('string')})
+gate=obj({'gate_id':S('string',enum=['G-SOURCE','G-CURRICULUM','G-DESIGN','G-LAB','G-ORACLE','G-PEDAGOGY','G-PROGRESS','G-A11Y','G-A11Y-AUTO','G-A11Y-MANUAL','G-SECURITY','G-REGRESSION','G-DEPLOY','G-ACADEMIC','G-EMPIRICAL']),'module_id':string,'input_hash':string,'acceptance_revision':string,'evidence_level':S('string',enum=['E1','E2','E3']),'result':S('string',enum=['DOC_PASS','PASS','FAIL','BLOCKED','NOT_RUN','PENDING_REVIEW','NOT_APPLICABLE']),'commands':arr(string),'logs':arr(string),'observed_at':string,'reviewer':string,'limitations':arr(string),'commit_sha':S('string'),'workflow_run_id':S('string'),'deployment_sha':S('string')})
 for name,data in [('manifest.schema.json',manifest),('progress.schema.json',{'$schema':manifest['$schema'],**progress}),('gate.schema.json',{'$schema':manifest['$schema'],**gate})]:
  (SC/name).write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+
+continuity=obj({
+ 'schema_version':S('string',const='4.1'),
+ 'repository_full_name':string,
+ 'active_branch':string,
+ 'repo_head_sha':S(['string','null']),
+ 'last_observed_at':S(['string','null']),
+ 'environment_mode':S('string',enum=['FULL','ENVIRONMENT_CONSTRAINED','PROVISIONING_BLOCKED']),
+ 'bootstrap_status':S('string',enum=['PROVISIONED','UNPROVISIONED']),
+ 'course_design_status':S('string',enum=['DESIGN_DRAFT','DESIGN_PROPOSED','DESIGN_APPROVED','SOURCE_MISSING']),
+ 'active_course_id':S(['string','null']),
+ 'approved_design_revision':S(['string','null']),
+ 'active_module_id':S(['string','null']),
+ 'module_states':S('object',additionalProperties=S('string',enum=['PLANNED','IN_PROGRESS','DONE_LOCAL','DONE_TECHNICAL','BLOCKED'])),
+ 'active_blockers':arr(string),
+ 'last_verified_commands':arr(string),
+ 'next_action':string,
+ 'render_service_id':S(['string','null']),
+ 'last_verified_deploy_sha':S(['string','null']),
+ 'last_verified_deploy_at':S(['string','null']),
+ 'qa_ci_verified_sha':S(['string','null'])
+})
+event=obj({'event_id':string,'timestamp':string,'action':string,'actor':string,'environment_mode':S('string',enum=['FULL','ENVIRONMENT_CONSTRAINED','PROVISIONING_BLOCKED']),'evidence_level':S('string',enum=['E1','E2','E3']),'summary':string,'repo_sha':S(['string','null']),'result':string})
+(SC/'continuity.schema.json').write_text(json.dumps({'$schema':manifest['$schema'],**continuity},ensure_ascii=False,indent=2)+'\n')
+(SC/'execution_event.schema.json').write_text(json.dumps({'$schema':manifest['$schema'],**event},ensure_ascii=False,indent=2)+'\n')
