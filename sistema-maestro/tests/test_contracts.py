@@ -14,7 +14,7 @@ class TestContracts(unittest.TestCase):
    'missing oracle':'unknown oracles reference',
    'missing engine':'unknown engines reference',
    'illegal status':'not one of',
-   'ADR required':'CREATE requires ADR',
+   'ADR required':'should be non-empty',
    'source page':'pages not inspected',
    'error concept':'unknown misconceptions reference',
    'exam leakage':'exam leakage',
