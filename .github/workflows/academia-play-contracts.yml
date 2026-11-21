@@ -14,6 +14,12 @@ on:
   pull_request:
     paths:
       - "sistema-maestro/**"
+      - "continuity.json"
+      - "infra/**"
+      - "web/**"
+      - "render.yaml"
+      - "PROMPT_EJECUTOR_REPOSITORIO.md"
+      - "README.md"
       - ".github/workflows/academia-play-contracts.yml"
   workflow_dispatch:
 permissions:
