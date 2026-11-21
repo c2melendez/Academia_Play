@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Academia Play Manifest v4",
+  "title": "Academia Play Manifest v4.1",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "4.0"
+      "const": "4.1"
     },
     "institutions": {
       "type": "array",
