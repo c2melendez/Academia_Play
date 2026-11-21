@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "minLength": 1
+    },
+    "action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment_mode": {
+      "type": "string",
+      "enum": [
+        "FULL",
+        "ENVIRONMENT_CONSTRAINED",
+        "PROVISIONING_BLOCKED"
+      ]
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "E1",
+        "E2",
+        "E3"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repo_sha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "result": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "event_id",
+    "timestamp",
+    "action",
+    "actor",
+    "environment_mode",
+    "evidence_level",
+    "summary",
+    "repo_sha",
+    "result"
+  ]
+}
