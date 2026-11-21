@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse, json
 from pathlib import Path
 from jsonschema import Draft202012Validator
+from progress_policy import derive_mastery, validate_invariants, merge_progress as _merge_progress, ProgressConflict
 
 ROOT=Path(__file__).resolve().parents[1]
 SC=ROOT/'schemas'
@@ -60,7 +61,13 @@ def validate_manifest(data):
   v_ids=[v['variant_id'] for v in a['variants']]
   if len(v_ids)!=len(set(v_ids)):errors.append(f'{ident}: duplicate variant_id')
   if a['transfer_variant_id'] not in v_ids:errors.append(f'{ident}: transfer variant missing')
-  if not any(v['variant_id']==a['transfer_variant_id'] and v['role']=='TRANSFER' for v in a['variants']):errors.append(f'{ident}: transfer variant role invalid')
+  transfer=next((v for v in a['variants'] if v['variant_id']==a['transfer_variant_id']),None)
+  if transfer and transfer['role']!='TRANSFER':errors.append(f'{ident}: transfer variant role invalid')
+  if transfer and transfer['item_id'] not in a['mode_item_ids']['learning_path']:errors.append(f'{ident}: route missing its own transfer item')
+  if transfer and transfer['item_id'] in a['mode_item_ids']['exam_preparation']:errors.append(f'{ident}: transfer item leaked into exam')
+  if not any(v['role']=='EXAM' and v['item_id'] in a['mode_item_ids']['exam_preparation'] for v in a['variants']):errors.append(f'{ident}: exam mode lacks independent exam variant')
+  for v in a['variants']:
+   if v['role']=='EXAM' and v['item_id'] in a['mode_item_ids']['learning_path']:errors.append(f'{ident}: exam item in learning_path')
   if any('porque es incorrect' in f['explanation'].lower() for f in a['feedback_by_error']):errors.append(f'{ident}: circular feedback')
   all_items={v['item_id'] for v in a['variants']}
   for mode,item_ids in a['mode_item_ids'].items():
@@ -106,29 +113,19 @@ def validate_manifest(data):
  cycles(ix['objectives'],'prerequisite_ids','objectives')
  return errors
 
-def validate_progress(obj):
+def validate_progress(obj, route_rule=None):
  errors=check_schema(obj,'progress.schema.json')
  if errors:return errors
- grants=obj['access_grants'];ev=obj['mastery_evidence']
- for k,items in [('grant_id',grants),('evidence_id',ev)]:
-  if len({x[k] for x in items})!=len(items):errors.append(f'duplicate {k}')
- if obj['mastery_estimate']=='MASTERED' and not any(x['oracle_result']=='VERIFIED' and not x['assisted'] for x in ev):errors.append('MASTERED without unassisted verified evidence')
+ try:
+  validate_invariants(obj, route_rule)
+ except ProgressConflict as e:
+  errors.append(f'PROGRESS_INVARIANT: {e}')
  return errors
 
 def merge_progress(a,b):
- """Monotonic access grants and append-only evidence; idempotent union by ID."""
- for k in ['user_id','institution_id','course_version','node_id']:
-  if a[k]!=b[k]:raise ContractError(f'cannot merge distinct {k}')
- out={**a}
- for field,key in [('access_grants','grant_id'),('mastery_evidence','evidence_id')]:
-  merged={x[key]:x for x in a[field]}
-  for x in b[field]:
-   if x[key] in merged and merged[x[key]]!=x:raise ContractError(f'conflicting {key} {x[key]}')
-   merged[x[key]]=x
-  out[field]=list(merged.values())
- out['mastery_estimate']=a['mastery_estimate'] if a['updated_at']>=b['updated_at'] else b['mastery_estimate']
- out['updated_at']=max(a['updated_at'],b['updated_at'])
- return out
+ return _merge_progress(a,b)
+
+ContractError=ProgressConflict
 
 def validate_gate(obj):
  errors=check_schema(obj,'gate.schema.json')
