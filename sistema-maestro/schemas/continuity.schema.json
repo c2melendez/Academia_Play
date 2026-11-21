@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "4.1"
+    },
+    "repository_full_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "active_branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repo_head_sha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_observed_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "environment_mode": {
+      "type": "string",
+      "enum": [
+        "FULL",
+        "ENVIRONMENT_CONSTRAINED",
+        "PROVISIONING_BLOCKED"
+      ]
+    },
+    "bootstrap_status": {
+      "type": "string",
+      "enum": [
+        "PROVISIONED",
+        "UNPROVISIONED"
+      ]
+    },
+    "course_design_status": {
+      "type": "string",
+      "enum": [
+        "DESIGN_DRAFT",
+        "DESIGN_PROPOSED",
+        "DESIGN_APPROVED",
+        "SOURCE_MISSING"
+      ]
+    },
+    "active_course_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approved_design_revision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "active_module_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "module_states": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": [
+          "PLANNED",
+          "IN_PROGRESS",
+          "DONE_LOCAL",
+          "DONE_TECHNICAL",
+          "BLOCKED"
+        ]
+      }
+    },
+    "active_blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "last_verified_commands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "render_service_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_verified_deploy_sha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_verified_deploy_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "qa_ci_verified_sha": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "repository_full_name",
+    "active_branch",
+    "repo_head_sha",
+    "last_observed_at",
+    "environment_mode",
+    "bootstrap_status",
+    "course_design_status",
+    "active_course_id",
+    "approved_design_revision",
+    "active_module_id",
+    "module_states",
+    "active_blockers",
+    "last_verified_commands",
+    "next_action",
+    "render_service_id",
+    "last_verified_deploy_sha",
+    "last_verified_deploy_at",
+    "qa_ci_verified_sha"
+  ]
+}
