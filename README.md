@@ -2,7 +2,7 @@
 
 Plataforma de aprendizaje STEM lúdica, modular y rigurosa, adaptable a asignaturas de distintas universidades mediante sílabos y libros autorizados.
 
-**Estado:** bootstrap de infraestructura y Sistema Maestro v4.0. Todavía no hay cursos certificados.
+**Estado:** bootstrap de infraestructura y Sistema Maestro v4.1. Todavía no hay cursos certificados.
 
 ## Fuente canónica de instrucciones
 - [Prompt de entrada para agentes](PROMPT_EJECUTOR_REPOSITORIO.md)

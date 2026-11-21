@@ -8,7 +8,9 @@
       "grant_id": "unlock-1",
       "granted_at": "2026-11-20T00:00:00Z",
       "evidence_ids": [
-        "ev-1"
+        "ev-1",
+        "ev-2",
+        "ev-3"
       ]
     }
   ],
@@ -16,11 +18,34 @@
     {
       "evidence_id": "ev-1",
       "variant_family": "algebraic",
+      "role": "PRACTICE",
       "oracle_result": "VERIFIED",
       "assisted": false,
       "idempotency_key": "demo-idem-1"
+    },
+    {
+      "evidence_id": "ev-2",
+      "variant_family": "graphical",
+      "role": "PRACTICE",
+      "oracle_result": "VERIFIED",
+      "assisted": false,
+      "idempotency_key": "demo-idem-2"
+    },
+    {
+      "evidence_id": "ev-3",
+      "variant_family": "transfer-context",
+      "role": "TRANSFER",
+      "oracle_result": "VERIFIED",
+      "assisted": false,
+      "idempotency_key": "demo-idem-3"
     }
   ],
   "mastery_estimate": "MASTERED",
-  "updated_at": "2026-11-20T00:00:00Z"
+  "updated_at": "2026-11-20T00:00:00Z",
+  "mastery_rule": {
+    "distinct_variant_families": 2,
+    "requires_transfer": true,
+    "unassisted_required": true
+  },
+  "review_events": []
 }

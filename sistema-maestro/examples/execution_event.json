@@ -1,0 +1,11 @@
+{
+  "event_id": "synthetic-demo-event",
+  "timestamp": "2026-11-20T00:00:00Z",
+  "action": "AUDITAR",
+  "actor": "demo-fixture",
+  "environment_mode": "FULL",
+  "evidence_level": "E3",
+  "summary": "Ejemplo sintético de evento sin ejecución certificada.",
+  "repo_sha": null,
+  "result": "NOT_RUN"
+}

@@ -14,6 +14,8 @@
         "G-PEDAGOGY",
         "G-PROGRESS",
         "G-A11Y",
+        "G-A11Y-AUTO",
+        "G-A11Y-MANUAL",
         "G-SECURITY",
         "G-REGRESSION",
         "G-DEPLOY",
@@ -49,7 +51,8 @@
         "FAIL",
         "BLOCKED",
         "NOT_RUN",
-        "PENDING_REVIEW"
+        "PENDING_REVIEW",
+        "NOT_APPLICABLE"
       ]
     },
     "commands": {

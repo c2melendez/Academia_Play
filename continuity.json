@@ -1,0 +1,23 @@
+{
+  "schema_version": "4.1",
+  "repository_full_name": "c2melendez/Academia_Play",
+  "active_branch": "main",
+  "repo_head_sha": null,
+  "last_observed_at": null,
+  "environment_mode": "FULL",
+  "bootstrap_status": "PROVISIONED",
+  "course_design_status": "SOURCE_MISSING",
+  "active_course_id": null,
+  "approved_design_revision": null,
+  "active_module_id": null,
+  "module_states": {},
+  "active_blockers": [
+    "No se ha incorporado sílabo de un curso real; aprobación pedagógica M0 pendiente."
+  ],
+  "last_verified_commands": [],
+  "next_action": "INICIAR: incorporar sílabo y bibliografía autorizada del primer curso; presentar revisión de diseño para APROBAR_DISEÑO.",
+  "render_service_id": "srv-dc06lp67bikc739hlghg",
+  "last_verified_deploy_sha": "8c21dc4b3b946e7cc2c6bc7968b6e5c7b83d0920",
+  "last_verified_deploy_at": "2026-11-20T15:45:55Z",
+  "qa_ci_verified_sha": null
+}

@@ -1,13 +1,25 @@
-name: Academia Play v4 — contract QA
+name: Academia Play v4.1 — contract QA
 on:
   push:
     branches: [main]
     paths:
       - "sistema-maestro/**"
+      - "continuity.json"
+      - "infra/**"
+      - "web/**"
+      - "render.yaml"
+      - "PROMPT_EJECUTOR_REPOSITORIO.md"
+      - "README.md"
       - ".github/workflows/academia-play-contracts.yml"
   pull_request:
     paths:
       - "sistema-maestro/**"
+      - "continuity.json"
+      - "infra/**"
+      - "web/**"
+      - "render.yaml"
+      - "PROMPT_EJECUTOR_REPOSITORIO.md"
+      - "README.md"
       - ".github/workflows/academia-play-contracts.yml"
   workflow_dispatch:
 permissions:
@@ -35,3 +47,13 @@ jobs:
         run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/progress.json --kind progress
       - name: Validate example gate
         run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/gate.json --kind gate
+      - name: Validate continuity checkpoint
+        run: python sistema-maestro/scripts/validate_academia_play.py continuity.json --kind continuity
+      - name: Validate synthetic execution event
+        run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/execution_event.json --kind event
+      - name: Validate Render bootstrap paths
+        run: |
+          test -f render.yaml
+          test -f web/index.html
+          test -f PROMPT_EJECUTOR_REPOSITORIO.md
+          grep -q "Academia_Play" PROMPT_EJECUTOR_REPOSITORIO.md
