@@ -9,7 +9,24 @@ class TestContracts(unittest.TestCase):
  def setUp(self):self.m=load('manifest.json')
  def fails(self,msg):
   errors=validate_manifest(self.m)
-  self.assertTrue(errors,f'Expected failure: {msg}')
+  expected={
+   'missing objective':'unknown objectives reference',
+   'missing oracle':'unknown oracles reference',
+   'missing engine':'unknown engines reference',
+   'illegal status':'not one of',
+   'ADR required':'CREATE requires ADR',
+   'source page':'pages not inspected',
+   'error concept':'unknown misconceptions reference',
+   'exam leakage':'exam leakage',
+   'transfer':'transfer variant missing',
+   'no semantic variation':'two distinct variant families required',
+   'missing diagnostic evidence':'diagnostic evidence required',
+   'cycle':'cycle involving',
+   'orphan lab':'non-empty',
+   'inconclusive fixture':'INCONCLUSIVE fixtures required',
+  }.get(msg,msg)
+  self.assertTrue(any(expected in e for e in errors),
+                  f'Expected {expected!r}; got {errors!r}')
   return errors
  def test_positive_synthetic(self):self.assertEqual(validate_manifest(self.m),[])
  def test_bad_objective_ref(self):
