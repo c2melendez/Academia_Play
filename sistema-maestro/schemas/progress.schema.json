@@ -19,6 +19,27 @@
       "type": "string",
       "minLength": 1
     },
+    "mastery_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "distinct_variant_families": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "requires_transfer": {
+          "type": "boolean"
+        },
+        "unassisted_required": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "distinct_variant_families",
+        "requires_transfer",
+        "unassisted_required"
+      ]
+    },
     "access_grants": {
       "type": "array",
       "items": {
@@ -79,14 +100,54 @@
           "idempotency_key": {
             "type": "string",
             "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "PRACTICE",
+              "TRANSFER",
+              "EXAM",
+              "LAB"
+            ]
           }
         },
         "required": [
           "evidence_id",
           "variant_family",
+          "role",
           "oracle_result",
           "assisted",
           "idempotency_key"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "review_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "review_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "RESOLVE"
+            ]
+          }
+        },
+        "required": [
+          "event_id",
+          "review_id",
+          "kind"
         ]
       },
       "uniqueItems": true
@@ -110,8 +171,10 @@
     "institution_id",
     "course_version",
     "node_id",
+    "mastery_rule",
     "access_grants",
     "mastery_evidence",
+    "review_events",
     "mastery_estimate",
     "updated_at"
   ]
