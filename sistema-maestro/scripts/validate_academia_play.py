@@ -134,12 +134,25 @@ def validate_gate(obj):
  if obj['result']=='PASS' and obj['gate_id'] in ('G-SOURCE','G-CURRICULUM','G-DESIGN'):errors.append('design/document gate requires DOC_PASS not PASS')
  if obj['result']=='DOC_PASS' and obj['gate_id'] not in ('G-SOURCE','G-CURRICULUM','G-DESIGN'):errors.append('technical gate cannot use DOC_PASS')
  if obj['result']=='PASS' and obj['gate_id']=='G-DEPLOY' and (not obj['commit_sha'] or obj['deployment_sha']!=obj['commit_sha'] or not obj['workflow_run_id']):errors.append('deployment requires exact SHA and workflow ID')
+ if obj['result']=='NOT_APPLICABLE' and (obj['gate_id']!='G-LAB' and obj['gate_id']!='G-A11Y-MANUAL' or not obj['limitations']):errors.append('NOT_APPLICABLE requires allowed gate and documented reason')
+ if obj['result']=='PASS' and obj['gate_id'] in ('G-ACADEMIC','G-EMPIRICAL'):errors.append('human review is not an automated technical PASS')
+ if obj['result']=='PASS' and obj['gate_id']=='G-A11Y-MANUAL' and obj['reviewer'] in ('','unassigned','agent'):errors.append('manual accessibility PASS requires identified reviewer')
  return errors
 
+def validate_continuity(obj):
+ errors=check_schema(obj,'continuity.schema.json')
+ if errors:return errors
+ if obj['course_design_status']=='DESIGN_APPROVED' and not obj['approved_design_revision']:errors.append('approved design requires exact revision')
+ if obj['bootstrap_status']=='PROVISIONED' and not obj['render_service_id']:errors.append('provisioned record requires verified Render service')
+ return errors
+
+def validate_event(obj):
+ return check_schema(obj,'execution_event.schema.json')
+
 def main():
- p=argparse.ArgumentParser();p.add_argument('file',type=Path);p.add_argument('--kind',choices=['manifest','progress','gate'],default='manifest');args=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('file',type=Path);p.add_argument('--kind',choices=['manifest','progress','gate','continuity','event'],default='manifest');args=p.parse_args()
  obj=json.loads(args.file.read_text(encoding='utf8'))
- errors={'manifest':validate_manifest,'progress':validate_progress,'gate':validate_gate}[args.kind](obj)
+ errors={'manifest':validate_manifest,'progress':validate_progress,'gate':validate_gate,'continuity':validate_continuity,'event':validate_event}[args.kind](obj)
  for error in errors:print('FAIL:',error)
  if not errors:print(f'PASS {args.kind}: structural and reference checks')
  raise SystemExit(bool(errors))
