@@ -1,5 +1,5 @@
 {
-  "schema_version": "4.0",
+  "schema_version": "4.1",
   "institutions": [
     {
       "institution_id": "university-demo",
@@ -124,7 +124,7 @@
       ],
       "hint_policy_id": "hints-basic",
       "difficulty_rubric": "Representación algebraica, gráfica y transferencia",
-      "transfer_variant_id": "v-transfer",
+      "transfer_variant_id": "v-route-transfer",
       "accessibility_fallback": "Tabla accesible de pares (x,y) y descripción verbal",
       "evidence_rationale": "Hipótesis de aprendizaje para validar en piloto, NO evidencia empírica de eficacia",
       "interaction_type": "COMPARE_GRAPHS",
@@ -148,13 +148,21 @@
           "variant_id": "v-transfer",
           "family": "transfer-context",
           "representation": "VERBAL",
-          "role": "TRANSFER",
+          "role": "EXAM",
           "item_id": "item-exam"
+        },
+        {
+          "variant_id": "v-route-transfer",
+          "family": "transfer-context",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "item-route-transfer"
         }
       ],
       "mode_item_ids": {
         "learning_path": [
-          "item-route"
+          "item-route",
+          "item-route-transfer"
         ],
         "practice_tutor": [
           "item-tutor"
