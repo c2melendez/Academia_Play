@@ -1,0 +1,8 @@
+# Responsible owner for normative, security and operational contracts.
+# Enforced review requires repository ruleset/branch protection (verify separately).
+/PROMPT_EJECUTOR_REPOSITORIO.md @c2melendez
+/sistema-maestro/ @c2melendez
+/continuity.json @c2melendez
+/infra/ @c2melendez
+/.github/workflows/ @c2melendez
+/.github/CODEOWNERS @c2melendez

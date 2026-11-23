@@ -49,6 +49,10 @@ jobs:
         run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/progress.json --kind progress
       - name: Validate example gate
         run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/gate.json --kind gate
+      - name: Validate synthetic P0 templates
+        run: |
+          python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/templates/gate-record.json --kind gate
+          python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/templates/continuity.json --kind continuity
       - name: Validate continuity checkpoint
         run: python sistema-maestro/scripts/validate_academia_play.py continuity.json --kind continuity
       - name: Validate synthetic execution event
