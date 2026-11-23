@@ -4,7 +4,15 @@
 
 ## Lectura obligatoria para un agente
 
-1. [CONSTITUCION.md](CONSTITUCION.md): orden canónico de lectura y principios.\n2. [RUNBOOK.md](RUNBOOK.md): procedimientos de ejecución.\n3. [GATES.md](GATES.md): catálogo de validación.\n4. [schemas/](schemas/): contratos estructurales.\n5. [PROMPT_MAESTRO.md](PROMPT_MAESTRO.md): activación del ejecutor.\n6. [AGENTS.md](AGENTS.md): checkpoint de reanudación.\n
+1. [CONSTITUCION.md](CONSTITUCION.md): orden canónico de lectura y principios.
+2. [RUNBOOK.md](RUNBOOK.md): procedimientos de ejecución.
+3. [GATES.md](GATES.md): catálogo de validación.
+4. [schemas/](schemas/): contratos estructurales.
+5. [PROMPT_MAESTRO.md](PROMPT_MAESTRO.md): activación del ejecutor.
+6. [AGENTS.md](AGENTS.md): instrucciones de reanudación.
+7. [../continuity.json](../continuity.json): estado observado (checkpoint).
+8. [../infra/](../infra/): infraestructura y manifiesto activo.
+
 ## Estructura
 
 - `schemas/`: JSON Schema Draft 2020-12 de manifiestos, progreso, gates, continuidad y eventos.

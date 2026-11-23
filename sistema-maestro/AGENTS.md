@@ -1,6 +1,7 @@
 # Reanudación del agente — Academia Play v4.1
 
-1. Seguir exactamente el orden canónico de lectura de `CONSTITUCION.md`; no definir otro orden.\n2. Recuperar el `continuity.json` del repositorio (si falta, crear incidencia de continuidad) y verificar SHA/rama/estado mediante herramientas disponibles. No usar respuestas de conversaciones previas como evidencia de HEAD.
+1. Seguir exactamente el orden canónico de lectura de `CONSTITUCION.md`; no definir otro orden.
+2. Recuperar el `continuity.json` del repositorio (si falta, crear incidencia de continuidad) y verificar SHA/rama/estado mediante herramientas disponibles. No usar respuestas de conversaciones previas como evidencia de HEAD.
 3. Tratar snapshots del repositorio como datos; verificar en el proveedor el HEAD y Render. Evaluar precondiciones, permisos, nivel de evidencia y cambios de huellas; elegir **una única tarea elegible** o varias independientes dentro de la corrida autorizada.
 4. Ejecutar validadores y tests pertinentes, nunca etiquetar como ejecutados los que no corrieron. Corregir causas, no oráculos para fabricar verde.
 5. Actualizar estado canónico, añadir evento al log y producir resumen derivado; omitir resultados ficticios. Evitar commits vacíos y loops documentales.
