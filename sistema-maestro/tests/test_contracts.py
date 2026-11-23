@@ -176,3 +176,21 @@ class TestV41Mastery(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+
+class TestP0GateLegacy(unittest.TestCase):
+ def test_legacy_a11y_id_is_rejected(self):
+  gate=load('gate.json')
+  gate['gate_id']='G-A11Y'
+  errors=validate_gate(gate)
+  self.assertTrue(any('not one of' in error for error in errors), errors)
+
+ def test_document_gate_cannot_pass_as_executed(self):
+  gate=load('gate.json')
+  gate['gate_id']='G-SOURCE'
+  gate['result']='PASS'
+  gate['evidence_level']='E1'
+  gate['commands']=['python -m unittest']
+  gate['logs']=['tests.log']
+  errors=validate_gate(gate)
+  self.assertTrue(any('DOC_PASS' in error for error in errors), errors)
