@@ -19,6 +19,8 @@ def validate_candidate_closure(checkpoint, gates, module_id, target_sha, applica
     errors = [f"continuity: {error}" for error in validate_continuity(checkpoint)]
     if not re.fullmatch(r"[0-9a-f]{40}", target_sha or ""):
         errors.append("target_sha must be a full lowercase Git SHA")
+    if checkpoint.get("course_design_status") != "DESIGN_APPROVED" or not checkpoint.get("approved_design_revision"):
+        errors.append("candidate closure requires a recorded approved design revision")
     if checkpoint.get("module_states", {}).get(module_id) != "DONE_TECHNICAL":
         errors.append(f"module {module_id} is not DONE_TECHNICAL")
     required = REQUIRED_TECHNICAL | REQUIRED_DOCUMENTARY
