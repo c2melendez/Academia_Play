@@ -1,0 +1,18 @@
+{
+  "gate_id": "G-ORACLE",
+  "module_id": "TEMPLATE_NOT_REAL",
+  "input_hash": "not-verified",
+  "acceptance_revision": "unapproved",
+  "evidence_level": "E3",
+  "result": "NOT_RUN",
+  "commands": [],
+  "logs": [],
+  "observed_at": "2026-11-23T00:00:00Z",
+  "reviewer": "unassigned",
+  "limitations": [
+    "Plantilla: sustituir con observación real; ninguna prueba fue ejecutada"
+  ],
+  "commit_sha": "",
+  "workflow_run_id": "",
+  "deployment_sha": ""
+}
