@@ -1,0 +1,23 @@
+{
+  "schema_version": "4.1",
+  "repository_full_name": "c2melendez/Academia_Play",
+  "active_branch": "main",
+  "repo_head_sha": null,
+  "last_observed_at": null,
+  "environment_mode": "ENVIRONMENT_CONSTRAINED",
+  "bootstrap_status": "UNPROVISIONED",
+  "course_design_status": "SOURCE_MISSING",
+  "active_course_id": null,
+  "approved_design_revision": null,
+  "active_module_id": null,
+  "module_states": {},
+  "active_blockers": [
+    "Plantilla sin conexión a proveedores ni fuentes curriculares"
+  ],
+  "last_verified_commands": [],
+  "next_action": "ESTADO: consultar GitHub/CI/Render y reconciliar antes de actuar",
+  "render_service_id": null,
+  "last_verified_deploy_sha": null,
+  "last_verified_deploy_at": null,
+  "qa_ci_verified_sha": null
+}
