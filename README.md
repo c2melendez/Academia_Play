@@ -6,7 +6,7 @@ Plataforma de aprendizaje STEM lúdica, modular y rigurosa, adaptable a asignatu
 
 ## Fuente canónica de instrucciones
 - [Prompt de entrada para agentes](PROMPT_EJECUTOR_REPOSITORIO.md)
-- [Sistema Maestro v4.0](sistema-maestro/PROMPT_MAESTRO.md)
+- [Sistema Maestro v4.1](sistema-maestro/PROMPT_MAESTRO.md)
 - [Constitución](sistema-maestro/CONSTITUCION.md)
 - [Runbook](sistema-maestro/RUNBOOK.md)
 - [Gates](sistema-maestro/GATES.md)
