@@ -36,6 +36,7 @@ El repositorio canónico y HEAD real son autoridad técnica. En el paquete de tr
 | `REPLANIFICAR` | Cambios de sílabo/libros/oráculos | Versionar impacto, plan de migración, preservar progreso | Manifiesto propuesto + nuevos gates |
 | `ESTADO` | Registros canónicos | Solo lectura: mostrar resumen derivado sin escribir archivos | Estado, pruebas realmente observadas, riesgos |
 | `VALIDAR_LABORATORIOS` | Registry, manifiesto | Solo validación de pertinencia/identidad/capacidades | Evidencias por laboratorio, bloqueos y decisiones |
+| `ESCALAR` | Bloqueo reproducible, SHA, diagnóstico, intentos y alcance | Preparar reporte de bloqueo sin conceder permisos ni modificar producto | Reporte verificable; detener solo ruta afectada y conservar siguiente tarea independiente |
 
 ## Primera corrida: diseño, luego infraestructura
 
