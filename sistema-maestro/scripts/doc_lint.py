@@ -22,7 +22,7 @@ def check():
     constitution = (MASTER / "CONSTITUCION.md").read_text(encoding="utf-8")
     master = (MASTER / "PROMPT_MAESTRO.md").read_text(encoding="utf-8")
     for i in range(1, 13):
-        if not re.search(rf"REQ-{i:03d}\\b", constitution):
+        if not re.search(rf"REQ-{i:03d}\b", constitution):
             errors.append(f"CONSTITUCION missing REQ-{i:03d}")
     commands = ("INICIAR", "APROBAR_DISEÑO", "CONTINUAR", "AGREGAR_CURSO",
                 "AUDITAR", "RECONCILIAR", "REPLANIFICAR", "ESTADO",
