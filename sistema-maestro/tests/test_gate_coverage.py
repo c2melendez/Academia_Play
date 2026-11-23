@@ -16,6 +16,10 @@ class CandidateClosureTests(unittest.TestCase):
         self.continuity = json.loads((ROOT.parents[0] / "continuity.json").read_text())
         self.continuity["module_states"] = {"M0": "DONE_TECHNICAL"}
 
+    def test_design_not_approved_cannot_close(self):
+        errors = validate_candidate_closure(self.continuity, [], "M0", SHA)
+        self.assertTrue(any("approved design revision" in e for e in errors), errors)
+
     def test_no_gates_cannot_close(self):
         errors = validate_candidate_closure(self.continuity, [], "M0", SHA)
         self.assertTrue(any("missing required gate G-DEPLOY" in e for e in errors), errors)
