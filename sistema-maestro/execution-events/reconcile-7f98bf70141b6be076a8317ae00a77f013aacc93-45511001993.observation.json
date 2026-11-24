@@ -1,0 +1,24 @@
+{
+  "observation": {
+    "result": "VERIFIED_OBSERVATION",
+    "repository": "c2melendez/Academia_Play",
+    "service_id": "srv-dc06lp67bikc739hlghg",
+    "target_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
+    "workflow_run_id": "45511001993",
+    "observed_at": "2026-11-24T23:45:09.232Z",
+    "errors": [],
+    "workflow_url": "https://github.com/c2melendez/Academia_Play/actions/runs/45511001993",
+    "deployment_id": "dep-dc31tk8473hc73bkjicg",
+    "deployment_finished_at": "2026-11-24T23:33:45.158178Z"
+  },
+  "meaning": "Historical pre-write provider observation, not current deployed HEAD",
+  "source": "Authenticated GitHub and Render connector actions in assistant execution; NOT provider_evidence.observe in the same Python process",
+  "verification_method": "Direct provider fetches and identity/SHA/status/branch checks before proposing protected PR; schema is checked by required contracts CI",
+  "workflow_identity": {
+    "workflow_id": 425123083,
+    "path": ".github/workflows/academia-play-contracts.yml",
+    "event": "push",
+    "head_branch": "main"
+  },
+  "provenance_note": "Connector-based equivalent persistence; do not misattribute to submit_reconciliation_pr.py CLI."
+}

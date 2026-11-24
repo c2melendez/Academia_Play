@@ -1,0 +1,11 @@
+{
+  "event_id": "RECONCILIAR-7f98bf70141b6be076a8317ae00a77f013aacc93-45511001993",
+  "timestamp": "2026-11-24T23:45:09.232Z",
+  "action": "RECONCILIAR",
+  "actor": "authenticated-GitHub-Render-connectors",
+  "environment_mode": "FULL",
+  "evidence_level": "E1",
+  "summary": "Connector-observed CI run 45511001993 and Render deploy dep-dc31tk8473hc73bkjicg for historical pre-write SHA 7f98bf70141b6be076a8317ae00a77f013aacc93",
+  "repo_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
+  "result": "VERIFIED_OBSERVATION"
+}
