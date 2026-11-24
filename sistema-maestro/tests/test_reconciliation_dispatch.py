@@ -26,6 +26,11 @@ class ReconciliationDispatchChecks(unittest.TestCase):
         self.assertIn('secrets.RENDER_API_KEY', self.workflow)
         self.assertIn('repository secret is missing', self.workflow)
 
+    def test_validator_dependencies_installed_before_execution(self):
+        install = self.workflow.index("python -m pip install -r sistema-maestro/requirements-dev.txt")
+        execute = self.workflow.index("python sistema-maestro/scripts/submit_reconciliation_pr.py")
+        self.assertLess(install, execute)
+
     def test_dry_run_only(self):
         self.assertIn("submit_reconciliation_pr.py", self.workflow)
         self.assertIn("--dry-run", self.workflow)
