@@ -89,11 +89,13 @@ def observe(expected_sha, run_id, github_token, render_token, repo=REPOSITORY, s
         "errors": errors,
         "workflow_url": workflow.get("html_url"),
         "deployment_id": None,
+        "deployment_finished_at": None,
     }
     if isinstance(deployments, list) and deployments:
         newest = deployments[0]
         item = newest.get("deploy", newest) if isinstance(newest, dict) else {}
         result["deployment_id"] = item.get("id")
+        result["deployment_finished_at"] = item.get("finishedAt")
     return result
 
 
