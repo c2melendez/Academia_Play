@@ -2,8 +2,8 @@
   "schema_version": "4.1",
   "repository_full_name": "c2melendez/Academia_Play",
   "active_branch": "main",
-  "repo_head_sha": "fea0eec2466f5c4e837dddc4129b8eed2ae1d9d2",
-  "last_observed_at": "2026-11-24T10:53:49.022Z",
+  "repo_head_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
+  "last_observed_at": "2026-11-24T23:45:09.232Z",
   "environment_mode": "FULL",
   "bootstrap_status": "PROVISIONED",
   "course_design_status": "SOURCE_MISSING",
@@ -15,11 +15,12 @@
     "No se ha incorporado sílabo de un curso real; aprobación pedagógica M0 pendiente."
   ],
   "last_verified_commands": [
-    "RECONCILIAR: GitHub Actions 45378393829 SUCCESS y Render dep-dc2mnc49v7es73baaev0 LIVE observados mediante conectores"
+    "RECONCILIAR: GitHub Actions 45378393829 SUCCESS y Render dep-dc2mnc49v7es73baaev0 LIVE observados mediante conectores",
+    "RECONCILIAR connector-observed CI run 45511001993 deployment dep-dc31tk8473hc73bkjicg"
   ],
   "next_action": "INICIAR: incorporar sílabo y bibliografía autorizada del primer curso; presentar revisión de diseño para APROBAR_DISEÑO.",
   "render_service_id": "srv-dc06lp67bikc739hlghg",
-  "last_verified_deploy_sha": "fea0eec2466f5c4e837dddc4129b8eed2ae1d9d2",
-  "last_verified_deploy_at": "2026-11-24T10:49:31.271134Z",
-  "qa_ci_verified_sha": "fea0eec2466f5c4e837dddc4129b8eed2ae1d9d2"
+  "last_verified_deploy_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
+  "last_verified_deploy_at": "2026-11-24T23:33:45.158178Z",
+  "qa_ci_verified_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93"
 }
