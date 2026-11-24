@@ -58,6 +58,20 @@ class BranchProtectionTests(unittest.TestCase):
         self.assertEqual(self.audit(reviewers=("owner",))["status"], "BLOCKED")
         self.assertEqual(audit_rulesets([RULESET])["status"], "BLOCKED")
 
+    def test_actual_p0_review_configuration_remains_blocked(self):
+        # Current ruleset 27979930 is CI-protected, not human-review protected.
+        policy = copy.deepcopy(RULESET)
+        policy["id"] = 27979930
+        policy["rules"][0]["parameters"].update({
+            "required_approving_review_count": 0,
+            "require_code_owner_review": False,
+            "dismiss_stale_reviews_on_push": False,
+        })
+        result = self.audit(policy, reviewers=("c2melendez",))
+        self.assertEqual(result["status"], "BLOCKED")
+        self.assertIn("Required approvals", " ".join(result["errors"]))
+        self.assertIn("Independent human reviewer capacity", " ".join(result["errors"]))
+
     def test_missing_codeowners_review_fails(self):
         policy = copy.deepcopy(RULESET)
         policy["rules"][0]["parameters"]["require_code_owner_review"] = False
