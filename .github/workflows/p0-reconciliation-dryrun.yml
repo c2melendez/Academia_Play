@@ -1,0 +1,59 @@
+name: P0 - Authenticated reconciliation dry run
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Completed, successful GitHub Actions run ID for the currently deployed main commit"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: p0-reconcile-dryrun
+  cancel-in-progress: false
+
+jobs:
+  verify-provider-observation:
+    name: verify-reconciliation-dryrun
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Reject non-main dispatch
+        env:
+          TRIGGER_REF: ${{ github.ref }}
+        run: |
+          if [ "$TRIGGER_REF" != "refs/heads/main" ]; then
+            echo "::error::Run only on protected main"
+            exit 2
+          fi
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify provider credentials are configured
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          if [ -z "$RENDER_API_KEY" ]; then
+            echo "::error::RENDER_API_KEY repository secret is missing; no provider verification attempted"
+            exit 2
+          fi
+      - name: Authenticated read-only reconciliation
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          EXPECTED_HEAD: ${{ github.sha }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          python sistema-maestro/scripts/submit_reconciliation_pr.py \
+            --expected-head "$EXPECTED_HEAD" \
+            --run-id "$RUN_ID" \
+            --dry-run
+      - name: Preserve no-write scope
+        run: |
+          echo "Dry-run only: no branch, commit, PR, main update or deployment was created."
