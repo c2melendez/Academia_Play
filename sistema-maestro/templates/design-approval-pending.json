@@ -1,0 +1,14 @@
+{
+  "kind": "DESIGN_APPROVAL",
+  "status": "PENDING_REVIEW",
+  "design_revision_sha256": null,
+  "course_id": null,
+  "scope": null,
+  "requester": "agent",
+  "approver": null,
+  "approved_at": null,
+  "provenance": "NOT_VERIFIED",
+  "limitations": [
+    "Plantilla para solicitar aprobación, no es autorización ni evidencia E1"
+  ]
+}
