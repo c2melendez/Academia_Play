@@ -57,7 +57,7 @@ def review_result(pr, changed_paths, reviews, *, approved_accounts=REVIEWERS):
         failures.append("PR remains draft")
     if pr.get("state") != "open":
         failures.append("PR is not open")
-    if (pr.get("base") or {}).get("repo", {}).get("full_name", REPO) != REPO:
+    if ((pr.get("base") or {}).get("repo") or {}).get("full_name") != REPO:
         failures.append("PR target repository mismatch")
     # Last submitted review per user controls; dismissed or changes-requested
     # after an approval revoke that reviewer's approval.
