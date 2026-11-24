@@ -1,0 +1,11 @@
+{
+  "event_id": "RECONCILIAR-fea0eec2466f5c4e837dddc4129b8eed2ae1d9d2-45378393829",
+  "timestamp": "2026-11-24T10:53:49.022Z",
+  "action": "RECONCILIAR",
+  "actor": "ChatGPT-connected-GitHub-Render-observation",
+  "environment_mode": "FULL",
+  "evidence_level": "E1",
+  "summary": "Observación auténtica de CI y Render sobre SHA anterior al commit de registro; NO acredita el commit que se crea al registrar",
+  "repo_sha": "fea0eec2466f5c4e837dddc4129b8eed2ae1d9d2",
+  "result": "VERIFIED_OBSERVATION"
+}
