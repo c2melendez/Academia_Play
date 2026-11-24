@@ -2,25 +2,8 @@ name: Academia Play v4.1 — contract QA
 on:
   push:
     branches: [main]
-    paths:
-      - "sistema-maestro/**"
-      - "continuity.json"
-      - "infra/**"
-      - "web/**"
-      - "render.yaml"
-      - "PROMPT_EJECUTOR_REPOSITORIO.md"
-      - "README.md"
-      - ".github/workflows/academia-play-contracts.yml"
   pull_request:
-    paths:
-      - "sistema-maestro/**"
-      - "continuity.json"
-      - "infra/**"
-      - "web/**"
-      - "render.yaml"
-      - "PROMPT_EJECUTOR_REPOSITORIO.md"
-      - "README.md"
-      - ".github/workflows/academia-play-contracts.yml"
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
