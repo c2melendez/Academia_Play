@@ -1,0 +1,22 @@
+{
+  "result": "VERIFIED_OBSERVATION",
+  "method": "CONNECTED_PROVIDER_API_OBSERVATION_NOT_PROVIDER_EVIDENCE_SCRIPT",
+  "repository": "c2melendez/Academia_Play",
+  "service_id": "srv-dc06lp67bikc739hlghg",
+  "target_sha": "fea0eec2466f5c4e837dddc4129b8eed2ae1d9d2",
+  "workflow_run_id": "45378393829",
+  "workflow_status": "completed",
+  "workflow_conclusion": "success",
+  "workflow_url": "https://github.com/c2melendez/Academia_Play/actions/runs/45378393829",
+  "deployment_id": "dep-dc2mnc49v7es73baaev0",
+  "deployment_status": "live",
+  "deployment_sha": "fea0eec2466f5c4e837dddc4129b8eed2ae1d9d2",
+  "deployment_finished_at": "2026-11-24T10:49:31.271134Z",
+  "observed_at": "2026-11-24T10:53:49.022Z",
+  "limitations": [
+    "Historical pre-commit provider observation",
+    "No execution of persist_reconciliation.py",
+    "No branch protection administration",
+    "No curriculum design approval"
+  ]
+}
