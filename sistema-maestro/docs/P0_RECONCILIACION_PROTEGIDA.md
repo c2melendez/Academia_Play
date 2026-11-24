@@ -28,17 +28,16 @@ python sistema-maestro/scripts/submit_reconciliation_pr.py --expected-head <SHA_
 
 El modo `--dry-run` sí realiza consultas autenticadas, pero no escribe Git. En caso de `ConcurrentUpdate`, `BLOCKED` o error del proveedor, **reconsultar HEAD y CI/Render**, sin forzar un merge ni fabricar evidencia.
 
-## Estado comprobado del ruleset
+## Estado comprobado del ruleset — actualizado el 24 de noviembre de 2026
 
-Al momento de esta entrega:
+- `main.protected=true`; ruleset `27979930` activo, aplicable a `~DEFAULT_BRANCH`, sin actores de bypass.
+- PR obligatorio, sin force push ni eliminación, conversaciones resueltas y merge por squash.
+- **`contracts` sí es obligatorio** mediante `required_status_checks` con GitHub Actions; PR negativo #13 fue rechazado HTTP 405 y PR positivo #14 superó el control.
+- `required_approving_review_count=0`, `require_code_owner_review=false` y `dismiss_stale_reviews_on_push=false`. No hay revisión humana obligatoria.
+- Los PR #18 y #19 no muestran revisiones humanas; `c2melendez` es administrador pero no cuenta como segundo revisor independiente en los PR que el propio titular origina.
+- Reconciliación autenticada `DRY_RUN` demostrada en Actions #45510548306; persistencia real por conectores GitHub/Render a través del PR #19. **La publicación por el CLI de escritura `submit_reconciliation_pr.py` sigue sin validarse con credenciales reales.**
 
-- `main.protected=true`; ruleset `27979930` activo y aplicable a la rama predeterminada.
-- PR obligatorio, impedir eliminación y force push, conversaciones resueltas y squash.
-- `required_approving_review_count=0`: no hay aprobación humana obligatoria todavía.
-- Todavía **no existe** una regla `required_status_checks` para `contracts`, aunque el workflow se ejecuta en todos los PR.
-- Sigue pendiente una segunda cuenta humana autorizada para revisiones normativas independientes. No se puede simular su autorización.
-
-Configurar el status check `contracts` en [Ruleset 27979930](https://github.com/c2melendez/Academia_Play/rules/27979930) y comprobar por API que quedó obligatorio. No aumentar todavía aprobaciones sin habilitar segundo revisor.
+**No activar una aprobación obligatoria sin comprobar previamente que existe al menos otra cuenta humana con permisos de revisión, acceso vigente y voluntad de revisar.** Siguiente procedimiento: [P0 — habilitación de revisor independiente](P0_REVISOR_HUMANO_INDEPENDIENTE.md).
 
 ## Aceptación y límites
 
@@ -46,4 +45,4 @@ La suite `test_submit_reconciliation_pr.py` usa mocks para garantizar: rechazo d
 
 **Estas pruebas son E1 de ejecución de tests en CI**, no constituyen ejecución autenticada del comando contra proveedores. Esa corrida sigue pendiente y debe registrarse por separado.
 
-P0 permanece abierto hasta exigir CI en GitHub, verificar la capacidad de revisión humana y observar una ejecución real de la reconciliación protegida.
+Los controles de CI y la persistencia mediante PR protegido ya están verificados. P0 permanece abierto por la revisión humana independiente; el flujo CLI de escritura es una prueba adicional no realizada y no debe atribuirse a la ejecución basada en conectores.
