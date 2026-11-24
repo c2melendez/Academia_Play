@@ -12,7 +12,9 @@ from provider_evidence import verify_observations, observe, REPOSITORY, SERVICE_
 SHA = "a" * 40
 RUN = {
     "status": "completed", "conclusion": "success", "head_sha": SHA,
-    "repository": {"full_name": REPOSITORY}, "html_url": "https://github.com/example/actions/1"
+    "repository": {"full_name": REPOSITORY}, "html_url": "https://github.com/example/actions/1",
+    "workflow_id": 425123083, "path": ".github/workflows/academia-play-contracts.yml",
+    "event": "push", "head_branch": "main"
 }
 REPO = {"full_name": REPOSITORY, "default_branch": "main"}
 SERVICE = {"id": SERVICE_ID, "repo": f"https://github.com/{REPOSITORY}", "branch": "main"}
@@ -42,6 +44,26 @@ class ProviderEvidenceTests(unittest.TestCase):
     def test_workflow_repo_is_rejected(self):
         bad = {**RUN, "repository": {"full_name": "evil/repo"}}
         self.assertIn("workflow repository identity", " ".join(self.verify(run=bad)))
+
+    def test_unrelated_workflow_cannot_certify_contracts(self):
+        bad = {**RUN, "workflow_id": 999999}
+        self.assertIn("not the canonical contracts workflow", " ".join(self.verify(run=bad)))
+
+    def test_wrong_workflow_path_cannot_certify_contracts(self):
+        bad = {**RUN, "path": ".github/workflows/unrelated.yml"}
+        self.assertIn("not the canonical contracts workflow", " ".join(self.verify(run=bad)))
+
+    def test_pr_event_cannot_certify_deployed_main(self):
+        bad = {**RUN, "event": "pull_request"}
+        self.assertIn("must be a push on main", " ".join(self.verify(run=bad)))
+
+    def test_other_branch_cannot_certify_main(self):
+        bad = {**RUN, "head_branch": "feature"}
+        self.assertIn("must be a push on main", " ".join(self.verify(run=bad)))
+
+    def test_missing_workflow_identity_is_rejected(self):
+        bad = {key: value for key, value in RUN.items() if key != "workflow_id"}
+        self.assertIn("not the canonical contracts workflow", " ".join(self.verify(run=bad)))
 
     def test_wrong_render_service_is_rejected(self):
         self.assertIn("service identity mismatch", " ".join(self.verify(service={**SERVICE, "id": "other"})))
