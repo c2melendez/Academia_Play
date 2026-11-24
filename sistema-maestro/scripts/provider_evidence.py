@@ -16,6 +16,8 @@ from datetime import datetime, timezone
 SHA = re.compile(r"^[0-9a-f]{40}$")
 REPOSITORY = "c2melendez/Academia_Play"
 SERVICE_ID = "srv-dc06lp67bikc739hlghg"
+CONTRACTS_WORKFLOW_PATH = ".github/workflows/academia-play-contracts.yml"
+CONTRACTS_WORKFLOW_ID = 425123083
 
 
 def get_json(url, token, *, render=False):
@@ -45,6 +47,10 @@ def verify_observations(expected_sha, repo, run, render_service, deployments):
         errors.append("GitHub workflow SHA mismatch")
     if (run.get("repository") or {}).get("full_name") != REPOSITORY:
         errors.append("GitHub workflow repository identity mismatch")
+    if run.get("workflow_id") != CONTRACTS_WORKFLOW_ID or run.get("path") != CONTRACTS_WORKFLOW_PATH:
+        errors.append("GitHub run is not the canonical contracts workflow")
+    if run.get("event") != "push" or run.get("head_branch") != "main":
+        errors.append("GitHub contracts run must be a push on main")
     if render_service.get("id") != SERVICE_ID:
         errors.append("Render service identity mismatch")
     if render_service.get("repo", "").rstrip("/") != f"https://github.com/{REPOSITORY}":
