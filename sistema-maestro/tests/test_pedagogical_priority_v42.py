@@ -24,7 +24,7 @@ class PedagogicalPriorityTests(unittest.TestCase):
 
     def test_education_evidence_not_replaced_by_ci(self):
         self.assertIn("CI verde", self.prompt)
-        self.assertIn("no sustituye", self.architecture.lower())
+        self.assertIn("no aumenta", self.architecture.lower())
         self.assertIn("COURSE_PENDING", self.evidence)
         self.assertIn("NOT_VERIFIED", self.evidence)
 
