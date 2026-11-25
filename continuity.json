@@ -1,26 +1,33 @@
 {
   "schema_version": "4.1",
   "repository_full_name": "c2melendez/Academia_Play",
-  "active_branch": "main",
-  "repo_head_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
-  "last_observed_at": "2026-11-24T23:45:09.232Z",
+  "active_branch": "curriculum/mm110",
+  "repo_head_sha": "d0f420956632a75b34ec155f006fd884f90e63ce",
+  "last_observed_at": "2026-11-25T13:32:06.0326498Z",
   "environment_mode": "FULL",
   "bootstrap_status": "PROVISIONED",
-  "course_design_status": "SOURCE_MISSING",
-  "active_course_id": null,
-  "approved_design_revision": null,
-  "active_module_id": null,
-  "module_states": {},
+  "course_design_status": "DESIGN_APPROVED",
+  "active_course_id": "unah-mm110",
+  "approved_design_revision": "9988754f5897bf58ec1e3a2ce73c732f5228d03114ce267226cc0df76c38568b",
+  "active_module_id": "M0",
+  "module_states": {
+    "M0": "IN_PROGRESS"
+  },
   "active_blockers": [
-    "No se ha incorporado sílabo de un curso real; aprobación pedagógica M0 pendiente."
+    "F01 es piloto local: no existe despliegue dinámico autorizado ni autenticación institucional.",
+    "Pendientes diagnóstico F01-A/B y predicción, transferencia independiente robusta, revisión de examen y accesibilidad integral; no se acredita cierre M0.",
+    "Pendientes revisión docente y evaluación empírica; reconstrucción curricular provisional, no sílabo oficial.",
+    "Verificar inventario de reutilización y trazabilidad bibliográfica original antes de cierre."
   ],
   "last_verified_commands": [
     "RECONCILIAR: GitHub Actions 45378393829 SUCCESS y Render dep-dc2mnc49v7es73baaev0 LIVE observados mediante conectores",
-    "RECONCILIAR connector-observed CI run 45511001993 deployment dep-dc31tk8473hc73bkjicg"
+    "RECONCILIAR connector-observed CI run 45511001993 deployment dep-dc31tk8473hc73bkjicg",
+    "APROBAR_DISEÑO 9988754f5897bf58ec1e3a2ce73c732f5228d03114ce267226cc0df76c38568b: registro humano MM110_REVISION_F01.json",
+    "CI PR23 head d0f420956632a75b34ec155f006fd884f90e63ce; checkout merge e02d0b1: contract QA 45624384894 SUCCESS 203 tests; Chromium 45624384923 SUCCESS 4 tests"
   ],
-  "next_action": "INICIAR: incorporar sílabo y bibliografía autorizada del primer curso; presentar revisión de diseño para APROBAR_DISEÑO.",
+  "next_action": "Completar F01-A/B, predicción y transferencia sin exposición previa; revisar seguridad, accesibilidad y decisión de arquitectura de despliegue. Mantener M0 IN_PROGRESS hasta evidencias de gates requeridos.",
   "render_service_id": "srv-dc06lp67bikc739hlghg",
   "last_verified_deploy_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
   "last_verified_deploy_at": "2026-11-24T23:33:45.158178Z",
-  "qa_ci_verified_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93"
+  "qa_ci_verified_sha": "d0f420956632a75b34ec155f006fd884f90e63ce"
 }
