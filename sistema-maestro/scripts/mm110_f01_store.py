@@ -54,6 +54,12 @@ class Store:
     def snapshot(self, learner):
         return self._run(learner,lambda s:s.snapshot())
 
+    def guided_progress(self, learner):
+        return self._run(learner,lambda s:s.guided_progress())
+
+    def start_guided(self, learner, item_id):
+        return self._run(learner,lambda s:s.start_guided(item_id))
+
     def start(self, learner, item_id, mode):
         return self._run(learner,lambda s:s.start(item_id,mode))
 
