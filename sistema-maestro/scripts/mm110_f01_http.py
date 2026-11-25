@@ -66,6 +66,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(401,{"error":"session required"})
         if self.path == "/api/f01/items":
             return self._send(200,[{"item_id":i.item_id,"mode":i.mode,"family":i.family} for i in ITEMS])
+        if self.path == "/api/f01/guided":
+            return self._send(200,self.server.store.guided_progress(learner))
         if self.path == "/api/f01/progress":
             s = self.server.store.snapshot(learner)
             return self._send(200,{"mastery_estimate":s["mastery_estimate"],"evidence_count":len(s["mastery_evidence"]),"access_granted":bool(s["access_grants"])})
@@ -99,6 +101,8 @@ class Handler(BaseHTTPRequestHandler):
             store = self.server.store
             if self.path == "/api/f01/start" and set(data)=={"item_id","mode"}:
                 result = store.start(learner,data["item_id"],data["mode"])
+            elif self.path == "/api/f01/guided/start" and set(data)=={"item_id"}:
+                result = store.start_guided(learner,data["item_id"])
             elif self.path == "/api/f01/hint" and set(data)=={"attempt_id","index"}:
                 result = store.request_hint(learner,data["attempt_id"],data["index"])
             elif self.path == "/api/f01/submit" and set(data)=={"attempt_id","answer","reason_choice"}:
