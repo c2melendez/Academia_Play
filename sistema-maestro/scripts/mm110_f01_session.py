@@ -1,22 +1,38 @@
 """F01 session controller. Server-owned in-memory state; persistence adapter pending."""
 from copy import deepcopy
 from uuid import uuid4
+from datetime import datetime, timezone
+from threading import RLock
+from functools import wraps
 from mm110_f01_activities import INDEX, public_item, hint, assess
 from progress_policy import derive_mastery, validate_invariants
 
 RULE = {"distinct_variant_families":2,"requires_transfer":True,"unassisted_required":True}
 
+def utc_now():
+    return datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
+
+def locked(method):
+    @wraps(method)
+    def wrapped(self,*args,**kwargs):
+        with self._lock:
+            return method(self,*args,**kwargs)
+    return wrapped
+
 class Session:
     def __init__(self, user_id):
+        self._lock = RLock()
         self._state = {"user_id":user_id,"institution_id":"unah","course_version":"f01-r3",
                        "node_id":"mm110-f01","mastery_rule":dict(RULE),"access_grants":[],
                        "mastery_evidence":[],"review_events":[],"mastery_estimate":"UNASSESSED",
-                       "updated_at":"2026-11-25T00:00:00Z"}
+                       "updated_at":utc_now()}
         self._attempts = {}
 
+    @locked
     def snapshot(self):
         return deepcopy(self._state)
 
+    @locked
     def start(self,item_id,mode):
         item = INDEX[item_id]
         if item.mode != mode:
@@ -25,6 +41,7 @@ class Session:
         self._attempts[key] = {"item":item_id,"assisted":False,"closed":False}
         return {"attempt_id":key,**public_item(item_id)}
 
+    @locked
     def request_hint(self,attempt_id,index):
         a = self._attempts[attempt_id]
         if a["closed"]:
@@ -33,6 +50,7 @@ class Session:
         a["assisted"] = True
         return result
 
+    @locked
     def submit(self,attempt_id,answer,reason_choice):
         a = self._attempts[attempt_id]
         if a["closed"]:
@@ -50,6 +68,7 @@ class Session:
             public = result
             if result["eligible_evidence"]:
                 role = "TRANSFER" if item.family == "contextual" else "PRACTICE"
+                self._state["updated_at"] = utc_now()
                 self._state["mastery_evidence"].append({
                     "evidence_id":attempt_id,"variant_family":item.family,"role":role,
                     "oracle_result":"VERIFIED","assisted":False,"idempotency_key":attempt_id})
