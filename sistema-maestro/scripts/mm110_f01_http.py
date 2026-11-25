@@ -48,6 +48,17 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self._host_ok():
             return self._send(403,{"error":"host"})
+        if self.path in ("/", "/f01"):
+            raw = (Path(__file__).resolve().parents[1] / "pilot" / "mm110_f01.html").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(raw)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
+            self.end_headers()
+            self.wfile.write(raw)
+            return
         if self.path == "/api/f01/health":
             return self._send(200,{"status":"local-pilot"})
         learner = self._learner()
