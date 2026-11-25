@@ -14,7 +14,7 @@ class PedagogicalPriorityTests(unittest.TestCase):
         cls.evidence = (SYSTEM / "docs/EVIDENCE_REGISTER.md").read_text(encoding="utf-8")
 
     def test_version_and_priority(self):
-        self.assertEqual((SYSTEM / "VERSION").read_text(encoding="utf-8").strip(), "4.2.0")
+        self.assertEqual((SYSTEM / "VERSION").read_text(encoding="utf-8").strip(), "4.3.0")
         for word in ("currículo", "Fundamentos", "investigación", "Brilliant.org", "transferencia"):
             self.assertIn(word.casefold(), self.prompt.casefold())
 
