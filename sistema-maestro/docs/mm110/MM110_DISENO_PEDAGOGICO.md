@@ -12,3 +12,28 @@
 - M9 Exponenciales y logaritmos: crecimiento interactivo / comparar modelos / problemas contextualizados (sin simulación).
 
 M0 F01: diagnóstico, predicción, área positiva, distributividad formal, signos negativos, ayudas decrecientes, transferencia inversa y repaso. Oráculo independiente por coeficientes exactos sobre polinomios reales; entrada inválida REJECTED, fallo de cómputo INCONCLUSIVE. No usar muestreo como prueba de identidad. Ruta, Tutor y Examen con ítems separados. Acceso permanente y dominio variable; teclado y alternativa textual. Hipótesis: puente visual más práctica simbólica mejora transferencia; evaluar frente a ejemplo guiado. Evidencia disciplinar, comparación detallada, registry, pruebas y revisión exacta pendientes. No implementar M0 antes de APROBAR_DISEÑO y migración contractual.
+
+## Especificación F01 r2 — borrador E3
+
+Target curricular: transformar expresiones polinómicas mediante propiedades de los reales (M1/C2); M0 F01 es el apoyo habilitante, no un resultado oficial independiente. Fuentes: Swokowski 13 p. 4 y Sullivan Algebra & Trigonometry 11 pp. 10,16; ver matriz. Dominio: polinomios en x con coeficientes racionales exactos, evaluados sobre R; sin divisiones por expresiones variables, funciones ni exponentes no enteros en este corte.
+
+### Alternativas F01
+| Diseño | Beneficio esperado | Riesgo/carga | Accesibilidad/costo | Decisión |
+|---|---|---|---|---|
+| A área positiva con predicción | conecta producto con suma de áreas | no representa negativos literalmente | tabla y texto equivalentes; SVG sencillo | puente breve opcional |
+| B detectar y reparar equivalencias | exige explicar términos omitidos y signos | selección por descarte | teclado; costo bajo | práctica autónoma con justificación |
+| C ejemplo simbólico trabajado y retiro de ayudas | generaliza a signos y fracciones | copia mecánica si ayudas permanentes | texto matemático accesible; costo bajo | ruta principal después de A, alternativa completa sin simulación |
+
+Hipótesis pendiente: A+C frente a C solo mejora transferencia a expresiones nuevas sin aumentar errores de signos; comparar aciertos sin ayuda y tiempo, no XP. No se afirma eficacia empírica. Registro científico disciplinar pendiente.
+
+### Secuencia y ejemplos originales
+1. Diagnóstico: comparar 4(2+5) con 4*2+5 y explicar; hipótesis de omisión si elige igualdad, no diagnóstico definitivo.
+2. Predicción antes de mostrar áreas: rectángulo de altura 3 y ancho x+4, x>0; identificar dos productos. Alternativa textual: tres grupos, cada uno con x+4 elementos simbólicos.
+3. Formalización: a(b+c)=ab+ac para reales; explicar que el modelo de áreas solo cubre magnitudes positivas. Ejemplo simbólico -3(2x-5)=-6x+15; pistas por signo y término.
+4. Familia A: expandir 7(2x-3) a 14x-21 sin pistas reveladoras. Familia B: detectar y reparar la falsa identidad 5(x-4)=5x-4, justificando término constante -20. Transferencia independiente: una cuota de 8 por cada una de x unidades más 8 por cada una de 6 unidades; representar total como producto y suma, justificar equivalencia. Examen: banco separado, por ejemplo expansión con factor racional y verificación de una identidad diferente. No reutilizar ítems de transferencia.
+5. Remediación: omisión → marcar cada término; signo → multiplicación de números con signo; confusión identidad/ejemplo → contraejemplo y normalización. Pistas graduadas: señalar, regla, ejemplo distinto, solución; última marca assisted=true. Repaso voluntario y recuperación posterior.
+
+### Oráculo y aceptación previstos
+Normalizar AST permitido a mapa exponente→coeficiente racional exacto; comparar mapas sin ceros. Gramática cerrada, límites de longitud, profundidad, grado y magnitud; sin eval. VERIFIED si igualdad exacta, REJECTED si desigualdad demostrada o entrada fuera de gramática (distinguir motivo, no penalizar error de formato como brecha conceptual), INCONCLUSIVE ante agotamiento o fallo interno; no otorgar dominio ni restar puntos. Positivos: 7(2x-3) vs 14x-21; negativos: 5(x-4) vs 5x-4; identidad falsa que coincide en un punto: x² vs x; caso de límite de cómputo simulado por inyección de fallo. Oráculo independiente del generador. Justificación conceptual evaluada por rúbrica explícita, no solo igualdad de coeficientes.
+
+Dominio provisional: dos familias distintas y transferencia sin ayuda, con evidencia VERIFIED y justificación suficiente. Acceso desbloqueado monotónico; dominio revisable; eventos idempotentes; no datos personales en repo. Ruta/Tutor/Lab/Examen comparten objetivo y oráculo, no ítems. Teclado, lector de pantalla, alternativa tabular y textual, diseño móvil; pruebas E2E, persistencia y revisión humana pendientes. No se inicia implementación curricular. Registry y decisión REUSE/EXTEND/CREATE pendientes de inspección.
