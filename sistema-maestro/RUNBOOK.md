@@ -95,3 +95,13 @@ Este apartado aplica a todos los comandos existentes y no introduce nuevos coman
 - **Cierre**: responder expresamente «qué podrá comprender o resolver ahora el estudiante», con enlace a experiencia implementada o `NOT_IMPLEMENTED`, además de logs, SHA, gates y próxima acción.
 
 **Compatibilidad:** `CONSTITUCION.md`, `GATES.md` y `schemas/` v4.1 mantienen la autoridad y validez existentes. El mapa de fundamentos de v4.2 es **contrato de diseño** hasta migración de schema aprobada y respaldada por pruebas; no añadir campos incompatibles a un manifiesto certificado. La revisión humana docente/empírica, seguridad, permisos, copyright y oráculos independientes permanecen íntegros.
+
+## Política v4.3 — INICIAR y AGREGAR_CURSO sin sílabo aportado
+
+**No redefine comandos ni elimina validaciones.** En `INICIAR` y `AGREGAR_CURSO`, si el usuario proporciona institución + nombre/código de asignatura, iniciar investigación autónoma de programa oficial y reconstrucción aun sin archivo de sílabo. Solicitar y contrastar los libros que aporte el humano, autor/edición, pero no bloquear la búsqueda previa por ausencia de éstos.
+
+**Orden:** búsqueda institucional exhaustiva → fuentes docentes/históricas y de intercambio → equivalencia interuniversitaria por profundidad y resultados (no títulos) → extracción de afirmaciones y fuentes independientes → matriz de trazabilidad y discrepancias → programa `RECONSTRUCTED_PROPOSED` o `RESEARCH_INSUFFICIENT` → mapa fundacional y tres alternativas pedagógicas por familia → revisión humana y `APROBAR_DISEÑO` exacto antes de implementar M0 curricular. Rutas y límites: `docs/RECONSTRUCCION_CURRICULAR_v4_3.md`.
+
+**Expediente estructurado:** `schemas/reconstructed_curriculum.schema.json`, comprobado con `scripts/validate_reconstructed_curriculum.py`. Mantener `continuity.json` y manifiestos vigentes retrocompatibles; no insertar sílabo ficticio para satisfacer `course.syllabus_source_id`. Si el currículo es adoptado para la plataforma, preparar después una migración contractual específica con pruebas antes de crear el manifiesto del curso. La autorización humana para usar una reconstrucción no otorga oficialidad institucional, ni sustituye revisiones académicas posteriores.
+
+**Cierre prioritario:** próxima acción pedagógica concreta (curso, fuente aún no inspeccionada o libro solicitado, unidad y fundamento), no repetición de gobernanza técnica que ya está sana.
