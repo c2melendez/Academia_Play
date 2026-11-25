@@ -168,7 +168,7 @@
         }
       ],
       "cognitive_operation": "Predecir, expandir, reparar, factorizar y transferir",
-      "scenario": "PLAN: diagnóstico de signos, agrupación, distribución, reparación y transferencia; área positiva opcional",
+      "scenario": "Piloto local: signos y fracciones, agrupación y predicción, expansión, reparación, factorización y transferencia. Fundamentos excluidos de dominio por controlador.",
       "expected_reasoning": "Multiplicar cada término, conservar signos y justificar equivalencia general",
       "oracle_id": "mm110-poly-q-exact",
       "feedback_by_error": [
@@ -198,10 +198,38 @@
       "difficulty_rubric": "De factores positivos a negativos y racionales, reparación e inversión; no variar solo constantes",
       "transfer_variant_id": "f01-v-transfer",
       "accessibility_fallback": "Texto y tabla equivalentes, teclado y lector de pantalla",
-      "evidence_rationale": "E3; diseño r3 aprobado, eficacia no evaluada; todos los IDs de pruebas, ítems y oráculos son planificados",
+      "evidence_rationale": "Diseño r3 aprobado. CI anterior verifica integración HTTP y Chromium; fundamentos implementados con pruebas específicas pendientes de ejecución. No se afirma eficacia empírica ni secuencia obligatoria.",
       "interaction_type": "SYMBOLIC_WITH_OPTIONAL_AREA",
-      "revision": "r3-planned",
+      "revision": "r3-pilot",
       "variants": [
+        {
+          "variant_id": "f01-v-a-sign-positive",
+          "family": "foundation-sign",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-a-sign-positive"
+        },
+        {
+          "variant_id": "f01-v-a-fraction-negative",
+          "family": "foundation-fraction",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-a-fraction-negative"
+        },
+        {
+          "variant_id": "f01-v-b-predict",
+          "family": "foundation-prediction",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-b-predict"
+        },
+        {
+          "variant_id": "f01-v-b-group",
+          "family": "foundation-grouping",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-b-group"
+        },
         {
           "variant_id": "f01-v-expand",
           "family": "expansion",
@@ -240,6 +268,10 @@
       ],
       "mode_item_ids": {
         "learning_path": [
+          "f01-a-sign-positive",
+          "f01-a-fraction-negative",
+          "f01-b-predict",
+          "f01-b-group",
           "f01-route-expand",
           "f01-route-repair",
           "f01-route-transfer"
@@ -268,7 +300,7 @@
         "test-f01-progress",
         "test-f01-accessibility"
       ],
-      "status": "PLANNED"
+      "status": "IN_PROGRESS"
     }
   ],
   "routes": [
