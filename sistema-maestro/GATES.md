@@ -48,3 +48,9 @@ Los gates se escogen por **impacto técnico y educativo** (análisis de diferenc
 El gate debe declarar `gate_id, module_id, input_hash, acceptance_revision, evidence_level, commands, logs, observed_at, reviewer, limitations, result` y SHA/CI/deployment cuando aplique. `input_hash` y `acceptance_revision` identifican exactamente la implementación bajo revisión. Nunca rellenar logs, fechas, SHA ni firma docente ficticios para lograr verde.
 
 Las pruebas de accesibilidad automatizadas no demuestran WCAG completa. Un gate `PASS` **no** puede esconder en `limitations` auth, sandbox, secretos, o pruebas imprescindibles no realizadas. Esas ausencias producen `BLOCKED`/`NOT_RUN` o un gate separado; no `PASS` parcial.
+
+## Criterios de procedencia curricular v4.3
+
+`G-SOURCE` distingue fuente institucional confirmada, reconstrucción documental e inferencia; una propuesta `RECONSTRUCTED_PROPOSED` **no** adquiere `DOC_PASS` como sílabo oficial por sí sola. La validación estructural del expediente `reconstructed_curriculum.schema.json` y su validador no demuestran autenticidad, exhaustividad ni independencia reales de los documentos. Un programa adoptado por decisión humana explícita puede habilitar el **diseño para la plataforma** bajo alcance y limitaciones declarados; no se certifica la cobertura oficial de la universidad si no existe evidencia institucional suficiente.
+
+`G-CURRICULUM` debe conservar la matriz de afirmaciones/fuentes, discrepancias, fundamentos y profundidad; `G-DESIGN` sigue exigiendo `APROBAR_DISEÑO` con revisión exacta. Los gates técnicos/empíricos existentes no se modifican; la investigación preliminar puede avanzar con `SOURCE_MISSING` sin convertirlo en `PASS`. Los manifiestos de cursos reconstruidos requieren migración explícita del contrato `syllabus_source_id`, sin crear fuentes oficiales ficticias.
