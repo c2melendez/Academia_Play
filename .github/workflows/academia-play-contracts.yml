@@ -1,4 +1,4 @@
-name: Academia Play v4.1 — contract QA
+name: Academia Play — contract QA
 on:
   push:
     branches: [main]
@@ -26,6 +26,8 @@ jobs:
           git diff --exit-code -- sistema-maestro/schemas
       - name: Run positive and negative contract tests
         run: python -m unittest discover -s sistema-maestro/tests -v
+      - name: Validate synthetic v4.3 reconstructed curriculum dossier
+        run: python sistema-maestro/scripts/validate_reconstructed_curriculum.py sistema-maestro/examples/reconstructed_curriculum_synthetic.json
       - name: Validate example manifest
         run: python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/examples/manifest.json
       - name: Validate example progress
