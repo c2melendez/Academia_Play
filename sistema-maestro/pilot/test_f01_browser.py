@@ -96,5 +96,44 @@ class BrowserF01(unittest.TestCase):
         expect(self.page.get_by_role("group",name=self.page.locator("#reason").inner_text())).to_be_visible()
         self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
 
+    def test_guided_complete_and_reload(self):
+        self.page.locator("#mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Etapa A")
+        self.assertEqual(400,self.page.evaluate("""async () => (await fetch('/api/f01/guided/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item_id:'f01-route-transfer'})})).status"""))
+        cases = [
+            ("f01-a-sign-positive","15",0,"A"),
+            ("f01-a-fraction-negative","-3/2",1,"B"),
+            ("f01-b-group","28",1,"B"),
+            ("f01-b-predict","4x+12",2,"C"),
+            ("f01-route-expand","14x-21",1,"C"),
+            ("f01-route-repair","5x-20",0,"C"),
+            ("f01-tutor-inverse","6(3x-2)",0,"T"),
+            ("f01-route-transfer","8x+48",1,"COMPLETE"),
+        ]
+        for item,expression,reason,stage in cases:
+            self.choose(item)
+            self.answer(expression,reason)
+            expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+            expect(self.page.locator("#guided-status")).to_contain_text("Ruta completada" if stage=="COMPLETE" else "Etapa "+stage)
+            if stage!="COMPLETE":
+                expect(self.page.locator("#start")).to_be_enabled()
+        expect(self.page.locator("#start")).to_be_disabled()
+        self.page.reload()
+        expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
+        self.page.locator("#mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Ruta completada")
+        expect(self.page.locator("#start")).to_be_disabled()
+
+    def test_guided_assistance_does_not_unlock(self):
+        self.page.locator("#mode").select_option("guided")
+        self.choose("f01-a-sign-positive")
+        self.page.locator("#hint").click()
+        expect(self.page.locator("#feedback")).to_contain_text("intento asistido")
+        expect(self.page.locator("#submit")).to_be_enabled()
+        self.answer("15",0)
+        expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+        expect(self.page.locator("#guided-status")).to_contain_text("0/8")
+        expect(self.page.locator("#start")).to_be_enabled()
+
 if __name__=="__main__":
     unittest.main()
