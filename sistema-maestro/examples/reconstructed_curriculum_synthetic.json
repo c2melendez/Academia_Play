@@ -1,0 +1,70 @@
+{
+  "schema_version": "4.3",
+  "university": "Universidad de demostración (NO UNAH)",
+  "course_name": "Curso demostrativo",
+  "course_code": "DEM-101",
+  "period_scope": "Período sintético",
+  "provenance": "RECONSTRUCTED_PROPOSED",
+  "adoption_status": "PENDING_HUMAN_APPROVAL",
+  "sources": [
+    {
+      "source_id": "s1",
+      "title": "Fuente sintética s1",
+      "url": "https://example.org/s1",
+      "source_type": "COURSE_DOCUMENT",
+      "access_status": "OPENED",
+      "observed_at": "2026-11-25T00:00:00Z",
+      "origin_id": "origin-1",
+      "inspected_sections": [
+        "sección sintética A"
+      ],
+      "publication_period": null
+    },
+    {
+      "source_id": "s2",
+      "title": "Fuente sintética s2",
+      "url": "https://example.org/s2",
+      "source_type": "ACADEMIC",
+      "access_status": "OPENED",
+      "observed_at": "2026-11-25T00:00:00Z",
+      "origin_id": "origin-2",
+      "inspected_sections": [
+        "sección sintética A"
+      ],
+      "publication_period": null
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "c1",
+      "text": "Competencia demostrativa no institucional",
+      "classification": "DOCUMENT_CORROBORATED",
+      "source_ids": [
+        "s1",
+        "s2"
+      ],
+      "contradictions": [],
+      "confidence_rationale": "Dos fuentes de origen independiente simuladas para comprobar estructura",
+      "is_core": true
+    }
+  ],
+  "units": [
+    {
+      "unit_id": "u1",
+      "title": "Unidad de prueba",
+      "claim_ids": [
+        "c1"
+      ],
+      "foundation_notes": "Prerrequisitos sintéticos, sin evidencia de curso real"
+    }
+  ],
+  "variations": [],
+  "unresolved_questions": [
+    "Pendiente investigación real"
+  ],
+  "comparison_notes": [],
+  "books_pending": [
+    "Libro/edición real del usuario"
+  ],
+  "research_notes": "Únicamente fixture sintético para QA; no valida currículo ni acceso web."
+}
