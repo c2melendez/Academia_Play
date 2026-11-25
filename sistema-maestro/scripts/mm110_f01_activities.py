@@ -20,6 +20,34 @@ class Item:
     required_form: str = "equivalent"
 
 ITEMS = (
+    Item("f01-a-sign-positive","learning_path","foundation-sign",
+         "Calcula (-3)*(-5). Escribe el resultado como número entero.","15",
+         "¿Por qué el resultado tiene ese signo?",
+         ("Dos factores negativos producen un positivo","Todo producto es negativo","Se suman los factores"),0,
+         ("Compara los signos de ambos factores.","Multiplica sus valores absolutos; signos iguales dan positivo."),
+         "Los signos son iguales y 3*5=15; el producto es positivo.",
+         (("-15","f01-sign"),),"number"),
+    Item("f01-a-fraction-negative","learning_path","foundation-fraction",
+         "Calcula (-2/3)*(9/4). Escribe una fracción equivalente al resultado.","-3/2",
+         "¿Cómo se determina el producto?",
+         ("Se suman numeradores y denominadores","Se multiplican numeradores y denominadores; signos distintos dan negativo","Se cambia el signo a positivo"),1,
+         ("Determina primero el signo.","Multiplica 2 por 9 y 3 por 4; simplifica."),
+         "El producto es -18/12=-3/2, porque los factores tienen signos distintos.",
+         (("3/2","f01-sign"),),"number"),
+    Item("f01-b-predict","learning_path","foundation-prediction",
+         "Antes de ver el resultado, predice la suma que representa 4 grupos de x+3 unidades.","4x+12",
+         "¿Qué productos representan los dos grupos de términos?",
+         ("4*x y 3","x y 4*3","4*x y 4*3"),2,
+         ("Identifica las dos cantidades dentro de cada grupo.","Multiplica cada cantidad por 4."),
+         "Cada uno de los cuatro grupos aporta x y 3 unidades: 4x+12.",
+         (("4x+3","f01-omit"),),"expanded"),
+    Item("f01-b-group","learning_path","foundation-grouping",
+         "Calcula 4(2+5) y escribe su valor entero.","28",
+         "¿Cuál es una descomposición equivalente?",
+         ("4*2+5","4*2+4*5","4+2+5"),1,
+         ("Cuenta los elementos en cuatro grupos de siete.","Distribuye 4 sobre 2 y sobre 5."),
+         "Cuatro grupos de siete contienen 28 elementos; 8+20=28.",
+         (("13","f01-omit"),),"number"),
     Item("f01-route-expand","learning_path","expansion",
          "Desarrolla 7(2x-3). Escribe el polinomio sin paréntesis.","14x-21",
          "¿Qué operación justifica tu resultado?",
@@ -61,6 +89,8 @@ INDEX = {i.item_id:i for i in ITEMS}
 def _form_ok(item, answer):
     import re
     s = answer.strip().replace("−","-")
+    if item.required_form == "number":
+        return bool(re.fullmatch(r"[+-]?[0-9]+(?:/[0-9]+)?",s))
     if item.required_form == "expanded":
         # F01 linear expanded form: signed integer/rational monomials and constant.
         return bool(re.fullmatch(r"[+-]?\s*(?:[0-9]+(?:/[0-9]+)?\s*)?x\s*[+-]\s*[0-9]+(?:/[0-9]+)?",s)
@@ -108,10 +138,10 @@ def assess(item_id, answer, reason_choice, assisted=False):
                 diagnostic = code
                 break
         feedback = {"f01-omit":"Revisa si multiplicaste cada sumando por el factor exterior.",
-                    "f01-sign":"Revisa la regla de signos de cada producto."}.get(diagnostic,"Compara los coeficientes de cada potencia; revisa la distribución.")
+                    "f01-sign":"Revisa la regla de signos de cada producto."}.get(diagnostic,"Revisa los productos y las operaciones indicadas.")
     # Exam feedback must be deferred by the future exam controller. This
     # function is internal only, not a public HTTP endpoint.
     return {"oracle_status":verdict.status,"oracle_reason":verdict.reason,
             "accepted":accepted,"reasoning_correct":reason_ok,"assisted":assisted,
-            "eligible_evidence":accepted and not assisted and i.mode!="exam_preparation",
+            "eligible_evidence":accepted and not assisted and i.mode!="exam_preparation" and not i.family.startswith("foundation-"),
             "diagnostic_hypothesis":diagnostic,"feedback":feedback}
