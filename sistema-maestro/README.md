@@ -1,4 +1,4 @@
-# Academia Play — Sistema Maestro v4.1
+# Academia Play — Sistema Maestro v4.2
 
 **Fuente normativa vigente de Academia Play.** El repositorio GitHub `c2melendez/Academia_Play` y su rama predeterminada prevalecen sobre adjuntos de chats y archivos históricos.
 
@@ -33,3 +33,6 @@ python sistema-maestro/scripts/validate_academia_play.py sistema-maestro/example
 ```
 
 La aprobación estructural no demuestra exactitud de un motor científico, resultados de aprendizaje, validez académica ni despliegue.
+
+## Prioridad pedagógica v4.2
+Consultar [arquitectura de fundamentos](docs/ARQUITECTURA_PEDAGOGICA_FUNDACIONAL_v4_2.md) y [registro de evidencia](docs/EVIDENCE_REGISTER.md). Primero sílabo y fundamentos, luego experiencia interactiva vertical; los controles técnicos se mantienen proporcionales y no sustituyen el producto.
