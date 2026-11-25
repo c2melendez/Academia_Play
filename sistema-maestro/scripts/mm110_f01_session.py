@@ -7,6 +7,13 @@ from functools import wraps
 from mm110_f01_activities import INDEX, public_item, hint, assess
 from progress_policy import derive_mastery, validate_invariants
 
+GUIDED_STAGES = (
+    ("f01-a-sign-positive", "f01-a-fraction-negative"),
+    ("f01-b-group", "f01-b-predict"),
+    ("f01-route-expand", "f01-route-repair", "f01-tutor-inverse"),
+    ("f01-route-transfer",),
+)
+
 RULE = {"distinct_variant_families":2,"requires_transfer":True,"unassisted_required":True}
 
 def utc_now():
@@ -31,6 +38,26 @@ class Session:
     @locked
     def snapshot(self):
         return deepcopy(self._state)
+
+    @locked
+    def guided_progress(self):
+        completed = {a["item"] for a in self._attempts.values()
+                     if a.get("guided") and a.get("closed")
+                     and a.get("assessment", {}).get("accepted")
+                     and not a.get("assisted")}
+        for stage, ids in enumerate(GUIDED_STAGES):
+            pending = [i for i in ids if i not in completed]
+            if pending:
+                return {"stage": "ABCT"[stage], "pending": pending, "completed": sorted(completed)}
+        return {"stage": "COMPLETE", "pending": [], "completed": sorted(completed)}
+
+    @locked
+    def start_guided(self,item_id):
+        if item_id not in self.guided_progress()["pending"]:
+            raise ValueError("Guided prerequisite not satisfied")
+        result = self.start(item_id, INDEX[item_id].mode)
+        self._attempts[result["attempt_id"]]["guided"] = True
+        return result
 
     @locked
     def start(self,item_id,mode):
