@@ -7,10 +7,11 @@ import tempfile
 import threading
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 from mm110_f01_http import PilotServer
 from mm110_f01_store import Store
-from mm110_f01_staging import configuration, deployment_commit
+from mm110_f01_staging import configuration, deployment_commit, build_store
 
 class StagingTests(unittest.TestCase):
     def setUp(self):
@@ -88,3 +89,27 @@ class StagingTests(unittest.TestCase):
                 deployment_commit({"RENDER":"true","RENDER_GIT_COMMIT":invalid})
         with self.assertRaises(ValueError):
             deployment_commit({"RENDER":"true"})
+
+    def test_postgres_launcher_requires_no_disk_and_rejects_missing_config(self):
+        env={"F01_STORAGE_BACKEND":"postgres","F01_DATABASE_URL":"synthetic-ci-dsn",
+             "F01_STAGING_ORIGIN":self.origin,"F01_STAGING_ACCESS":self.secret,
+             "RENDER":"true","PORT":"12345"}
+        self.assertEqual((12345,None,self.origin,self.secret),configuration(env))
+        for key in ("F01_DATABASE_URL","F01_STAGING_ORIGIN","F01_STAGING_ACCESS"):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                configuration({k:v for k,v in env.items() if k!=key})
+        for changes in ({"F01_STORAGE_BACKEND":"unknown"},{"PORT":"0"},{"PORT":"65536"}):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                configuration({**env,**changes})
+
+    def test_postgres_startup_probes_database_and_propagates_failure(self):
+        env={"F01_STORAGE_BACKEND":"postgres","F01_DATABASE_URL":"synthetic-ci-dsn"}
+        with patch("mm110_f01_staging.PostgresStore") as factory:
+            store=factory.return_value
+            self.assertIs(store,build_store(env,None))
+            factory.assert_called_once_with("synthetic-ci-dsn")
+            store.token_count.assert_called_once_with()
+            store.token_count.side_effect=ConnectionError("synthetic outage")
+            with self.assertRaises(ConnectionError):
+                build_store(env,None)
+        self.assertIsInstance(build_store({},self.root/"another.sqlite"),Store)
