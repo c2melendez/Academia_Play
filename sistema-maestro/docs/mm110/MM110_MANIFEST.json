@@ -198,7 +198,7 @@
       "difficulty_rubric": "De factores positivos a negativos y racionales, reparación e inversión; no variar solo constantes",
       "transfer_variant_id": "f01-v-transfer",
       "accessibility_fallback": "Texto y tabla equivalentes, teclado y lector de pantalla",
-      "evidence_rationale": "Diseño r3 aprobado. CI previo b27d976: contract 45748739563 y Chromium 45748739591 SUCCESS. Ruta guiada, ocho variantes de transferencia y reserva implementadas. Concesión de nuevos accesos exige MASTERED y ruta COMPLETE; accesos anteriores conservados. Pruebas de política actualizadas pendientes de CI. Eficacia empírica no evaluada.",
+      "evidence_rationale": "Diseño r3 aprobado; CI 15020fb contract 45768886699 y Chromium 45768886690 SUCCESS. Seis variantes C añadidas; resolución guiada inédita por familia exigida; agotamiento explícito. CI de ampliación pendiente. Eficacia empírica no evaluada.",
       "interaction_type": "SYMBOLIC_WITH_OPTIONAL_AREA",
       "revision": "r3-pilot",
       "variants": [
@@ -313,6 +313,48 @@
           "representation": "VERBAL",
           "role": "TRANSFER",
           "item_id": "f01-transfer-reserve-sharing"
+        },
+        {
+          "variant_id": "f01-v-c-expand-negative",
+          "family": "expansion",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-expand-negative"
+        },
+        {
+          "variant_id": "f01-v-c-expand-rational",
+          "family": "expansion",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-expand-rational"
+        },
+        {
+          "variant_id": "f01-v-c-repair-sign",
+          "family": "repair",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-repair-sign"
+        },
+        {
+          "variant_id": "f01-v-c-repair-rational",
+          "family": "repair",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-repair-rational"
+        },
+        {
+          "variant_id": "f01-v-c-inverse-negative",
+          "family": "inverse",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-inverse-negative"
+        },
+        {
+          "variant_id": "f01-v-c-inverse-rational",
+          "family": "inverse",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-inverse-rational"
         }
       ],
       "mode_item_ids": {
@@ -330,10 +372,16 @@
           "f01-transfer-reserve-fuel",
           "f01-transfer-reserve-temperature",
           "f01-transfer-reserve-scale",
-          "f01-transfer-reserve-sharing"
+          "f01-transfer-reserve-sharing",
+          "f01-c-expand-negative",
+          "f01-c-expand-rational",
+          "f01-c-repair-sign",
+          "f01-c-repair-rational"
         ],
         "practice_tutor": [
-          "f01-tutor-inverse"
+          "f01-tutor-inverse",
+          "f01-c-inverse-negative",
+          "f01-c-inverse-rational"
         ],
         "exam_preparation": [
           "f01-exam-rational"
