@@ -70,3 +70,6 @@ class Store:
         if not isinstance(answer,str) or len(answer)>256 or type(reason_choice) is not int or not 0<=reason_choice<=2:
             raise ValueError("Invalid submission format")
         return self._run(learner,lambda s:s.submit(attempt_id,answer,reason_choice))
+
+    def finish_exam(self, learner, attempt_id):
+        return self._run(learner,lambda s:s.finish_exam(attempt_id))
