@@ -192,3 +192,9 @@ class Session:
                 "feedback": assessment["feedback"],
             }
         return deepcopy(a["exam_review"])
+
+    @locked
+    def exam_history(self):
+        """Only explicitly finished reviews; never disclose pending answers."""
+        return [{"attempt_id":key, **deepcopy(a["exam_review"])}
+                for key,a in self._attempts.items() if "exam_review" in a][-50:][::-1]
