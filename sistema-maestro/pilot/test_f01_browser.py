@@ -65,7 +65,8 @@ class BrowserF01(unittest.TestCase):
             expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
         expect(self.page.locator("#progress")).to_contain_text("Dominio inicial acreditado")
         self.page.reload()
-        expect(self.page.locator("#progress")).to_contain_text("Acceso conservado")
+        expect(self.page.locator("#progress")).to_contain_text("Dominio inicial acreditado")
+        expect(self.page.locator("#progress")).not_to_contain_text("Acceso conservado")
 
     def test_hint_excludes_evidence(self):
         self.choose("f01-route-expand")
@@ -118,10 +119,12 @@ class BrowserF01(unittest.TestCase):
             if stage!="COMPLETE":
                 expect(self.page.locator("#start")).to_be_enabled()
         expect(self.page.locator("#start")).to_be_disabled()
+        expect(self.page.locator("#progress")).to_contain_text("Acceso conservado")
         self.page.reload()
         expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
         self.page.locator("#mode").select_option("guided")
         expect(self.page.locator("#guided-status")).to_contain_text("Ruta completada")
+        expect(self.page.locator("#progress")).to_contain_text("Acceso conservado")
         expect(self.page.locator("#start")).to_be_disabled()
 
     def test_guided_assistance_does_not_unlock(self):
