@@ -203,5 +203,63 @@ class BrowserF01(unittest.TestCase):
         self.page.locator("#mode").select_option("learning_path")
         expect(self.page.locator("#exam-result")).to_be_hidden()
 
+    def prepare_c(self):
+        self.page.locator("#mode").select_option("guided")
+        for item,answer,reason,stage in [
+            ("f01-a-sign-positive","15",0,"A"),
+            ("f01-a-fraction-negative","-3/2",1,"B"),
+            ("f01-b-group","28",1,"B"),
+            ("f01-b-predict","4x+12",2,"C"),
+        ]:
+            self.choose(item)
+            self.answer(answer,reason)
+            expect(self.page.locator("#guided-status")).to_contain_text("Etapa "+stage)
+            expect(self.page.locator("#start")).to_be_enabled()
+
+    def test_remediation_complete_and_reload(self):
+        self.prepare_c()
+        self.choose("f01-route-expand")
+        self.answer("14x-3",1)
+        expect(self.page.locator("#feedback")).to_contain_text("Revisa si multiplicaste")
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 0")
+        expect(self.page.locator("#item option[value='f01-c-expand-negative']")).to_have_count(1)
+        expect(self.page.locator("#item option[value='f01-route-expand']")).to_have_count(0)
+        self.audit_accessibility("c-remediation")
+        self.page.reload()
+        expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
+        self.page.locator("#mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Etapa C")
+        for item,answer,reason,stage in [
+            ("f01-c-expand-negative","-12x+20",1,"C"),
+            ("f01-route-repair","5x-20",0,"C"),
+            ("f01-tutor-inverse","6(3x-2)",0,"T"),
+            ("f01-route-transfer","8x+48",1,"COMPLETE"),
+        ]:
+            self.choose(item)
+            self.answer(answer,reason)
+            expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+            expect(self.page.locator("#guided-status")).to_contain_text("Ruta completada" if stage=="COMPLETE" else "Etapa "+stage)
+        expect(self.page.locator("#progress")).to_contain_text("Acceso conservado")
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 4")
+
+    def test_remediation_exhaustion_is_visible(self):
+        self.prepare_c()
+        for item,answer,reason in [
+            ("f01-route-expand","14x-3",1),
+            ("f01-c-expand-negative","-12x-20",1),
+            ("f01-c-expand-rational","6x+6",2),
+            ("f01-route-repair","5x-20",0),
+            ("f01-tutor-inverse","6(3x-2)",0),
+        ]:
+            self.choose(item)
+            self.answer(answer,reason)
+            expect(self.page.locator("#guided-status")).to_contain_text("Etapa C")
+        expect(self.page.locator("#guided-status")).to_contain_text("Sin variantes inéditas")
+        expect(self.page.locator("#start")).to_be_disabled()
+        expect(self.page.locator("#item option")).to_have_count(0)
+        expect(self.page.locator("#progress")).not_to_contain_text("Acceso conservado")
+        self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+        self.audit_accessibility("c-exhausted")
+
 if __name__=="__main__":
     unittest.main()
