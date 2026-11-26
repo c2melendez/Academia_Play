@@ -3,11 +3,15 @@ import argparse
 import json
 import secrets
 import threading
+import socket
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from http.cookies import SimpleCookie
 from mm110_f01_store import Store
 from mm110_f01_activities import ITEMS
+
+MAX_CONNECTIONS = 16
+SOCKET_TIMEOUT = 5
 
 class PilotServer(ThreadingHTTPServer):
     daemon_threads = True
@@ -17,9 +21,34 @@ class PilotServer(ThreadingHTTPServer):
         self.store = store
         self.sessions = {}
         self.session_lock = threading.Lock()
+        self.connection_slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
         super().__init__(address, Handler)
 
+    def process_request(self, request, client_address):
+        if not self.connection_slots.acquire(blocking=False):
+            try:
+                request.settimeout(0.25)
+                request.sendall(b'HTTP/1.0 503 Service Unavailable\r\nContent-Length: 0\r\nConnection: close\r\nRetry-After: 1\r\n\r\n')
+            except OSError:
+                pass
+            finally:
+                self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except BaseException:
+            self.connection_slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self.connection_slots.release()
+
 class Handler(BaseHTTPRequestHandler):
+    timeout = SOCKET_TIMEOUT
+
     def log_message(self, *args):
         pass
 
@@ -80,10 +109,16 @@ class Handler(BaseHTTPRequestHandler):
         if self.headers.get_content_type() != "application/json":
             return self._send(415,{"error":"JSON required"})
         try:
-            n = int(self.headers.get("Content-Length","0"))
+            lengths = self.headers.get_all("Content-Length", [])
+            if len(lengths) != 1 or self.headers.get("Transfer-Encoding") is not None:
+                return self._send(400,{"error":"invalid body framing"})
+            n = int(lengths[0])
             if not 0<n<=4096:
                 return self._send(400,{"error":"body size"})
-            data = json.loads(self.rfile.read(n))
+            raw = self.rfile.read(n)
+            if len(raw) != n:
+                return self._send(400,{"error":"incomplete body"})
+            data = json.loads(raw)
             if not isinstance(data,dict):
                 raise ValueError("object required")
             if self.path == "/api/f01/session":
@@ -110,7 +145,10 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 return self._send(400,{"error":"unsupported request"})
             return self._send(200,result)
-        except (ValueError,KeyError,TypeError,OverflowError):
+        except socket.timeout:
+            self.close_connection = True
+            return self._send(408,{"error":"request timeout"})
+        except (ValueError,KeyError,TypeError,OverflowError,RecursionError):
             return self._send(400,{"error":"invalid request or attempt"})
         except Exception:
             return self._send(500,{"error":"internal failure"})
