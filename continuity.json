@@ -2,8 +2,8 @@
   "schema_version": "4.1",
   "repository_full_name": "c2melendez/Academia_Play",
   "active_branch": "curriculum/mm110",
-  "repo_head_sha": "bbe798201a7afbb3a863357f6df76c94bd891cc2",
-  "last_observed_at": "2026-11-26T07:31:30.1723277Z",
+  "repo_head_sha": "ed663f7bad76b3155a21c9809e17a402408c93c7",
+  "last_observed_at": "2026-11-26T17:43:50.9160041Z",
   "environment_mode": "FULL",
   "bootstrap_status": "PROVISIONED",
   "course_design_status": "DESIGN_APPROVED",
@@ -14,7 +14,7 @@
     "M0": "IN_PROGRESS"
   },
   "active_blockers": [
-    "F01 staging restringido implementado; aprovisionamiento de servicio dinámico y disco durable, TLS y smoke remoto pendientes. Servicio estático no equivale a F01.",
+    "F01: Supabase PostgreSQL provisioned; Render Free plan exe-dc4772p5efls73d91e20 validated at ed663f7; explicit reviewed-plan approval, private credentials, TLS remote smoke and restart verification pending. Static deployment is not F01.",
     "G-SOURCE: reconciliar expediente bibliográfico y alcance de reconstrucción; no afirmar sílabo oficial.",
     "G-A11Y-MANUAL: revisión humana WCAG 2.2 AA pendiente; axe automatizado ejecutado en 12 estados.",
     "G-SECURITY: autenticación institucional, revisión de producción, protección de examen frente a consulta de respuestas previas y retención de datos pendientes.",
@@ -27,11 +27,12 @@
     "APROBAR_DISEÑO 9988754f5897bf58ec1e3a2ce73c732f5228d03114ce267226cc0df76c38568b: registro humano MM110_REVISION_F01.json",
     "CI PR23 head d0f420956632a75b34ec155f006fd884f90e63ce; checkout merge e02d0b1: contract QA 45624384894 SUCCESS 203 tests; Chromium 45624384923 SUCCESS 4 tests",
     "CI PR23 head d9a3db644f18c1ddf84b73a4896407cb967b6b11: contract 45750057659 SUCCESS 219 tests; Chromium 45750057588 SUCCESS 6 tests; logs inspected. Timestamp is latest CI completion, not a fresh Render observation.",
-    "CI PR23 head bbe798201a7afbb3a863357f6df76c94bd891cc2: contract 45775264767 SUCCESS 258 tests; Chromium 45775264821 SUCCESS 13 tests; logs inspected. Timestamp reflects last observed test output, not a new Render observation."
+    "CI PR23 head bbe798201a7afbb3a863357f6df76c94bd891cc2: contract 45775264767 SUCCESS 258 tests; Chromium 45775264821 SUCCESS 13 tests; logs inspected. Timestamp reflects last observed test output, not a new Render observation.",
+    "CI ed663f7: contract 45870072615 261 PASS; browser 45870072687 13 PASS; PostgreSQL 45870072508 5 PASS. Render plan exe-dc4772p5efls73d91e20 planned, no notices; not deployed."
   ],
-  "next_action": "Verificar CI de pruebas del ejecutor smoke y checkpoint; aprovisionar staging separado con disco durable tras autorización de coste; ejecutar smoke HTTPS con SHA coincidente y prueba de reinicio. No declarar DONE_TECHNICAL sin gates aplicables.",
+  "next_action": "Verify new startup tests in CI. Review and replan free Render Blueprint at verified SHA; obtain approval and configure private credentials without GitHub exposure. Run HTTPS smoke and persistence across restart; no DONE_TECHNICAL without applicable gates.",
   "render_service_id": "srv-dc06lp67bikc739hlghg",
   "last_verified_deploy_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
   "last_verified_deploy_at": "2026-11-24T23:33:45.158178Z",
-  "qa_ci_verified_sha": "bbe798201a7afbb3a863357f6df76c94bd891cc2"
+  "qa_ci_verified_sha": "ed663f7bad76b3155a21c9809e17a402408c93c7"
 }
