@@ -1,13 +1,12 @@
 """Local-only F01 HTTP pilot. No public hosting or institutional authentication."""
 import argparse
 import json
-import secrets
 import threading
 import socket
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from http.cookies import SimpleCookie
-from mm110_f01_store import Store
+from mm110_f01_store import Store, SESSION_TTL
 from mm110_f01_activities import ITEMS
 
 MAX_CONNECTIONS = 16
@@ -19,8 +18,6 @@ class PilotServer(ThreadingHTTPServer):
         if address[0] != "127.0.0.1":
             raise ValueError("Pilot must bind to loopback")
         self.store = store
-        self.sessions = {}
-        self.session_lock = threading.Lock()
         self.connection_slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
         super().__init__(address, Handler)
 
@@ -60,7 +57,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         if cookie:
-            self.send_header("Set-Cookie", "f01="+cookie+"; HttpOnly; SameSite=Strict; Path=/")
+            self.send_header("Set-Cookie", "f01="+cookie+"; HttpOnly; SameSite=Strict; Path=/; Max-Age="+str(SESSION_TTL))
         self.end_headers()
         self.wfile.write(raw)
 
@@ -71,8 +68,7 @@ class Handler(BaseHTTPRequestHandler):
         cookie = SimpleCookie()
         cookie.load(self.headers.get("Cookie",""))
         token = cookie.get("f01")
-        with self.server.session_lock:
-            return self.server.sessions.get(token.value) if token else None
+        return self.server.store.learner_for_token(token.value) if token else None
 
     def do_GET(self):
         if not self._host_ok():
@@ -126,11 +122,9 @@ class Handler(BaseHTTPRequestHandler):
             if self.path == "/api/f01/session":
                 if data:
                     raise ValueError("empty object required")
-                token = secrets.token_urlsafe(32)
-                with self.server.session_lock:
-                    if len(self.server.sessions)>=1000:
-                        return self._send(503,{"error":"pilot session limit"})
-                    self.server.sessions[token] = secrets.token_hex(16)
+                token = self.server.store.create_token()
+                if token is None:
+                    return self._send(503,{"error":"pilot session limit"})
                 return self._send(201,{"status":"session created"},token)
             learner = self._learner()
             if not learner:
