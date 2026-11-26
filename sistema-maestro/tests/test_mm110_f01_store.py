@@ -64,7 +64,18 @@ class F01StoreTests(unittest.TestCase):
             self.store.submit(self.user,self.start(item),answer,reason)
         state=Store(self.path).snapshot(self.user)
         self.assertEqual("MASTERED",state["mastery_estimate"])
+        self.assertEqual(0,len(state["access_grants"]))
+        self.assertEqual("A",Store(self.path).guided_progress(self.user)["stage"])
+
+    def test_guided_grant_survives_restart(self):
+        for item,answer,reason in [("f01-a-sign-positive","15",0),("f01-a-fraction-negative","-3/2",1),("f01-b-group","28",1),("f01-b-predict","4x+12",2),("f01-route-expand","14x-21",1),("f01-route-repair","5x-20",0),("f01-tutor-inverse","6(3x-2)",0),("f01-route-transfer","8x+48",1)]:
+            store=Store(self.path)
+            key=store.start_guided(self.user,item)["attempt_id"]
+            self.assertTrue(store.submit(self.user,key,answer,reason)["accepted"])
+        state=Store(self.path).snapshot(self.user)
+        self.assertEqual("MASTERED",state["mastery_estimate"])
         self.assertEqual(1,len(state["access_grants"]))
+        self.assertEqual("COMPLETE",Store(self.path).guided_progress(self.user)["stage"])
 
     def test_transaction_rolls_back(self):
         key=self.start()
