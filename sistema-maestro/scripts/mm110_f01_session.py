@@ -14,6 +14,9 @@ GUIDED_STAGES = (
     ("f01-route-transfer",),
 )
 
+TRANSFER_POOL = ("f01-route-transfer", "f01-transfer-perimeter",
+                 "f01-transfer-discount", "f01-transfer-balance")
+
 RULE = {"distinct_variant_families":2,"requires_transfer":True,"unassisted_required":True}
 
 def utc_now():
@@ -45,9 +48,20 @@ class Session:
                      if a.get("guided") and a.get("closed")
                      and a.get("assessment", {}).get("accepted")
                      and not a.get("assisted")}
+        # Transfer completion requires a genuinely eligible first resolution.
+        completed.difference_update(TRANSFER_POOL)
+        if any(a.get("guided") and a.get("closed") and a["item"] in TRANSFER_POOL
+               and a.get("assessment", {}).get("eligible_evidence")
+               and a.get("assessment", {}).get("previously_exposed") is False
+               for a in self._attempts.values()):
+            completed.add("f01-route-transfer")
         for stage, ids in enumerate(GUIDED_STAGES):
             pending = [i for i in ids if i not in completed]
             if pending:
+                if stage == 3:
+                    exposed = {a["item"] for a in self._attempts.values()
+                               if a.get("closed") or a.get("assisted")}
+                    pending = [i for i in TRANSFER_POOL if i not in exposed][:1]
                 return {"stage": "ABCT"[stage], "pending": pending, "completed": sorted(completed)}
         return {"stage": "COMPLETE", "pending": [], "completed": sorted(completed)}
 
