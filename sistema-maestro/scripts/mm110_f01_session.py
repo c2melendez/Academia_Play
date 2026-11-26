@@ -131,10 +131,15 @@ class Session:
                     "evidence_id":attempt_id,"variant_family":item.family,"role":role,
                     "oracle_result":"VERIFIED","assisted":False,"idempotency_key":attempt_id})
                 self._state["mastery_estimate"] = derive_mastery(self._state,RULE)
-                if self._state["mastery_estimate"] == "MASTERED" and not self._state["access_grants"]:
-                    self._state["access_grants"].append({"grant_id":"f01-completed",
-                        "granted_at":self._state["updated_at"],
-                        "evidence_ids":[e["evidence_id"] for e in self._state["mastery_evidence"]]})
                 validate_invariants(self._state,RULE)
         a.update(closed=True,submission=(answer,reason_choice),result=deepcopy(public),assessment=result)
+        # Competence estimation and completion rights are separate. Never revoke grants.
+        if (self._state["mastery_estimate"] == "MASTERED"
+                and self.guided_progress()["stage"] == "COMPLETE"
+                and not self._state["access_grants"]):
+            self._state["updated_at"] = utc_now()
+            self._state["access_grants"].append({"grant_id":"f01-completed",
+                "granted_at":self._state["updated_at"],
+                "evidence_ids":[e["evidence_id"] for e in self._state["mastery_evidence"]]})
+            validate_invariants(self._state,RULE)
         return deepcopy(public)
