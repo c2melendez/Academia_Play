@@ -17,6 +17,10 @@ GUIDED_STAGES = (
 TRANSFER_POOL = ("f01-route-transfer", "f01-transfer-perimeter",
                  "f01-transfer-discount", "f01-transfer-balance")
 
+TRANSFER_RESERVE = ("f01-transfer-reserve-fuel", "f01-transfer-reserve-temperature",
+                    "f01-transfer-reserve-scale", "f01-transfer-reserve-sharing")
+ALL_TRANSFER = TRANSFER_POOL + TRANSFER_RESERVE
+
 RULE = {"distinct_variant_families":2,"requires_transfer":True,"unassisted_required":True}
 
 def utc_now():
@@ -49,8 +53,8 @@ class Session:
                      and a.get("assessment", {}).get("accepted")
                      and not a.get("assisted")}
         # Transfer completion requires a genuinely eligible first resolution.
-        completed.difference_update(TRANSFER_POOL)
-        if any(a.get("guided") and a.get("closed") and a["item"] in TRANSFER_POOL
+        completed.difference_update(ALL_TRANSFER)
+        if any(a.get("guided") and a.get("closed") and a["item"] in ALL_TRANSFER
                and a.get("assessment", {}).get("eligible_evidence")
                and a.get("assessment", {}).get("previously_exposed") is False
                for a in self._attempts.values()):
@@ -62,6 +66,11 @@ class Session:
                     exposed = {a["item"] for a in self._attempts.values()
                                if a.get("closed") or a.get("assisted")}
                     pending = [i for i in TRANSFER_POOL if i not in exposed][:1]
+                    recovery = not pending
+                    if recovery:
+                        pending = [i for i in TRANSFER_RESERVE if i not in exposed][:1]
+                    return {"stage": "T", "pending": pending, "completed": sorted(completed),
+                            "transfer_status": "RESERVE" if recovery and pending else "EXHAUSTED" if recovery else "STANDARD"}
                 return {"stage": "ABCT"[stage], "pending": pending, "completed": sorted(completed)}
         return {"stage": "COMPLETE", "pending": [], "completed": sorted(completed)}
 
