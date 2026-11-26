@@ -3,17 +3,24 @@ Caller must supply a trusted, authenticated learner identifier. Use a durable
 volume in production; the default ephemeral hosting filesystem is unsuitable.
 """
 import json
+import hashlib
+import secrets
+import time
 import sqlite3
 from contextlib import closing
 from pathlib import Path
 from mm110_f01_session import Session, RULE
 from progress_policy import validate_invariants
 
+SESSION_TTL = 7 * 24 * 3600
+SESSION_LIMIT = 1000
+
 class Store:
     def __init__(self, path):
         self.path = str(Path(path).resolve())
         with closing(self._connect()) as db:
             db.execute("CREATE TABLE IF NOT EXISTS f01_sessions (learner TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+            db.execute("CREATE TABLE IF NOT EXISTS f01_tokens (digest TEXT PRIMARY KEY, learner TEXT NOT NULL UNIQUE, expires INTEGER NOT NULL)")
             db.commit()
 
     def _connect(self):
@@ -76,3 +83,32 @@ class Store:
 
     def exam_history(self, learner):
         return self._run(learner,lambda s:s.exam_history())
+
+    def create_token(self):
+        token = secrets.token_urlsafe(32)
+        digest = hashlib.sha256(token.encode("ascii")).hexdigest()
+        now = int(time.time())
+        with closing(self._connect()) as db:
+            db.execute("BEGIN IMMEDIATE")
+            db.execute("DELETE FROM f01_tokens WHERE expires<=?", (now,))
+            if db.execute("SELECT COUNT(*) FROM f01_tokens").fetchone()[0]>=SESSION_LIMIT:
+                db.rollback()
+                return None
+            db.execute("INSERT INTO f01_tokens VALUES (?,?,?)",
+                       (digest,secrets.token_hex(16),now+SESSION_TTL))
+            db.commit()
+        return token
+
+    def learner_for_token(self, token):
+        if not isinstance(token,str) or len(token)!=43 or not token.isascii():
+            return None
+        digest=hashlib.sha256(token.encode("ascii")).hexdigest()
+        with closing(self._connect()) as db:
+            row=db.execute("SELECT learner FROM f01_tokens WHERE digest=? AND expires>?",
+                           (digest,int(time.time()))).fetchone()
+        return row[0] if row else None
+
+    def token_count(self):
+        with closing(self._connect()) as db:
+            return db.execute("SELECT COUNT(*) FROM f01_tokens WHERE expires>?",
+                              (int(time.time()),)).fetchone()[0]
