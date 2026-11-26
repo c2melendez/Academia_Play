@@ -1,5 +1,8 @@
 """Local-only F01 HTTP pilot. No public hosting or institutional authentication."""
 import argparse
+import hmac
+import re
+from urllib.parse import urlsplit
 import json
 import threading
 import socket
@@ -14,9 +17,19 @@ SOCKET_TIMEOUT = 5
 
 class PilotServer(ThreadingHTTPServer):
     daemon_threads = True
-    def __init__(self, address, store):
-        if address[0] != "127.0.0.1":
-            raise ValueError("Pilot must bind to loopback")
+    def __init__(self, address, store, *, staging_origin=None, staging_access=None):
+        if staging_origin is None:
+            if address[0] != "127.0.0.1" or staging_access is not None:
+                raise ValueError("Pilot must bind to loopback")
+        else:
+            parsed = urlsplit(staging_origin)
+            if (parsed.scheme != "https" or not parsed.hostname or parsed.netloc != parsed.hostname
+                    or parsed.path or parsed.query or parsed.fragment
+                    or not re.fullmatch(r"[a-z0-9.-]+", parsed.hostname)
+                    or not isinstance(staging_access,str) or not re.fullmatch(r"[A-Za-z0-9_-]{43,128}",staging_access)):
+                raise ValueError("Invalid restricted staging configuration")
+        self.staging_origin = staging_origin
+        self.staging_access = staging_access
         self.store = store
         self.connection_slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
         super().__init__(address, Handler)
@@ -57,12 +70,26 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         if cookie:
-            self.send_header("Set-Cookie", "f01="+cookie+"; HttpOnly; SameSite=Strict; Path=/; Max-Age="+str(SESSION_TTL))
+            self.send_header("Set-Cookie", "f01="+cookie+"; HttpOnly; SameSite=Strict; Path=/; Max-Age="+str(SESSION_TTL)+("; Secure" if self.server.staging_origin else ""))
         self.end_headers()
         self.wfile.write(raw)
 
     def _host_ok(self):
-        return self.headers.get("Host") == "127.0.0.1:"+str(self.server.server_port)
+        return self.headers.get_all("Host",[]) == [urlsplit(self.server.staging_origin).netloc if self.server.staging_origin else "127.0.0.1:"+str(self.server.server_port)]
+
+    def _access_ok(self):
+        if not self.server.staging_origin:
+            return True
+        import base64
+        expected = "Basic "+base64.b64encode(("reviewer:"+self.server.staging_access).encode("ascii")).decode("ascii")
+        return hmac.compare_digest(self.headers.get("Authorization","").encode("utf8"),expected.encode("ascii"))
+
+    def _challenge(self):
+        self.send_response(401)
+        self.send_header("WWW-Authenticate", 'Basic realm="F01 restricted staging", charset="UTF-8"')
+        self.send_header("Cache-Control","no-store")
+        self.send_header("Content-Length","0")
+        self.end_headers()
 
     def _learner(self):
         cookie = SimpleCookie()
@@ -73,6 +100,10 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self._host_ok():
             return self._send(403,{"error":"host"})
+        if self.path == "/api/f01/health":
+            return self._send(200,{"status":"restricted-staging" if self.server.staging_origin else "local-pilot"})
+        if not self._access_ok():
+            return self._challenge()
         if self.path in ("/", "/f01"):
             raw = (Path(__file__).resolve().parents[1] / "pilot" / "mm110_f01.html").read_bytes()
             self.send_response(200)
@@ -84,8 +115,6 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(raw)
             return
-        if self.path == "/api/f01/health":
-            return self._send(200,{"status":"local-pilot"})
         learner = self._learner()
         if not learner:
             return self._send(401,{"error":"session required"})
@@ -101,9 +130,11 @@ class Handler(BaseHTTPRequestHandler):
         return self._send(404,{"error":"not found"})
 
     def do_POST(self):
-        origin = "http://127.0.0.1:"+str(self.server.server_port)
+        origin = self.server.staging_origin or "http://127.0.0.1:"+str(self.server.server_port)
         if not self._host_ok() or self.headers.get("Origin") != origin:
             return self._send(403,{"error":"origin"})
+        if not self._access_ok():
+            return self._challenge()
         if self.headers.get_content_type() != "application/json":
             return self._send(415,{"error":"JSON required"})
         try:
