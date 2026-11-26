@@ -95,6 +95,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(401,{"error":"session required"})
         if self.path == "/api/f01/items":
             return self._send(200,[{"item_id":i.item_id,"mode":i.mode,"family":i.family} for i in ITEMS])
+        if self.path == "/api/f01/exam/history":
+            return self._send(200,self.server.store.exam_history(learner))
         if self.path == "/api/f01/guided":
             return self._send(200,self.server.store.guided_progress(learner))
         if self.path == "/api/f01/progress":
