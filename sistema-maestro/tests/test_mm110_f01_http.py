@@ -1,5 +1,9 @@
 """Real loopback HTTP integration tests for the F01 local pilot."""
 import http.client
+import socket
+import time
+from contextlib import ExitStack
+from unittest.mock import patch
 import json
 import sys
 import tempfile
@@ -7,7 +11,7 @@ import threading
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
-from mm110_f01_http import PilotServer
+from mm110_f01_http import PilotServer, Handler, MAX_CONNECTIONS
 from mm110_f01_store import Store
 
 class F01HTTPTests(unittest.TestCase):
@@ -109,3 +113,79 @@ class F01HTTPTests(unittest.TestCase):
         self.assertEqual(400,self.request("/api/f01/start",{"item_id":"unknown","mode":"learning_path"},c)[0])
         self.assertEqual(415,self.request("/api/f01/session",{},headers={"Content-Type":"text/plain"})[0])
         self.assertEqual(400,self.request("/api/f01/session",{"data":"a"*5000})[0])
+
+    def raw_request(self, headers, body=b"", half_close=True):
+        with socket.create_connection(("127.0.0.1",self.port),timeout=8) as sock:
+            prefix=("POST /api/f01/session HTTP/1.0\r\nHost: 127.0.0.1:"+
+                    str(self.port)+"\r\nOrigin: "+self.origin+
+                    "\r\nContent-Type: application/json\r\n").encode()
+            sock.sendall(prefix+headers+b"\r\n"+body)
+            if half_close:
+                sock.shutdown(socket.SHUT_WR)
+            response=http.client.HTTPResponse(sock)
+            response.begin()
+            return response.status,response.read()
+
+    def test_duplicate_content_length_rejected(self):
+        status,_=self.raw_request(b"Content-Length: 2\r\nContent-Length: 2\r\n",b"{}")
+        self.assertEqual(400,status)
+        self.assertEqual(0,len(self.server.sessions))
+
+    def test_transfer_encoding_rejected(self):
+        status,_=self.raw_request(b"Content-Length: 2\r\nTransfer-Encoding: chunked\r\n",b"{}")
+        self.assertEqual(400,status)
+        self.assertEqual(0,len(self.server.sessions))
+
+    def test_truncated_body_rejected(self):
+        status,_=self.raw_request(b"Content-Length: 10\r\n",b"{}")
+        self.assertEqual(400,status)
+        self.assertEqual(0,len(self.server.sessions))
+        self.assertEqual(200,self.request("/api/f01/health")[0])
+
+    def test_body_timeout_releases_connection(self):
+        with patch.object(Handler,"timeout",0.25):
+            status,_=self.raw_request(b"Content-Length: 10\r\n",b"{",half_close=False)
+        self.assertEqual(408,status)
+        self.assertEqual(0,len(self.server.sessions))
+        self.assertEqual(200,self.request("/api/f01/health")[0])
+
+    def test_saturation_and_recovery_real_connections(self):
+        entered=threading.Condition()
+        count=0
+        release=threading.Event()
+        original=Handler.do_GET
+        def held(handler):
+            nonlocal count
+            with entered:
+                count+=1
+                entered.notify_all()
+            release.wait(8)
+            original(handler)
+        with patch.object(Handler,"do_GET",held):
+            with ExitStack() as stack:
+                held_sockets=[]
+                try:
+                    for _ in range(MAX_CONNECTIONS):
+                        s=stack.enter_context(socket.create_connection(("127.0.0.1",self.port),timeout=5))
+                        held_sockets.append(s)
+                        s.sendall(("GET /api/f01/health HTTP/1.0\r\nHost: 127.0.0.1:"+str(self.port)+"\r\n\r\n").encode())
+                    with entered:
+                        self.assertTrue(entered.wait_for(lambda:count==MAX_CONNECTIONS,timeout=5))
+                    status,_,headers=self.request("/api/f01/health")
+                    self.assertEqual(503,status)
+                    self.assertEqual("1",headers["Retry-After"])
+                finally:
+                    release.set()
+                for s in held_sockets:
+                    response=http.client.HTTPResponse(s)
+                    response.begin()
+                    self.assertEqual(200,response.status)
+                    response.read()
+        deadline=time.monotonic()+5
+        while time.monotonic()<deadline:
+            if self.request("/api/f01/health")[0]==200:
+                break
+            time.sleep(0.02)
+        else:
+            self.fail("server did not recover after saturation")
+        self.assertEqual(201,self.request("/api/f01/session",{})[0])
