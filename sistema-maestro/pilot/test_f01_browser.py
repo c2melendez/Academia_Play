@@ -1,5 +1,7 @@
 """Real Chromium pilot tests. Run with Python Playwright installed."""
 import sys
+import os
+import json
 import tempfile
 import threading
 import unittest
@@ -137,6 +139,49 @@ class BrowserF01(unittest.TestCase):
         expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
         expect(self.page.locator("#guided-status")).to_contain_text("0/8")
         expect(self.page.locator("#start")).to_be_enabled()
+
+    def audit_accessibility(self, state):
+        path = Path(os.environ["F01_AXE_PATH"])
+        self.assertTrue(path.is_file(), "Pinned axe-core bundle missing")
+        self.page.evaluate(path.read_text(encoding="utf8"))
+        result = self.page.evaluate("""async () => await axe.run(document, {
+            runOnly: {type: 'tag', values: ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}
+        })""")
+        violations = [{"id": v["id"], "impact": v["impact"],
+                       "targets": [n["target"] for n in v["nodes"]]}
+                      for v in result["violations"]]
+        print("F01_AXE "+json.dumps({"state":state,"version":result["testEngine"]["version"],
+             "passes":len(result["passes"]),"incomplete": [v["id"] for v in result["incomplete"]],
+             "violations":violations},ensure_ascii=False),flush=True)
+        self.assertGreater(len(result["passes"]),0)
+        self.assertEqual([],violations,state)
+
+    def test_axe_review_and_practice(self):
+        self.audit_accessibility("review-mobile")
+        self.choose("f01-route-expand")
+        self.audit_accessibility("practice-active")
+        self.answer("14x-21",1)
+        expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+        self.audit_accessibility("practice-feedback")
+
+    def test_axe_guided_tutor_exam(self):
+        self.page.locator("#mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Etapa A")
+        self.choose("f01-a-sign-positive")
+        self.audit_accessibility("guided")
+        self.page.locator("#mode").select_option("practice_tutor")
+        self.choose("f01-tutor-inverse")
+        self.audit_accessibility("tutor")
+        self.page.locator("#mode").select_option("exam_preparation")
+        self.choose("f01-exam-rational")
+        self.audit_accessibility("exam")
+        self.answer("-6x+9",0)
+        expect(self.page.locator("#feedback")).to_contain_text("No se revela la corrección")
+        self.audit_accessibility("exam-recorded")
+
+    def test_axe_desktop(self):
+        self.page.set_viewport_size({"width":1280,"height":900})
+        self.audit_accessibility("review-desktop")
 
 if __name__=="__main__":
     unittest.main()
