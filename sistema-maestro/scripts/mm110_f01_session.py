@@ -143,3 +143,26 @@ class Session:
                 "evidence_ids":[e["evidence_id"] for e in self._state["mastery_evidence"]]})
             validate_invariants(self._state,RULE)
         return deepcopy(public)
+
+    @locked
+    def finish_exam(self, attempt_id):
+        """Close the single-item F01 pilot assessment and release deferred review."""
+        a = self._attempts[attempt_id]
+        item = INDEX[a["item"]]
+        if item.mode != "exam_preparation" or not a["closed"]:
+            raise ValueError("Exam submission required")
+        if "exam_review" not in a:
+            assessment = a["assessment"]
+            a["exam_review"] = {
+                "status": "FINISHED",
+                "item_id": item.item_id,
+                "answer": a["submission"][0],
+                "reason_choice": a["submission"][1],
+                "correct": assessment["accepted"],
+                "score": int(assessment["accepted"]),
+                "maximum": 1,
+                "expected": item.expected,
+                "correct_reason": item.correct_reason,
+                "feedback": assessment["feedback"],
+            }
+        return deepcopy(a["exam_review"])
