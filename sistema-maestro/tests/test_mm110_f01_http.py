@@ -189,3 +189,34 @@ class F01HTTPTests(unittest.TestCase):
         else:
             self.fail("server did not recover after saturation")
         self.assertEqual(201,self.request("/api/f01/session",{})[0])
+
+    def test_deferred_exam_review(self):
+        c=self.session()
+        key=self.start(c,"f01-exam-rational","exam_preparation")
+        def finish(cookie=c):
+            return self.request("/api/f01/exam/finish",{"attempt_id":key},cookie)
+        self.assertEqual(400,finish()[0])
+        before=self.request("/api/f01/progress",cookie=c)[1]
+        self.assertEqual({"status":"RECORDED"},self.submit(c,key,"-6x+9",0)[1])
+        self.assertEqual(400,finish(self.session())[0])
+        status,review,_=finish()
+        self.assertEqual(200,status)
+        self.assertEqual("FINISHED",review["status"])
+        self.assertEqual(1,review["score"])
+        self.assertEqual("-6x+9",review["expected"])
+        self.assertEqual(review,finish()[1])
+        self.assertEqual(400,self.submit(c,key,"-6x-9",0)[0])
+        self.assertEqual(before,self.request("/api/f01/progress",cookie=c)[1])
+
+    def test_exam_review_wrong_and_non_exam(self):
+        c=self.session()
+        key=self.start(c,"f01-exam-rational","exam_preparation")
+        self.assertEqual({"status":"RECORDED"},self.submit(c,key,"-6x-9",0)[1])
+        status,review,_=self.request("/api/f01/exam/finish",{"attempt_id":key},c)
+        self.assertEqual(200,status)
+        self.assertEqual(0,review["score"])
+        self.assertFalse(review["correct"])
+        self.assertTrue(review["feedback"])
+        practice=self.start(c)
+        self.submit(c,practice,"14x-21",1)
+        self.assertEqual(400,self.request("/api/f01/exam/finish",{"attempt_id":practice},c)[0])
