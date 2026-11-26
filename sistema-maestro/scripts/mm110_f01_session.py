@@ -20,6 +20,12 @@ TRANSFER_POOL = ("f01-route-transfer", "f01-transfer-perimeter",
 TRANSFER_RESERVE = ("f01-transfer-reserve-fuel", "f01-transfer-reserve-temperature",
                     "f01-transfer-reserve-scale", "f01-transfer-reserve-sharing")
 ALL_TRANSFER = TRANSFER_POOL + TRANSFER_RESERVE
+C_POOLS = {
+    "f01-route-expand": ("f01-route-expand","f01-c-expand-negative","f01-c-expand-rational"),
+    "f01-route-repair": ("f01-route-repair","f01-c-repair-sign","f01-c-repair-rational"),
+    "f01-tutor-inverse": ("f01-tutor-inverse","f01-c-inverse-negative","f01-c-inverse-rational"),
+}
+ALL_C = {i for pool in C_POOLS.values() for i in pool}
 
 RULE = {"distinct_variant_families":2,"requires_transfer":True,"unassisted_required":True}
 
@@ -52,6 +58,13 @@ class Session:
                      if a.get("guided") and a.get("closed")
                      and a.get("assessment", {}).get("accepted")
                      and not a.get("assisted")}
+        # Canonical C slots represent distinct families, not the number of variants.
+        completed.difference_update(ALL_C)
+        for slot, pool in C_POOLS.items():
+            if any(a.get("guided") and a.get("closed") and a["item"] in pool
+                   and a.get("assessment", {}).get("eligible_evidence")
+                   for a in self._attempts.values()):
+                completed.add(slot)
         # Transfer completion requires a genuinely eligible first resolution.
         completed.difference_update(ALL_TRANSFER)
         if any(a.get("guided") and a.get("closed") and a["item"] in ALL_TRANSFER
@@ -62,6 +75,19 @@ class Session:
         for stage, ids in enumerate(GUIDED_STAGES):
             pending = [i for i in ids if i not in completed]
             if pending:
+                if stage == 2:
+                    exposed = {a["item"] for a in self._attempts.values()
+                               if a.get("closed") or a.get("assisted")}
+                    choices = []
+                    exhausted = []
+                    for slot in pending:
+                        fresh = next((i for i in C_POOLS[slot] if i not in exposed), None)
+                        if fresh:
+                            choices.append(fresh)
+                        else:
+                            exhausted.append(INDEX[slot].family)
+                    return {"stage":"C","pending":choices,"completed":sorted(completed),
+                            "exhausted_families":exhausted}
                 if stage == 3:
                     exposed = {a["item"] for a in self._attempts.values()
                                if a.get("closed") or a.get("assisted")}
