@@ -1,0 +1,24 @@
+# Separate Blueprint: import explicitly only after cost approval and CI verification.
+# Do not replace root render.yaml or synchronize with the existing static service.
+services:
+  - type: web
+    name: academia-play-f01-staging
+    runtime: python
+    branch: curriculum/mm110
+    plan: starter
+    region: virginia
+    autoDeployTrigger: off
+    buildCommand: python -m compileall -q sistema-maestro/scripts
+    startCommand: python sistema-maestro/scripts/mm110_f01_staging.py
+    healthCheckPath: /api/f01/health
+    disk:
+      name: f01-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: F01_DATA_DIR
+        value: /var/data
+      - key: F01_STAGING_ORIGIN
+        sync: false
+      - key: F01_STAGING_ACCESS
+        sync: false
