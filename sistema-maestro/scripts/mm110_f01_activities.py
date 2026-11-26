@@ -2,7 +2,7 @@
 No learner identity or persistence. Expected expressions must remain server-side.
 """
 from dataclasses import dataclass
-from mm110_f01_oracle import compare, Verdict
+from mm110_f01_oracle_worker import compare_isolated as compare
 
 @dataclass(frozen=True)
 class Item:
