@@ -29,7 +29,15 @@ class F01IntegrationTests(unittest.TestCase):
         self.attempt("f01-route-transfer","8x+48",1)
         state=self.s.snapshot()
         self.assertEqual("MASTERED",state["mastery_estimate"])
-        self.assertEqual(1,len(state["access_grants"]))
+        self.assertEqual(0,len(state["access_grants"]))
+        self.assertEqual("A",self.s.guided_progress()["stage"])
+    def test_guided_grant(self):
+        for item,answer,reason in [("f01-a-sign-positive","15",0),("f01-a-fraction-negative","-3/2",1),("f01-b-group","28",1),("f01-b-predict","4x+12",2),("f01-route-expand","14x-21",1),("f01-route-repair","5x-20",0),("f01-tutor-inverse","6(3x-2)",0),("f01-route-transfer","8x+48",1)]:
+            key=self.s.start_guided(item)["attempt_id"]
+            self.assertTrue(self.s.submit(key,answer,reason)["accepted"])
+        self.assertEqual("COMPLETE",self.s.guided_progress()["stage"])
+        self.assertEqual("MASTERED",self.s.snapshot()["mastery_estimate"])
+        self.assertEqual(1,len(self.s.snapshot()["access_grants"]))
     def test_repeated_family_not_mastery(self):
         for _ in range(3):self.attempt("f01-route-expand","14x-21",1)
         self.attempt("f01-route-transfer","8x+48",1)
