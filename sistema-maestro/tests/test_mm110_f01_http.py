@@ -129,24 +129,24 @@ class F01HTTPTests(unittest.TestCase):
     def test_duplicate_content_length_rejected(self):
         status,_=self.raw_request(b"Content-Length: 2\r\nContent-Length: 2\r\n",b"{}")
         self.assertEqual(400,status)
-        self.assertEqual(0,len(self.server.sessions))
+        self.assertEqual(0,self.server.store.token_count())
 
     def test_transfer_encoding_rejected(self):
         status,_=self.raw_request(b"Content-Length: 2\r\nTransfer-Encoding: chunked\r\n",b"{}")
         self.assertEqual(400,status)
-        self.assertEqual(0,len(self.server.sessions))
+        self.assertEqual(0,self.server.store.token_count())
 
     def test_truncated_body_rejected(self):
         status,_=self.raw_request(b"Content-Length: 10\r\n",b"{}")
         self.assertEqual(400,status)
-        self.assertEqual(0,len(self.server.sessions))
+        self.assertEqual(0,self.server.store.token_count())
         self.assertEqual(200,self.request("/api/f01/health")[0])
 
     def test_body_timeout_releases_connection(self):
         with patch.object(Handler,"timeout",0.25):
             status,_=self.raw_request(b"Content-Length: 10\r\n",b"{",half_close=False)
         self.assertEqual(408,status)
-        self.assertEqual(0,len(self.server.sessions))
+        self.assertEqual(0,self.server.store.token_count())
         self.assertEqual(200,self.request("/api/f01/health")[0])
 
     def test_saturation_and_recovery_real_connections(self):
@@ -220,3 +220,22 @@ class F01HTTPTests(unittest.TestCase):
         practice=self.start(c)
         self.submit(c,practice,"14x-21",1)
         self.assertEqual(400,self.request("/api/f01/exam/finish",{"attempt_id":practice},c)[0])
+
+    def test_session_survives_server_restart(self):
+        c=self.session()
+        key=self.start(c,"f01-exam-rational","exam_preparation")
+        self.assertEqual({"status":"RECORDED"},self.submit(c,key,"-6x+9",0)[1])
+        self.assertEqual([],self.request("/api/f01/exam/history",cookie=c)[1])
+        review=self.request("/api/f01/exam/finish",{"attempt_id":key},c)[1]
+        other=self.session()
+        self.stop()
+        self.server=PilotServer(("127.0.0.1",0),Store(Path(self.tmp.name)/"test.sqlite"))
+        self.port=self.server.server_port
+        self.origin="http://127.0.0.1:"+str(self.port)
+        self.thread=threading.Thread(target=self.server.serve_forever,kwargs={"poll_interval":0.02},daemon=True)
+        self.thread.start()
+        status,history,_=self.request("/api/f01/exam/history",cookie=c)
+        self.assertEqual(200,status)
+        self.assertEqual([{"attempt_id":key,**review}],history)
+        self.assertEqual([],self.request("/api/f01/exam/history",cookie=other)[1])
+        self.assertEqual(401,self.request("/api/f01/exam/history",cookie="f01="+"a"*43)[0])
