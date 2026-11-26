@@ -23,6 +23,13 @@ TRANSFER = [
     ("f01-transfer-balance","-3x-12",2,"-3x+12"),
 ]
 
+RESERVE = [
+    ("f01-transfer-reserve-fuel","2x+1",0,"2x+2"),
+    ("f01-transfer-reserve-temperature","-4x-8",1,"-4x+8"),
+    ("f01-transfer-reserve-scale","2x+3",2,"2x+15"),
+    ("f01-transfer-reserve-sharing","2x-3",0,"2x-9"),
+]
+
 class TransferTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
@@ -36,7 +43,7 @@ class TransferTests(unittest.TestCase):
             self.assertTrue(self.s.submit(self.user,key,answer,reason)["accepted"])
         self.assertEqual("T",self.s.guided_progress(self.user)["stage"])
     def test_independent_math_and_reason(self):
-        for item,answer,reason,wrong in TRANSFER:
+        for item,answer,reason,wrong in TRANSFER+RESERVE:
             with self.subTest(item=item):
                 self.assertTrue(assess(item,answer,reason)["accepted"])
                 self.assertFalse(assess(item,wrong,reason)["accepted"])
@@ -69,12 +76,30 @@ class TransferTests(unittest.TestCase):
         self.assertTrue(result["previously_exposed"])
         self.assertFalse(result["eligible_evidence"])
         self.assertEqual([TRANSFER[1][0]],self.s.guided_progress(self.user)["pending"])
+    def test_reserve_recovery_and_persistence(self):
+        self.prep()
+        self.assertEqual("STANDARD",self.s.guided_progress(self.user)["transfer_status"])
+        for item,answer,reason,wrong in TRANSFER:
+            key=self.s.start_guided(self.user,item)["attempt_id"]
+            self.s.submit(self.user,key,wrong,reason)
+        self.s=Store(self.path)
+        state=self.s.guided_progress(self.user)
+        self.assertEqual("RESERVE",state["transfer_status"])
+        self.assertEqual([RESERVE[0][0]],state["pending"])
+        item,answer,reason,wrong=RESERVE[0]
+        key=self.s.start_guided(self.user,item)["attempt_id"]
+        self.assertTrue(self.s.submit(self.user,key,answer,reason)["eligible_evidence"])
+        self.assertEqual("COMPLETE",self.s.guided_progress(self.user)["stage"])
+
     def test_exhaustion_does_not_complete(self):
         self.prep()
-        for item,answer,reason,wrong in TRANSFER:
+        for item,answer,reason,wrong in TRANSFER+RESERVE:
             key=self.s.start_guided(self.user,item)["attempt_id"]
             self.s.submit(self.user,key,wrong,reason)
         state=self.s.guided_progress(self.user)
         self.assertEqual("T",state["stage"])
         self.assertEqual([],state["pending"])
+        self.assertEqual("EXHAUSTED",state["transfer_status"])
+        for item,_,_,_ in TRANSFER+RESERVE:
+            with self.assertRaises(ValueError):self.s.start_guided(self.user,item)
         self.assertNotEqual("MASTERED",self.s.snapshot(self.user)["mastery_estimate"])
