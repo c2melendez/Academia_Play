@@ -5,19 +5,17 @@ services:
     name: academia-play-f01-staging
     runtime: python
     branch: curriculum/mm110
-    plan: starter
+    plan: free
     region: virginia
     autoDeployTrigger: off
-    buildCommand: python -m compileall -q sistema-maestro/scripts
+    buildCommand: pip install -r infra/requirements-f01.txt && python -m compileall -q sistema-maestro/scripts
     startCommand: python sistema-maestro/scripts/mm110_f01_staging.py
     healthCheckPath: /api/f01/health
-    disk:
-      name: f01-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
-      - key: F01_DATA_DIR
-        value: /var/data
+      - key: F01_STORAGE_BACKEND
+        value: postgres
+      - key: F01_DATABASE_URL
+        sync: false
       - key: F01_STAGING_ORIGIN
         sync: false
       - key: F01_STAGING_ACCESS
