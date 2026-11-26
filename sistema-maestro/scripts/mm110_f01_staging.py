@@ -1,5 +1,6 @@
 """Restricted staging launcher; no institutional identity or production claim."""
 import os
+import re
 from pathlib import Path
 from mm110_f01_http import PilotServer
 from mm110_f01_store import Store
@@ -19,10 +20,19 @@ def configuration(env):
         raise ValueError("Invalid service port")
     return port,mount/"f01.sqlite",origin,access
 
+def deployment_commit(env):
+    sha=env.get("RENDER_GIT_COMMIT")
+    if sha is None and env.get("RENDER")!="true":
+        return None
+    if not isinstance(sha,str) or not re.fullmatch(r"[a-f0-9]{40}",sha):
+        raise ValueError("Valid RENDER_GIT_COMMIT required")
+    return sha
+
 def main():
     port,path,origin,access=configuration(os.environ)
+    sha=deployment_commit(os.environ)
     with PilotServer(("0.0.0.0",port),Store(path),
-                     staging_origin=origin,staging_access=access) as server:
+                     staging_origin=origin,staging_access=access,commit_sha=sha) as server:
         print("Restricted F01 staging ready",flush=True)
         server.serve_forever()
 
