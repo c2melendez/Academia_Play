@@ -17,7 +17,7 @@ SOCKET_TIMEOUT = 5
 
 class PilotServer(ThreadingHTTPServer):
     daemon_threads = True
-    def __init__(self, address, store, *, staging_origin=None, staging_access=None):
+    def __init__(self, address, store, *, staging_origin=None, staging_access=None, commit_sha=None):
         if staging_origin is None:
             if address[0] != "127.0.0.1" or staging_access is not None:
                 raise ValueError("Pilot must bind to loopback")
@@ -28,6 +28,9 @@ class PilotServer(ThreadingHTTPServer):
                     or not re.fullmatch(r"[a-z0-9.-]+", parsed.hostname)
                     or not isinstance(staging_access,str) or not re.fullmatch(r"[A-Za-z0-9_-]{43,128}",staging_access)):
                 raise ValueError("Invalid restricted staging configuration")
+        if commit_sha is not None and not re.fullmatch(r"[a-f0-9]{40}",commit_sha):
+            raise ValueError("Invalid deployment commit")
+        self.commit_sha = commit_sha
         self.staging_origin = staging_origin
         self.staging_access = staging_access
         self.store = store
@@ -101,7 +104,7 @@ class Handler(BaseHTTPRequestHandler):
         if not self._host_ok():
             return self._send(403,{"error":"host"})
         if self.path == "/api/f01/health":
-            return self._send(200,{"status":"restricted-staging" if self.server.staging_origin else "local-pilot"})
+            return self._send(200,{"status":"restricted-staging" if self.server.staging_origin else "local-pilot", "commit_sha":self.server.commit_sha})
         if not self._access_ok():
             return self._challenge()
         if self.path in ("/", "/f01"):
