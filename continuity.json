@@ -2,8 +2,8 @@
   "schema_version": "4.1",
   "repository_full_name": "c2melendez/Academia_Play",
   "active_branch": "curriculum/mm110",
-  "repo_head_sha": "d0f420956632a75b34ec155f006fd884f90e63ce",
-  "last_observed_at": "2026-11-25T13:32:06.0326498Z",
+  "repo_head_sha": "d9a3db644f18c1ddf84b73a4896407cb967b6b11",
+  "last_observed_at": "2026-11-26T03:37:34.7909486Z",
   "environment_mode": "FULL",
   "bootstrap_status": "PROVISIONED",
   "course_design_status": "DESIGN_APPROVED",
@@ -14,20 +14,23 @@
     "M0": "IN_PROGRESS"
   },
   "active_blockers": [
-    "F01 es piloto local: no existe despliegue dinámico autorizado ni autenticación institucional.",
-    "Pendientes diagnóstico F01-A/B y predicción, transferencia independiente robusta, revisión de examen y accesibilidad integral; no se acredita cierre M0.",
-    "Pendientes revisión docente y evaluación empírica; reconstrucción curricular provisional, no sílabo oficial.",
-    "Verificar inventario de reutilización y trazabilidad bibliográfica original antes de cierre."
+    "F01 piloto local; despliegue dinámico y autenticación institucional pendientes.",
+    "G-SOURCE: verificar originales, hashes y páginas; reconstrucción provisional no equivale a sílabo oficial.",
+    "G-A11Y-AUTO: auditoría automatizada integral pendiente; G-A11Y-MANUAL requiere revisor humano.",
+    "G-SECURITY: aislamiento del oráculo y controles de producción pendientes.",
+    "G-ACADEMIC y G-EMPIRICAL requieren revisión humana y estudio; examen requiere cierre y revisión diferida.",
+    "Banco de transferencia finito; remediación de exposición en prácticas C pendiente; inventario de reutilización y ADR pendientes."
   ],
   "last_verified_commands": [
     "RECONCILIAR: GitHub Actions 45378393829 SUCCESS y Render dep-dc2mnc49v7es73baaev0 LIVE observados mediante conectores",
     "RECONCILIAR connector-observed CI run 45511001993 deployment dep-dc31tk8473hc73bkjicg",
     "APROBAR_DISEÑO 9988754f5897bf58ec1e3a2ce73c732f5228d03114ce267226cc0df76c38568b: registro humano MM110_REVISION_F01.json",
-    "CI PR23 head d0f420956632a75b34ec155f006fd884f90e63ce; checkout merge e02d0b1: contract QA 45624384894 SUCCESS 203 tests; Chromium 45624384923 SUCCESS 4 tests"
+    "CI PR23 head d0f420956632a75b34ec155f006fd884f90e63ce; checkout merge e02d0b1: contract QA 45624384894 SUCCESS 203 tests; Chromium 45624384923 SUCCESS 4 tests",
+    "CI PR23 head d9a3db644f18c1ddf84b73a4896407cb967b6b11: contract 45750057659 SUCCESS 219 tests; Chromium 45750057588 SUCCESS 6 tests; logs inspected. Timestamp is latest CI completion, not a fresh Render observation."
   ],
-  "next_action": "Completar F01-A/B, predicción y transferencia sin exposición previa; revisar seguridad, accesibilidad y decisión de arquitectura de despliegue. Mantener M0 IN_PROGRESS hasta evidencias de gates requeridos.",
+  "next_action": "Ejecutar auditoría automatizada de accesibilidad y seguridad local; corregir hallazgos, completar examen y remediación C; reconciliar evidencia bibliográfica y arquitectura de despliegue. No declarar DONE_TECHNICAL sin gates aplicables y Render mismo SHA.",
   "render_service_id": "srv-dc06lp67bikc739hlghg",
   "last_verified_deploy_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
   "last_verified_deploy_at": "2026-11-24T23:33:45.158178Z",
-  "qa_ci_verified_sha": "d0f420956632a75b34ec155f006fd884f90e63ce"
+  "qa_ci_verified_sha": "d9a3db644f18c1ddf84b73a4896407cb967b6b11"
 }
