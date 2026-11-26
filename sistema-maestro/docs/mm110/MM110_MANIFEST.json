@@ -198,7 +198,7 @@
       "difficulty_rubric": "De factores positivos a negativos y racionales, reparación e inversión; no variar solo constantes",
       "transfer_variant_id": "f01-v-transfer",
       "accessibility_fallback": "Texto y tabla equivalentes, teclado y lector de pantalla",
-      "evidence_rationale": "Diseño r3 aprobado. CI anterior verifica integración HTTP y Chromium; fundamentos implementados con pruebas específicas pendientes de ejecución. No se afirma eficacia empírica ni secuencia obligatoria.",
+      "evidence_rationale": "Diseño r3 aprobado. CI PR23 head 0334970: contract 45745780549 y Chromium 45745780544 SUCCESS. Ruta guiada A/B/C/T y sustitución de transferencia implementadas; pruebas específicas de exposición y agotamiento pendientes de ejecución. No se afirma eficacia empírica.",
       "interaction_type": "SYMBOLIC_WITH_OPTIONAL_AREA",
       "revision": "r3-pilot",
       "variants": [
@@ -264,6 +264,27 @@
           "representation": "ALGEBRAIC",
           "role": "EXAM",
           "item_id": "f01-exam-rational"
+        },
+        {
+          "variant_id": "f01-v-transfer-perimeter",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-perimeter"
+        },
+        {
+          "variant_id": "f01-v-transfer-discount",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-discount"
+        },
+        {
+          "variant_id": "f01-v-transfer-balance",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-balance"
         }
       ],
       "mode_item_ids": {
@@ -274,7 +295,10 @@
           "f01-b-group",
           "f01-route-expand",
           "f01-route-repair",
-          "f01-route-transfer"
+          "f01-route-transfer",
+          "f01-transfer-perimeter",
+          "f01-transfer-discount",
+          "f01-transfer-balance"
         ],
         "practice_tutor": [
           "f01-tutor-inverse"
