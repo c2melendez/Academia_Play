@@ -85,7 +85,15 @@ class Session:
                 raise ValueError("Conflicting submission")
             return deepcopy(a["result"])
         item = INDEX[a["item"]]
+        # A previous completed attempt or hint on this exact item is exposure,
+        # including attempts opened in parallel before feedback was disclosed.
+        exposed = any(k != attempt_id and other["item"] == item.item_id
+                      and (other.get("closed") or other.get("assisted"))
+                      for k, other in self._attempts.items())
         result = assess(item.item_id,answer,reason_choice,a["assisted"])
+        if exposed:
+            result["eligible_evidence"] = False
+        result["previously_exposed"] = exposed
         if result["oracle_status"] == "INCONCLUSIVE":
             return {"status":"RETRY","feedback":"No se pudo comprobar; intenta nuevamente."}
         if item.mode == "exam_preparation":
