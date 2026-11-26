@@ -183,5 +183,25 @@ class BrowserF01(unittest.TestCase):
         self.page.set_viewport_size({"width":1280,"height":900})
         self.audit_accessibility("review-desktop")
 
+    def test_exam_finish_review(self):
+        self.page.locator("#mode").select_option("exam_preparation")
+        self.choose("f01-exam-rational")
+        expect(self.page.locator("#finish-exam")).to_be_hidden()
+        expect(self.page.locator("#exam-result")).to_be_hidden()
+        self.answer("-6x-9",0)
+        expect(self.page.locator("#finish-exam")).to_be_enabled()
+        expect(self.page.locator("#exam-result")).to_be_hidden()
+        expect(self.page.locator("#answer")).to_be_disabled()
+        self.page.locator("#finish-exam").click()
+        expect(self.page.locator("#exam-result")).to_be_visible()
+        expect(self.page.locator("#exam-result-title")).to_be_focused()
+        expect(self.page.locator("#exam-score")).to_contain_text("0/1")
+        expect(self.page.locator("#exam-solution")).to_contain_text("-6x+9")
+        expect(self.page.locator("#exam-explanation")).not_to_be_empty()
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 0")
+        self.audit_accessibility("exam-finished")
+        self.page.locator("#mode").select_option("learning_path")
+        expect(self.page.locator("#exam-result")).to_be_hidden()
+
 if __name__=="__main__":
     unittest.main()
