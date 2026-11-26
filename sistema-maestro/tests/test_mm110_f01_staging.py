@@ -10,7 +10,7 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 from mm110_f01_http import PilotServer
 from mm110_f01_store import Store
-from mm110_f01_staging import configuration
+from mm110_f01_staging import configuration, deployment_commit
 
 class StagingTests(unittest.TestCase):
     def setUp(self):
@@ -21,7 +21,7 @@ class StagingTests(unittest.TestCase):
         self.origin="https://review.example.invalid"
         self.secret="a"*43
         self.auth="Basic "+base64.b64encode(("reviewer:"+self.secret).encode()).decode()
-        self.server=PilotServer(("127.0.0.1",0),self.store,staging_origin=self.origin,staging_access=self.secret)
+        self.server=PilotServer(("127.0.0.1",0),self.store,staging_origin=self.origin,staging_access=self.secret,commit_sha='a'*40)
         self.thread=threading.Thread(target=self.server.serve_forever,kwargs={"poll_interval":0.02},daemon=True)
         self.thread.start()
         self.addCleanup(self.stop)
@@ -41,7 +41,9 @@ class StagingTests(unittest.TestCase):
             return r.status,r.read(),dict(r.getheaders())
         finally:c.close()
     def test_health_and_review_access(self):
-        self.assertEqual(200,self.request("/api/f01/health",auth=False)[0])
+        status,body,_=self.request("/api/f01/health",auth=False)
+        self.assertEqual(200,status)
+        self.assertEqual({"status":"restricted-staging","commit_sha":"a"*40},json.loads(body))
         status,body,h=self.request("/",auth=False)
         self.assertEqual(401,status)
         self.assertIn("Basic",h["WWW-Authenticate"])
@@ -77,3 +79,12 @@ class StagingTests(unittest.TestCase):
             configuration({**env,"RENDER":"true"})
         with self.assertRaises(ValueError):
             configuration({**env,"PORT":"0"})
+
+    def test_deploy_commit_validation(self):
+        self.assertIsNone(deployment_commit({}))
+        self.assertEqual("a"*40,deployment_commit({"RENDER":"true","RENDER_GIT_COMMIT":"a"*40}))
+        for invalid in ("", "abc", "A"*40, "z"*40):
+            with self.assertRaises(ValueError):
+                deployment_commit({"RENDER":"true","RENDER_GIT_COMMIT":invalid})
+        with self.assertRaises(ValueError):
+            deployment_commit({"RENDER":"true"})
