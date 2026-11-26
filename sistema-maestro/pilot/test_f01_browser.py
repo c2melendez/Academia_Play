@@ -261,5 +261,30 @@ class BrowserF01(unittest.TestCase):
         self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
         self.audit_accessibility("c-exhausted")
 
+    def test_exam_history_reload_and_isolation(self):
+        self.page.locator("#mode").select_option("exam_preparation")
+        expect(self.page.locator("#history-status")).to_contain_text("Aún no hay")
+        self.choose("f01-exam-rational")
+        expect(self.page.locator("#exam-history")).to_be_hidden()
+        self.answer("-6x-9",0)
+        self.page.locator("#finish-exam").click()
+        expect(self.page.locator("#exam-result")).to_be_visible()
+        self.page.reload()
+        expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
+        self.page.locator("#mode").select_option("exam_preparation")
+        expect(self.page.locator("#history-list li")).to_have_count(1)
+        self.page.locator("#history-list summary").click()
+        expect(self.page.locator("#history-list")).to_contain_text("Solución: -6x+9")
+        self.audit_accessibility("exam-history")
+        self.choose("f01-exam-rational")
+        expect(self.page.locator("#exam-history")).to_be_hidden()
+        with self.browser.new_context() as other:
+            page=other.new_page()
+            page.goto(self.url)
+            expect(page.locator("#notice")).to_contain_text("Sesión local activa")
+            page.locator("#mode").select_option("exam_preparation")
+            expect(page.locator("#history-status")).to_contain_text("Aún no hay")
+            expect(page.locator("#history-list li")).to_have_count(0)
+
 if __name__=="__main__":
     unittest.main()
