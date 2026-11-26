@@ -198,7 +198,7 @@
       "difficulty_rubric": "De factores positivos a negativos y racionales, reparación e inversión; no variar solo constantes",
       "transfer_variant_id": "f01-v-transfer",
       "accessibility_fallback": "Texto y tabla equivalentes, teclado y lector de pantalla",
-      "evidence_rationale": "Diseño r3 aprobado. CI PR23 head 0334970: contract 45745780549 y Chromium 45745780544 SUCCESS. Ruta guiada A/B/C/T y sustitución de transferencia implementadas; pruebas específicas de exposición y agotamiento pendientes de ejecución. No se afirma eficacia empírica.",
+      "evidence_rationale": "Diseño r3 aprobado. CI previo b27d976: contract 45748739563 y Chromium 45748739591 SUCCESS. Ruta guiada, ocho variantes de transferencia y reserva implementadas. Concesión de nuevos accesos exige MASTERED y ruta COMPLETE; accesos anteriores conservados. Pruebas de política actualizadas pendientes de CI. Eficacia empírica no evaluada.",
       "interaction_type": "SYMBOLIC_WITH_OPTIONAL_AREA",
       "revision": "r3-pilot",
       "variants": [
@@ -285,6 +285,34 @@
           "representation": "VERBAL",
           "role": "TRANSFER",
           "item_id": "f01-transfer-balance"
+        },
+        {
+          "variant_id": "f01-v-transfer-reserve-fuel",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-reserve-fuel"
+        },
+        {
+          "variant_id": "f01-v-transfer-reserve-temperature",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-reserve-temperature"
+        },
+        {
+          "variant_id": "f01-v-transfer-reserve-scale",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-reserve-scale"
+        },
+        {
+          "variant_id": "f01-v-transfer-reserve-sharing",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-reserve-sharing"
         }
       ],
       "mode_item_ids": {
@@ -298,7 +326,11 @@
           "f01-route-transfer",
           "f01-transfer-perimeter",
           "f01-transfer-discount",
-          "f01-transfer-balance"
+          "f01-transfer-balance",
+          "f01-transfer-reserve-fuel",
+          "f01-transfer-reserve-temperature",
+          "f01-transfer-reserve-scale",
+          "f01-transfer-reserve-sharing"
         ],
         "practice_tutor": [
           "f01-tutor-inverse"
