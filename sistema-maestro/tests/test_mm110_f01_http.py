@@ -70,7 +70,15 @@ class F01HTTPTests(unittest.TestCase):
             status,result,_=self.submit(c,key,answer,reason)
             self.assertEqual(200,status)
             self.assertTrue(result["accepted"])
-        self.assertEqual({"mastery_estimate":"MASTERED","evidence_count":3,"access_granted":True},self.request("/api/f01/progress",cookie=c)[1])
+        self.assertEqual({"mastery_estimate":"MASTERED","evidence_count":3,"access_granted":False},self.request("/api/f01/progress",cookie=c)[1])
+    def test_guided_grants_access_http(self):
+        c=self.session()
+        for item,answer,reason in [("f01-a-sign-positive","15",0),("f01-a-fraction-negative","-3/2",1),("f01-b-group","28",1),("f01-b-predict","4x+12",2),("f01-route-expand","14x-21",1),("f01-route-repair","5x-20",0),("f01-tutor-inverse","6(3x-2)",0),("f01-route-transfer","8x+48",1)]:
+            status,body,_=self.request("/api/f01/guided/start",{"item_id":item},c)
+            self.assertEqual(200,status)
+            self.assertTrue(self.submit(c,body["attempt_id"],answer,reason)[1]["accepted"])
+        self.assertTrue(self.request("/api/f01/progress",cookie=c)[1]["access_granted"])
+        self.assertEqual("COMPLETE",self.request("/api/f01/guided",cookie=c)[1]["stage"])
     def test_hint_and_replay(self):
         c=self.session()
         key=self.start(c)
