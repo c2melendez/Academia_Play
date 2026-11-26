@@ -73,3 +73,6 @@ class Store:
 
     def finish_exam(self, learner, attempt_id):
         return self._run(learner,lambda s:s.finish_exam(attempt_id))
+
+    def exam_history(self, learner):
+        return self._run(learner,lambda s:s.exam_history())
