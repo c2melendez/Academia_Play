@@ -2,8 +2,8 @@
   "status": "DESIGN_PROPOSED",
   "approval_status": "PENDING_HUMAN_APPROVAL",
   "design_path": "sistema-maestro/docs/mm110/MM110_M1_DISENO_PROPUESTO.md",
-  "design_blob": "8e12f0a9ec2aac31ab822926f735bb46fcf41b7f",
-  "design_commit": "0535246f8401ce5b7b3bcd3992ecbb415af7b23e",
+  "design_blob": "305faf877f9fb46ed6bdd2e2006006a784d8d965",
+  "design_commit": "96dcf1186c55242f23bbc3979ef9067db724043b",
   "scope": "M1 Polinomios F02–F07; propuesta univariada sobre Q, interpretación sobre R",
   "prerequisite": "F01; no altera aprobación existente",
   "technical_evidence": {
@@ -22,7 +22,7 @@
     },
     "classification": "E1: generic components and regression only; no M1 student activity certification"
   },
-  "source_status": "PENDING_ORIGINAL_TEXTBOOK_SECTION_REVIEW",
+  "source_status": "PARTIAL_TEXTBOOK_REVIEW_LARSON_SULLIVAN",
   "approval": null,
   "limitations": [
     "No syllabus official claim",
@@ -31,5 +31,7 @@
     "G-ACADEMIC and G-EMPIRICAL remain independent",
     "Supabase and dynamic Render deferred"
   ],
-  "next_action": "Complete original-source cotejo and obtain explicit approval of canonical exact design revision before curricular implementation. Continue F01 independent repairs."
+  "next_action": "APROBAR_DISEÑO bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53 (explicit human decision required; no official syllabus claim).",
+  "design_revision_id": "bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53",
+  "canonicalization": "UTF-8, NFC, LF, exactly one final LF; SHA-256"
 }
