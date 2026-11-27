@@ -191,7 +191,24 @@ class Session:
         return {"exam_id":group,"items":activities,"maximum":len(activities)}
 
     @locked
+    def active_exam_set(self):
+        """Recover only public questions and submission flags after reload."""
+        active = [(key,a) for key,a in self._attempts.items()
+                  if a.get("exam_set") and not a.get("exam_review")]
+        if not active:
+            return None
+        group = active[0][1]["exam_set"]
+        if len(active) != 5 or any(a["exam_set"] != group for _,a in active):
+            raise ValueError("Invalid active assessment")
+        return {"exam_id":group,"maximum":len(active),
+                "items":[{"attempt_id":key,**public_item(a["item"]),
+                          "recorded":a["closed"]} for key,a in active]}
+
+    @locked
     def finish_exam_set(self, exam_id):
+        active = self.active_exam_set()
+        if active and active["exam_id"] != exam_id:
+            raise ValueError("Complete active assessment first")
         members = [(key,a) for key,a in self._attempts.items() if a.get("exam_set") == exam_id]
         if not isinstance(exam_id,str) or not exam_id or len(members) != 5:
             raise ValueError("Unknown assessment")
@@ -209,7 +226,7 @@ class Session:
         item = INDEX[a["item"]]
         if item.mode != "exam_preparation" or not a["closed"]:
             raise ValueError("Exam submission required")
-        if a.get("exam_set"):
+        if a.get("exam_set") or any(b.get("exam_set") and not b.get("exam_review") for b in self._attempts.values()):
             raise ValueError("Finish the complete assessment")
         return self._make_exam_review(a)
 
