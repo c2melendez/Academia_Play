@@ -95,6 +95,8 @@ class Store:
                 if a["submission"]!=submission:
                     raise ValueError("conflicting replay")
                 return public_assessment(a["result"])
+            if a.get("guided") and a["item"] not in self._guided_view(s,INDEX[a["item"]]["family"])["pending"]:
+                raise ValueError("guided prerequisite not satisfied")
             canonical_choice=a.get("choice_order",[0,1,2])[reason_choice]
             result=assess(a["item"],answer,canonical_choice,assisted=a["exam"] is None)
             if result["status"] in ("RETRY","INVALID_INPUT"):
