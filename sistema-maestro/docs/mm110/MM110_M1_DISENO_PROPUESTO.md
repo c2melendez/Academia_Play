@@ -1,10 +1,10 @@
-# MM-110 — M1 Polinomios: propuesta de diseño r2
+# MM-110 — M1 Polinomios: propuesta de diseño r3
 
 Estado: DESIGN_PROPOSED / E3; no constituye APROBAR_DISEÑO ni aprobación académica. Alcance propuesto univariado sobre Q, interpretación sobre R. No modifica la revisión F01 aprobada. Dependencia curricular: F01; soporte local SQLite. Supabase y Render dinámico diferidos hasta completar certificación pedagógica y funcional local de MM-110 por decisión del propietario.
 
 ## Procedencia y límites
 
-Base documental: MM110_RECONSTRUCCION_CURRICULAR.json, afirmación C2 (S2/S3, acceso parcial histórico); MM110_SILABO_PROPUESTO.md, M1; MM110_MATRIZ_TRAZABILIDAD_BIBLIOGRAFICA.md (Larson 8, A.3 y 2.3 como referencias de índice, no páginas de ejercicios auditadas). Swokowski 13 p. 4 y Sullivan 11 pp. 10 y 16 fueron inspeccionados para F01, no acreditan todo M1. Cotejo de secciones, profundidad y vigencia pendiente. Los ejemplos de abajo son originales y constituyen propuestas pedagógicas, no atribuciones a fuentes. No afirmar cobertura oficial.
+Base documental: MM110_RECONSTRUCCION_CURRICULAR.json, afirmación C2 (S2/S3, acceso parcial histórico); MM110_SILABO_PROPUESTO.md, M1; MM110_MATRIZ_TRAZABILIDAD_BIBLIOGRAFICA.md (Larson 8, A.3 y 2.3 como referencias de índice, no páginas de ejercicios auditadas). Swokowski 13 p. 4 y Sullivan 11 pp. 10 y 16 fueron inspeccionados para F01, no acreditan todo M1. Cotejo parcial de Larson y Sullivan registrado en la sección de trazabilidad r3; vigencia institucional y auditoría integral pendientes. Los ejemplos de abajo son originales y constituyen propuestas pedagógicas, no atribuciones a fuentes. No afirmar cobertura oficial.
 
 ## Secuencia y aceptación por familia
 
@@ -44,8 +44,30 @@ Cotejar fuentes y alcance para F02–F07; revisar alternativas y reglas de acept
 - F06: factor común, agrupación, diferencia de cuadrados, trinomio cuadrado perfecto, trinomios con coeficiente principal no unitario y suma/diferencia de cubos. Exigir forma y equivalencia; no confundir factorización parcial con irreducibilidad.
 - F07: división larga con divisores lineales y de grado superior, división sintética para x-a, residuo y factor; verificar identidad y grado del residuo, incluido residuo cero. No admitir divisor cero.
 
-Los ajustes son propuestas de cobertura matemática; falta cotejo de libros originales y confirmación del alcance institucional. Referencias complementarias a comprobar: OpenStax Algebra and Trigonometry 2e, secciones 1.4, 1.5, 5.4 y 5.5. No afirmar inspección nueva de estas páginas ni aprobación institucional.
+Los ajustes son propuestas de cobertura matemática respaldadas parcialmente por la inspección de libros originales descrita abajo; falta confirmación del alcance institucional. Referencias complementarias a comprobar: OpenStax Algebra and Trigonometry 2e, secciones 1.4, 1.5, 5.4 y 5.5. No afirmar inspección nueva de estas páginas ni aprobación institucional.
 
 ## Reutilización técnica comprobada por inspección
 
-El módulo mm110_f01_oracle.py normaliza polinomios univariados sobre Q con límites de 256 caracteres, 128 tokens, grado 16, 256 bits por numerador/denominador y profundidad 24. Reutilizar normalize, add, mul y Verdict; no ampliar límites por defecto. Las pruebas técnicas de componentes genéricos no son implementación curricular aprobada. Mantener aislamiento de proceso antes de exponer nuevos oráculos a entradas estudiantiles. La revisión F01 y su hash permanecen intactos.
+El módulo mm110_f01_oracle.py normaliza polinomios univariados sobre Q con límites de 256 caracteres, 128 tokens, grado 16, 256 bits por numerador/denominador y profundidad 24. Reutilizar normalize, add, mul y Verdict; no ampliar límites por defecto. Las pruebas técnicas de componentes genéricos no son implementación curricular aprobada. El proceso aislado genérico ya fue verificado mediante CI 41e1c04; todavía no existe integración curricular M1. La revisión F01 y su hash permanecen intactos.
+
+## Trazabilidad y delimitación r3 (2026-11-27)
+
+Inspección textual directa de fragmentos recuperados de los libros aportados por el propietario, no auditoría completa ni verificación de licencia de redistribución. No reproducir ejercicios ni figuras.
+
+- Larson, Precálculo, 8.ª ed., A.3, pp. A27–A28 impresas: definición con coeficientes reales, exponentes enteros no negativos, forma estándar, grado, suma/resta de términos semejantes y multiplicación distributiva. Los objetivos de A.3 también enumeran productos notables y factorización. Respalda F02–F05 y orientación de F06.
+- Larson, misma edición, 2.3, pp. 150–151, 153–154 impresas: división larga, algoritmo de división con residuo cero o de grado inferior, división sintética con divisor x-k y coeficiente cero para términos ausentes; teoremas del residuo y factor. Respalda F07. La variante con dividendo de grado menor es extensión matemática explícita del diseño, no atribución a la página inspeccionada.
+- Sullivan, Algebra & Trigonometry, 11.ª ed., índice p. ix (R.4–R.6) y p. 49 impresa (R.5): objetivos de operaciones, productos especiales, división larga y sintética; factor común, diferencias de cuadrados, suma/diferencia de cubos, cuadrados perfectos, trinomios mónicos/no mónicos y agrupación. Su discusión de factorización en R.5 se restringe a coeficientes enteros. No confundir esa convención con Q[x].
+- Delimitación propuesta: M1 solo una variable y coeficientes racionales exactos, con identidades interpretadas sobre R. Polinomios multivariados, coeficientes irracionales y factorización completa sobre R quedan fuera de este corte; completar cuadrados se reservará para el diseño de M3, sujeto a revisión. No reclamar cobertura integral de las ediciones o de UNAH. Los fragmentos de Sullivan R.4 y R.6 son objetivos de índice, no páginas de ejercicios auditadas.
+
+## Alternativas específicas por familia
+
+| Familia | Visual manipulable | Diagnóstico y reparación | Sin simulación |
+|---|---|---|---|
+| F02 | Tarjetas de coeficientes por grado | Detectar grado falso tras cancelación | Reducir y justificar grado en texto |
+| F03 | Columnas alineadas por exponentes | Reparar resta con signo exterior | Operación escrita y comprobación de coeficientes |
+| F04 | Cuadrícula de productos parciales | Identificar producto omitido | Distribución simbólica con retiro de ayuda |
+| F05 | Descomposición de áreas con lados positivos | Refutar identidad falsa | Derivación algebraica y elección de identidad |
+| F06 | Agrupación de términos y rectángulos válidos | Distinguir factor común de factorización parcial | Factorizar y comprobar mediante expansión |
+| F07 | Tabla de división larga/sintética paso a paso | Detectar residuo de grado inválido | División escrita y reconstrucción del dividendo |
+
+Decisión propuesta: combinar visual opcional con reparación y ruta simbólica accesible; no inferir eficacia empírica. Para F06 el verificador genérico de producto de dos factores no constantes no basta para factor común constante ni para completitud; implementar criterios específicos antes de certificar esas actividades. Para F02–F05 la equivalencia sola tampoco garantiza forma reducida solicitada. Mantener estas limitaciones como requisitos de implementación.
