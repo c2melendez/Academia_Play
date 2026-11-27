@@ -256,6 +256,16 @@ class Session:
         return deepcopy(a["exam_review"])
 
     @locked
+    def pending_individual_exams(self):
+        """Return only own unfinished individual exams, without solutions."""
+        if self.active_exam_set():
+            return []
+        return [{"attempt_id":key,**public_item(a["item"]), "recorded":a["closed"]}
+                for key,a in reversed(list(self._attempts.items()))
+                if INDEX[a["item"]].mode == "exam_preparation"
+                and not a.get("exam_set") and not a.get("exam_review")]
+
+    @locked
     def exam_history(self):
         """Only explicitly finished reviews; never disclose pending answers."""
         if any(a.get("exam_set") and not a.get("exam_review") for a in self._attempts.values()):
