@@ -112,3 +112,45 @@ class M1StoreTests(unittest.TestCase):
         self.assertEqual(len(used),18)
         with self.assertRaisesRegex(ValueError,"fresh exam bank exhausted"):
             self.store.start_exam("rotation")
+
+    def test_guided_route_order_and_reload(self):
+        learner="guided"
+        family="F03"
+        self.assertEqual(self.store.guided_progress(learner,family)["stage"],"A")
+        with self.assertRaises(ValueError):
+            self.store.guided_start(learner,family,"m1-f03-t-5")
+        # An ordinary practice result cannot bypass the guided prerequisites.
+        self.store.assess_formative(learner,"m1-f03-a-1","5x^2",0)
+        self.assertEqual(self.store.guided_progress(learner,family)["stage"],"A")
+        cases=[
+            ("m1-f03-a-1","5x^2",0,"B"),
+            ("m1-f03-b-2","3x^2+3x-5",1,"C"),
+            ("m1-f03-c-3","3x^2-7x+10",2,"C"),
+            ("m1-f03-c-4","6x-1",0,"T"),
+            ("m1-f03-t-5","4x^2+5x-8",1,"COMPLETE"),
+        ]
+        for item,answer,key,stage in cases:
+            a=self.store.guided_start(learner,family,item)
+            self.store=Store(self.path)
+            self.assertEqual(a,self.store.guided_start(learner,family,item))
+            r=self.store.submit(learner,a["attempt_id"],answer,key)
+            self.assertTrue(r["accepted"])
+            self.assertTrue(r["assisted"])
+            self.assertFalse(r["eligible_evidence"])
+            self.assertEqual(self.store.guided_progress(learner,family)["stage"],stage)
+        self.assertEqual(len(self.store.guided_progress(learner,family)["completed"]),5)
+        self.assertEqual(self.store.progress(learner)["mastery"],"UNASSESSED")
+        self.assertEqual(self.store.guided_progress("other",family)["stage"],"A")
+
+    def test_guided_wrong_answer_does_not_advance(self):
+        a=self.store.guided_start("a","F02","m1-f02-a-1")
+        r=self.store.submit("a",a["attempt_id"],2,0)
+        self.assertFalse(r["accepted"])
+        self.assertEqual(self.store.guided_progress("a","F02")["stage"],"A")
+        b=self.store.guided_start("a","F02","m1-f02-a-1")
+        self.assertNotEqual(a["attempt_id"],b["attempt_id"])
+        self.store.start_exam("a")
+        with self.assertRaises(ValueError):
+            self.store.guided_progress("a","F02")
+        with self.assertRaises(ValueError):
+            self.store.submit("a",b["attempt_id"],3,0)
