@@ -21,9 +21,9 @@ TRANSFER_RESERVE = ("f01-transfer-reserve-fuel", "f01-transfer-reserve-temperatu
                     "f01-transfer-reserve-scale", "f01-transfer-reserve-sharing")
 ALL_TRANSFER = TRANSFER_POOL + TRANSFER_RESERVE
 C_POOLS = {
-    "f01-route-expand": ("f01-route-expand","f01-c-expand-negative","f01-c-expand-rational"),
-    "f01-route-repair": ("f01-route-repair","f01-c-repair-sign","f01-c-repair-rational"),
-    "f01-tutor-inverse": ("f01-tutor-inverse","f01-c-inverse-negative","f01-c-inverse-rational"),
+    "f01-route-expand": ("f01-route-expand","f01-c-expand-negative","f01-c-expand-rational","f01-c-expand-trinomial"),
+    "f01-route-repair": ("f01-route-repair","f01-c-repair-sign","f01-c-repair-rational","f01-c-repair-nested"),
+    "f01-tutor-inverse": ("f01-tutor-inverse","f01-c-inverse-negative","f01-c-inverse-rational","f01-c-inverse-combine"),
 }
 ALL_C = {i for pool in C_POOLS.values() for i in pool}
 
