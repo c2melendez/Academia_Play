@@ -44,15 +44,40 @@ CASES = (
 ("m1-f07-c-4",["x^2+1","2"],["x^2","x^2+3"]),
 ("m1-f07-t-5",["x^2-x+5","-2"],["x^2-x+5","2"]),
 ("m1-f07-e-6",["2x^2-x+1","-6"],["2x^2-x+1","6"]),
+("m1-f02-t-v2",2,4),
+("m1-f02-t-v3","3","0"),
+("m1-f02-e-v2",0,None),
+("m1-f02-e-v3","-4","4"),
+("m1-f03-t-v2","2x^3-3x+10","2x^3-3x-2"),
+("m1-f03-t-v3","2x^2+2x-5","x^2+2x-5"),
+("m1-f03-e-v2","-5x^2+7","-5x^2+5"),
+("m1-f03-e-v3","x^2+3x-3","x^2-7x-3"),
+("m1-f04-t-v2","3x^2+11x+6","3x^2+6"),
+("m1-f04-t-v3","2x^3-3x^2+4x","2x^3+3x^2+4x"),
+("m1-f04-e-v2","6x^2-19x+10","6x^2-19x-10"),
+("m1-f04-e-v3","x^3-2x^2-x+2","x^3-2x^2+x+2"),
+("m1-f05-t-v2","12x+36","36"),
+("m1-f05-t-v3","4x^2-9","4x^2+9"),
+("m1-f05-e-v2","8x^3+12x^2+6x+1","8x^3+1"),
+("m1-f05-e-v3","9x^2-16","9x^2+16"),
+("m1-f06-t-v2",["x+5","x+4"],["x+2","x+10"]),
+("m1-f06-t-v3",["3x","x-4"],["3x","x+4"]),
+("m1-f06-e-v2",["x+2","x^2-2x+4"],["x+2","x^2+2x+4"]),
+("m1-f06-e-v3",["2x-3","2x-3"],["2x+3","2x-3"]),
+("m1-f07-t-v2",["x^2+1","2"],["x^2+1","-2"]),
+("m1-f07-t-v3",["2x^2+1","4"],["2x^2+1","5"]),
+("m1-f07-e-v2",["x^2+2x","6"],["x^2-2x","6"]),
+("m1-f07-e-v3",["0","x^2+3"],["1","x^2+3"]),
+
 )
 
 class M1BankTests(unittest.TestCase):
     def test_inventory(self):
-        self.assertEqual(len(ITEMS),36)
+        self.assertEqual(len(ITEMS),60)
         self.assertEqual(set(INDEX),{x[0] for x in CASES})
         for family in ("F02","F03","F04","F05","F06","F07"):
             self.assertEqual(Counter(i["stage"] for i in ITEMS if i["family"]==family),
-                             Counter({"A":1,"B":1,"C":2,"T":1,"E":1}))
+                             Counter({"A":1,"B":1,"C":2,"T":3,"E":3}))
     def test_public_fields(self):
         for item in ITEMS:
             with self.subTest(id=item["id"]):
@@ -95,8 +120,9 @@ for item,correct,wrong in CASES:
 
 class M1ReasoningTests(unittest.TestCase):
     def test_all_items_reasoning(self):
-        # Independently specified correct option indices for the current 36 items.
-        keys=(0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2)
+        # Independently specified correct option indices for the current 60 items.
+        keys=(0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,1,0,0,1,2,1,0,2,0,2,1,0,2,1,1,2,1,0,2,0,0,2,1,0)
+        self.assertEqual(len(keys),len(CASES))
         for (item,correct,wrong),key in zip(CASES,keys):
             with self.subTest(item=item):
                 data=INDEX[item]
