@@ -123,6 +123,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(401,{"error":"session required"})
         if self.path == "/api/f01/items":
             return self._send(200,[{"item_id":i.item_id,"mode":i.mode,"family":i.family} for i in ITEMS])
+        if self.path == "/api/f01/exam/set/active":
+            return self._send(200,self.server.store.active_exam_set(learner))
         if self.path == "/api/f01/exam/history":
             return self._send(200,self.server.store.exam_history(learner))
         if self.path == "/api/f01/guided":
@@ -170,6 +172,10 @@ class Handler(BaseHTTPRequestHandler):
                 result = store.start_guided(learner,data["item_id"])
             elif self.path == "/api/f01/hint" and set(data)=={"attempt_id","index"}:
                 result = store.request_hint(learner,data["attempt_id"],data["index"])
+            elif self.path == "/api/f01/exam/set/start" and not data:
+                result = store.start_exam_set(learner)
+            elif self.path == "/api/f01/exam/set/finish" and set(data)=={"exam_id"}:
+                result = store.finish_exam_set(learner,data["exam_id"])
             elif self.path == "/api/f01/exam/finish" and set(data)=={"attempt_id"}:
                 result = store.finish_exam(learner,data["attempt_id"])
             elif self.path == "/api/f01/submit" and set(data)=={"attempt_id","answer","reason_choice"}:
