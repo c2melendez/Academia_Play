@@ -81,6 +81,9 @@ class Store:
     def start_exam_set(self, learner):
         return self._run(learner,lambda s:s.start_exam_set())
 
+    def active_exam_set(self, learner):
+        return self._run(learner,lambda s:s.active_exam_set())
+
     def finish_exam_set(self, learner, exam_id):
         return self._run(learner,lambda s:s.finish_exam_set(exam_id))
 
