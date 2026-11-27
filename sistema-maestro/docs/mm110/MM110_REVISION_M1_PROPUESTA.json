@@ -1,6 +1,6 @@
 {
-  "status": "DESIGN_PROPOSED",
-  "approval_status": "PENDING_HUMAN_APPROVAL",
+  "status": "DESIGN_APPROVED",
+  "approval_status": "HUMAN_APPROVED",
   "design_path": "sistema-maestro/docs/mm110/MM110_M1_DISENO_PROPUESTO.md",
   "design_blob": "305faf877f9fb46ed6bdd2e2006006a784d8d965",
   "design_commit": "96dcf1186c55242f23bbc3979ef9067db724043b",
@@ -23,15 +23,20 @@
     "classification": "E1: generic components and regression only; no M1 student activity certification"
   },
   "source_status": "PARTIAL_TEXTBOOK_REVIEW_LARSON_SULLIVAN",
-  "approval": null,
+  "approval": {
+    "date": "2026-11-27",
+    "source": "direct_explicit_user_instruction_in_conversation",
+    "command": "APROBAR_DISEÑO bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53",
+    "approved_revision_id": "bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53",
+    "scope": "Implementación conjunta F02–F07 conforme a M1 r3"
+  },
   "limitations": [
     "No syllabus official claim",
-    "No M1 curricular implementation authorized",
     "Factor product is not irreducibility proof",
     "G-ACADEMIC and G-EMPIRICAL remain independent",
     "Supabase and dynamic Render deferred"
   ],
-  "next_action": "APROBAR_DISEÑO bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53 (explicit human decision required; no official syllabus claim).",
+  "next_action": "Implementar F02–F07; pruebas independientes, integración local y revisión docente pendiente.",
   "design_revision_id": "bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53",
   "canonicalization": "UTF-8, NFC, LF, exactly one final LF; SHA-256"
 }
