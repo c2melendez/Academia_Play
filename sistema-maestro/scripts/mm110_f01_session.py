@@ -131,6 +131,9 @@ class Session:
     @locked
     def submit(self,attempt_id,answer,reason_choice):
         a = self._attempts[attempt_id]
+        if (INDEX[a["item"]].mode == "exam_preparation" and not a.get("exam_set")
+                and any(b.get("exam_set") and not b.get("exam_review") for b in self._attempts.values())):
+            raise ValueError("Complete active assessment first")
         if a["closed"]:
             if a["submission"] != (answer,reason_choice):
                 raise ValueError("Conflicting submission")
@@ -177,8 +180,8 @@ class Session:
         """Select one least-exposed item per exam family, with stable tie ordering."""
         if any(a.get("exam_set") and not a.get("exam_review") for a in self._attempts.values()):
             raise ValueError("An assessment is already active")
-        if any(INDEX[a["item"]].mode == "exam_preparation" and not a.get("exam_review") for a in self._attempts.values()):
-            raise ValueError("Finish individual assessment first")
+        # Individual attempts remain persisted, but their submissions and reviews
+        # are suspended during an aggregate assessment. Abandonment cannot block it.
         families = ("rational-identity","exam-repair","exam-inverse","exam-context","exam-combined")
         ids = []
         for family in families:
