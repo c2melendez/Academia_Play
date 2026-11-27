@@ -1,4 +1,4 @@
-# MM-110 — M1 Polinomios: propuesta de diseño r1
+# MM-110 — M1 Polinomios: propuesta de diseño r2
 
 Estado: DESIGN_PROPOSED / E3; no constituye APROBAR_DISEÑO ni aprobación académica. Alcance propuesto univariado sobre Q, interpretación sobre R. No modifica la revisión F01 aprobada. Dependencia curricular: F01; soporte local SQLite. Supabase y Render dinámico diferidos hasta completar certificación pedagógica y funcional local de MM-110 por decisión del propietario.
 
@@ -34,3 +34,18 @@ Bancos formativo, transferencia y examen separados, variantes semánticas nuevas
 ## Próximo gate
 
 Cotejar fuentes y alcance para F02–F07; revisar alternativas y reglas de aceptación; obtener APROBAR_DISEÑO sobre revisión exacta antes de incorporar M1 al manifiesto aprobado o implementar currículo real. Mantener M0 IN_PROGRESS hasta reconciliar controles locales y revisiones aplicables. Las tareas de investigación y diseño pueden avanzar en paralelo sin declarar certificación.
+
+## Cobertura detallada y criterios adicionales r2
+
+- F02: distinguir expresión polinómica de expresión racional no polinómica; grado después de reducción; cero sin grado definido.
+- F03: sumar/restar por coeficientes, conservar términos ausentes y comprobar cancelaciones.
+- F04: productos de monomios y polinomios, signos y coeficientes racionales; reducción de productos parciales.
+- F05: cuadrados y cubos de binomios y producto de conjugados; distinguir fórmulas falsas mediante expansión exacta.
+- F06: factor común, agrupación, diferencia de cuadrados, trinomio cuadrado perfecto, trinomios con coeficiente principal no unitario y suma/diferencia de cubos. Exigir forma y equivalencia; no confundir factorización parcial con irreducibilidad.
+- F07: división larga con divisores lineales y de grado superior, división sintética para x-a, residuo y factor; verificar identidad y grado del residuo, incluido residuo cero. No admitir divisor cero.
+
+Los ajustes son propuestas de cobertura matemática; falta cotejo de libros originales y confirmación del alcance institucional. Referencias complementarias a comprobar: OpenStax Algebra and Trigonometry 2e, secciones 1.4, 1.5, 5.4 y 5.5. No afirmar inspección nueva de estas páginas ni aprobación institucional.
+
+## Reutilización técnica comprobada por inspección
+
+El módulo mm110_f01_oracle.py normaliza polinomios univariados sobre Q con límites de 256 caracteres, 128 tokens, grado 16, 256 bits por numerador/denominador y profundidad 24. Reutilizar normalize, add, mul y Verdict; no ampliar límites por defecto. Las pruebas técnicas de componentes genéricos no son implementación curricular aprobada. Mantener aislamiento de proceso antes de exponer nuevos oráculos a entradas estudiantiles. La revisión F01 y su hash permanecen intactos.
