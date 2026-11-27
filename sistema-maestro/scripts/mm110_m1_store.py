@@ -2,6 +2,9 @@
 No HTTP exposure or mastery grants. All existing formative pilot work stays assisted.
 """
 import json
+import hashlib
+import secrets
+import time
 import sqlite3
 from contextlib import closing
 from pathlib import Path
@@ -11,6 +14,8 @@ from mm110_m1_activities import ITEMS, INDEX, public_item, assess, public_assess
 REVISION="bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53"
 MAX_ATTEMPTS=300
 MAX_EXAMS=20
+SESSION_TTL=7*24*3600
+SESSION_LIMIT=1000
 FAMILIES=tuple("F%02d"%i for i in range(2,8))
 
 class Store:
@@ -18,6 +23,7 @@ class Store:
         self.path=str(Path(path).resolve())
         with closing(self.connect()) as db:
             db.execute("CREATE TABLE IF NOT EXISTS m1_sessions (learner TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+            db.execute("CREATE TABLE IF NOT EXISTS m1_tokens (digest TEXT PRIMARY KEY, learner TEXT NOT NULL UNIQUE, expires INTEGER NOT NULL)")
     def connect(self):
         return sqlite3.connect(self.path,timeout=10,isolation_level=None)
     def _run(self,learner,fn):
@@ -134,4 +140,38 @@ class Store:
             return {"families":{f:{"completed":sorted({a["item"] for a in s["attempts"].values()
                 if a["exam"] is None and INDEX[a["item"]]["family"]==f and a.get("result",{}).get("accepted")})}
                 for f in FAMILIES},"mastery":"UNASSESSED","eligible_evidence":0}
+        return self._run(learner,run)
+
+    def create_token(self):
+        token=secrets.token_urlsafe(32)
+        digest=hashlib.sha256(token.encode("ascii")).hexdigest()
+        now=int(time.time())
+        with closing(self.connect()) as db:
+            db.execute("BEGIN IMMEDIATE")
+            db.execute("DELETE FROM m1_tokens WHERE expires<=?",(now,))
+            if db.execute("SELECT COUNT(*) FROM m1_tokens").fetchone()[0]>=SESSION_LIMIT:
+                db.rollback()
+                return None
+            db.execute("INSERT INTO m1_tokens VALUES (?,?,?)",(digest,uuid4().hex,now+SESSION_TTL))
+            db.commit()
+        return token
+
+    def learner_for_token(self,token):
+        if not isinstance(token,str) or len(token)!=43 or not token.isascii():
+            return None
+        digest=hashlib.sha256(token.encode("ascii")).hexdigest()
+        with closing(self.connect()) as db:
+            row=db.execute("SELECT learner FROM m1_tokens WHERE digest=? AND expires>?",(digest,int(time.time()))).fetchone()
+        return row[0] if row else None
+
+    def assess_formative(self,learner,item,answer,reason_choice):
+        """Atomic start-and-submit for the existing formative interface."""
+        def run(s):
+            if self._active(s) or INDEX[item]["stage"]=="E":
+                raise ValueError("unavailable")
+            result=assess(item,answer,reason_choice,True)
+            if result["status"]=="ASSESSED":
+                key=self._new(s,item)
+                s["attempts"][key].update(result=result,submission=[answer,reason_choice])
+            return public_assessment(result)
         return self._run(learner,run)
