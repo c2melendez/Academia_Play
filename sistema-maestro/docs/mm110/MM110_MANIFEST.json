@@ -198,7 +198,7 @@
       "difficulty_rubric": "De factores positivos a negativos y racionales, reparación e inversión; no variar solo constantes",
       "transfer_variant_id": "f01-v-transfer",
       "accessibility_fallback": "Texto y tabla equivalentes, teclado y lector de pantalla",
-      "evidence_rationale": "Diseño r3 aprobado para F01; 29 actividades reconciliadas con código. CI cdbdf42: contract 45917876404 (268), Chromium 45917876339 (14), PostgreSQL local 45917876391 (5), SUCCESS; logs inspeccionados. Evaluación múltiple y recuperación verificadas. Revisión docente, accesibilidad manual y eficacia empírica pendientes.",
+      "evidence_rationale": "F01 r3 aprobado; 34 actividades reconciliadas con código, diez de examen. CI 41e1c04 verificado: contract 281, browser 14, PostgreSQL local 5. Ampliación y rotación del examen pendientes de CI específico. Eficacia empírica y revisión docente pendientes.",
       "interaction_type": "SYMBOLIC_WITH_OPTIONAL_AREA",
       "revision": "r3-pilot",
       "variants": [
@@ -404,6 +404,41 @@
           "representation": "ALGEBRAIC",
           "role": "EXAM",
           "item_id": "f01-exam-combined"
+        },
+        {
+          "variant_id": "f01-v-exam-rational-b",
+          "family": "rational-identity",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-rational-b"
+        },
+        {
+          "variant_id": "f01-v-exam-repair-b",
+          "family": "exam-repair",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-repair-b"
+        },
+        {
+          "variant_id": "f01-v-exam-inverse-b",
+          "family": "exam-inverse",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-inverse-b"
+        },
+        {
+          "variant_id": "f01-v-exam-context-b",
+          "family": "exam-context",
+          "representation": "VERBAL",
+          "role": "EXAM",
+          "item_id": "f01-exam-context-b"
+        },
+        {
+          "variant_id": "f01-v-exam-combined-b",
+          "family": "exam-combined",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-combined-b"
         }
       ],
       "mode_item_ids": {
@@ -440,7 +475,12 @@
           "f01-exam-repair",
           "f01-exam-inverse",
           "f01-exam-context",
-          "f01-exam-combined"
+          "f01-exam-combined",
+          "f01-exam-rational-b",
+          "f01-exam-repair-b",
+          "f01-exam-inverse-b",
+          "f01-exam-context-b",
+          "f01-exam-combined-b"
         ]
       }
     }
