@@ -188,3 +188,26 @@ class BrowserM1(unittest.TestCase):
         self.page.locator("#start-exam").click()
         expect(self.page.locator("#exam-count")).to_contain_text("0 de 6")
         expect(self.page.locator("#exam-prompt")).to_contain_text("3x^3-3x^3+7")
+
+    def test_guided_route_in_browser(self):
+        self.family("F03")
+        self.page.locator("#practice-mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Etapa A")
+        for item,answer,key,next_stage in [
+            ("m1-f03-a-1","5x^2",0,"Etapa B"),
+            ("m1-f03-b-2","3x^2+3x-5",1,"Etapa C"),
+            ("m1-f03-c-3","3x^2-7x+10",2,"Etapa C"),
+            ("m1-f03-c-4","6x-1",0,"Etapa T"),
+            ("m1-f03-t-5","4x^2+5x-8",1,"Ruta completada"),
+        ]:
+            self.page.locator("#activity").select_option(item)
+            self.page.locator("#ans0").fill(answer)
+            self.page.locator('input[name="reason"]').nth(key).check()
+            self.page.locator("#assessment button").click()
+            expect(self.page.locator("#guided-status")).to_contain_text(next_stage)
+        expect(self.page.locator("#assessment")).to_be_hidden()
+        self.page.reload()
+        self.family("F03")
+        self.page.locator("#practice-mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Ruta completada: 5 de 5")
+        self.audit("guided-complete")
