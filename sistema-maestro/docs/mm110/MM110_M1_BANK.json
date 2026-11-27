@@ -1,0 +1,482 @@
+{
+  "revision": "bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53",
+  "status": "INITIAL_BANK_NOT_STUDENT_INTEGRATED",
+  "items": [
+    {
+      "id": "m1-f02-a-1",
+      "family": "F02",
+      "stage": "A",
+      "operation": "degree",
+      "prompt": "¿Cuál es el grado de 7x^3-2x+1?",
+      "arguments": [
+        "7x^3-2x+1"
+      ],
+      "expected": 3,
+      "explanation": "El mayor exponente con coeficiente no nulo es 3."
+    },
+    {
+      "id": "m1-f02-b-2",
+      "family": "F02",
+      "stage": "B",
+      "operation": "coefficient",
+      "prompt": "Identifica el coeficiente de x^2 en 4x^3-5x^2+8.",
+      "arguments": [
+        "4x^3-5x^2+8",
+        2
+      ],
+      "expected": "-5",
+      "explanation": "El signo pertenece al coeficiente; el exponente no es el coeficiente."
+    },
+    {
+      "id": "m1-f02-c-3",
+      "family": "F02",
+      "stage": "C",
+      "operation": "degree",
+      "prompt": "Determina el grado después de reducir 5x^4-5x^4+3x^2-1.",
+      "arguments": [
+        "5x^4-5x^4+3x^2-1"
+      ],
+      "expected": 2,
+      "explanation": "Los términos de grado cuatro se cancelan; queda 3x^2-1."
+    },
+    {
+      "id": "m1-f02-c-4",
+      "family": "F02",
+      "stage": "C",
+      "operation": "coefficient",
+      "prompt": "¿Cuál es el coeficiente de x^3 en x^5+2x-9?",
+      "arguments": [
+        "x^5+2x-9",
+        3
+      ],
+      "expected": "0",
+      "explanation": "Un término ausente tiene coeficiente cero."
+    },
+    {
+      "id": "m1-f02-t-5",
+      "family": "F02",
+      "stage": "T",
+      "operation": "degree",
+      "prompt": "Dos modelos de producción difieren en (3x^3+2x+1)-(3x^3-x+4). Determina el grado.",
+      "arguments": [
+        "(3x^3+2x+1)-(3x^3-x+4)"
+      ],
+      "expected": 1,
+      "explanation": "La diferencia es 3x-3; el grado baja a uno."
+    },
+    {
+      "id": "m1-f02-e-6",
+      "family": "F02",
+      "stage": "E",
+      "operation": "degree",
+      "prompt": "Indica el grado del polinomio x^2-x^2.",
+      "arguments": [
+        "x^2-x^2"
+      ],
+      "expected": null,
+      "explanation": "El polinomio cero no tiene grado definido en este curso."
+    },
+    {
+      "id": "m1-f03-a-1",
+      "family": "F03",
+      "stage": "A",
+      "operation": "equivalent",
+      "prompt": "Reduce 8x^2-3x^2.",
+      "arguments": [
+        "8x^2-3x^2"
+      ],
+      "expected": "5x^2",
+      "explanation": "Se restan coeficientes, no exponentes."
+    },
+    {
+      "id": "m1-f03-b-2",
+      "family": "F03",
+      "stage": "B",
+      "operation": "equivalent",
+      "prompt": "Suma (2x^2+3x)+(x^2-5).",
+      "arguments": [
+        "(2x^2+3x)+(x^2-5)"
+      ],
+      "expected": "3x^2+3x-5",
+      "explanation": "Alinea términos por exponente y suma sus coeficientes."
+    },
+    {
+      "id": "m1-f03-c-3",
+      "family": "F03",
+      "stage": "C",
+      "operation": "equivalent",
+      "prompt": "Resta (4x^2-2x+7)-(x^2+5x-3).",
+      "arguments": [
+        "(4x^2-2x+7)-(x^2+5x-3)"
+      ],
+      "expected": "3x^2-7x+10",
+      "explanation": "Distribuye el signo negativo a todos los términos del sustraendo."
+    },
+    {
+      "id": "m1-f03-c-4",
+      "family": "F03",
+      "stage": "C",
+      "operation": "equivalent",
+      "prompt": "Reduce (x^3+2x)-(x^3-4x+1).",
+      "arguments": [
+        "(x^3+2x)-(x^3-4x+1)"
+      ],
+      "expected": "6x-1",
+      "explanation": "Los cúbicos se cancelan; 2x+4x=6x."
+    },
+    {
+      "id": "m1-f03-t-5",
+      "family": "F03",
+      "stage": "T",
+      "operation": "equivalent",
+      "prompt": "Ingresos 6x^2+9x y costos 2x^2+4x+8: expresa la diferencia.",
+      "arguments": [
+        "(6x^2+9x)-(2x^2+4x+8)"
+      ],
+      "expected": "4x^2+5x-8",
+      "explanation": "El beneficio es ingresos menos costos."
+    },
+    {
+      "id": "m1-f03-e-6",
+      "family": "F03",
+      "stage": "E",
+      "operation": "equivalent",
+      "prompt": "Reduce (7x^3-x+4)+(-7x^3+3x-6).",
+      "arguments": [
+        "(7x^3-x+4)+(-7x^3+3x-6)"
+      ],
+      "expected": "2x-2",
+      "explanation": "La suma cancela ambos términos cúbicos."
+    },
+    {
+      "id": "m1-f04-a-1",
+      "family": "F04",
+      "stage": "A",
+      "operation": "equivalent",
+      "prompt": "Multiplica 3x por -2x^2.",
+      "arguments": [
+        "3x*(-2x^2)"
+      ],
+      "expected": "-6x^3",
+      "explanation": "Multiplica coeficientes y suma exponentes de la misma base."
+    },
+    {
+      "id": "m1-f04-b-2",
+      "family": "F04",
+      "stage": "B",
+      "operation": "equivalent",
+      "prompt": "Expande 2x(x+3).",
+      "arguments": [
+        "2x(x+3)"
+      ],
+      "expected": "2x^2+6x",
+      "explanation": "El monomio multiplica a cada sumando."
+    },
+    {
+      "id": "m1-f04-c-3",
+      "family": "F04",
+      "stage": "C",
+      "operation": "equivalent",
+      "prompt": "Expande (2x-3)(x+5).",
+      "arguments": [
+        "(2x-3)(x+5)"
+      ],
+      "expected": "2x^2+7x-15",
+      "explanation": "Hay cuatro productos parciales; 10x-3x=7x."
+    },
+    {
+      "id": "m1-f04-c-4",
+      "family": "F04",
+      "stage": "C",
+      "operation": "equivalent",
+      "prompt": "Expande (x^2+2x-1)(x-2).",
+      "arguments": [
+        "(x^2+2x-1)(x-2)"
+      ],
+      "expected": "x^3-5x+2",
+      "explanation": "Los seis productos parciales dan cancelación de los cuadrados."
+    },
+    {
+      "id": "m1-f04-t-5",
+      "family": "F04",
+      "stage": "T",
+      "operation": "equivalent",
+      "prompt": "Para x>0, un rectángulo tiene lados x+2 y 2x+1. Expresa su área.",
+      "arguments": [
+        "(x+2)(2x+1)"
+      ],
+      "expected": "2x^2+5x+2",
+      "explanation": "El área es el producto de las dos dimensiones positivas."
+    },
+    {
+      "id": "m1-f04-e-6",
+      "family": "F04",
+      "stage": "E",
+      "operation": "equivalent",
+      "prompt": "Expande (x-4)(3x+2).",
+      "arguments": [
+        "(x-4)(3x+2)"
+      ],
+      "expected": "3x^2-10x-8",
+      "explanation": "Los términos cruzados suman -10x."
+    },
+    {
+      "id": "m1-f05-a-1",
+      "family": "F05",
+      "stage": "A",
+      "operation": "equivalent",
+      "prompt": "Expande (x+3)^2.",
+      "arguments": [
+        "(x+3)^2"
+      ],
+      "expected": "x^2+6x+9",
+      "explanation": "El cuadrado incluye dos productos cruzados."
+    },
+    {
+      "id": "m1-f05-b-2",
+      "family": "F05",
+      "stage": "B",
+      "operation": "equivalent",
+      "prompt": "Expande (x+7)(x-7).",
+      "arguments": [
+        "(x+7)(x-7)"
+      ],
+      "expected": "x^2-49",
+      "explanation": "Los conjugados cancelan los términos lineales."
+    },
+    {
+      "id": "m1-f05-c-3",
+      "family": "F05",
+      "stage": "C",
+      "operation": "equivalent",
+      "prompt": "Corrige la identidad falsa (2x-3)^2=4x^2+9: escribe el desarrollo.",
+      "arguments": [
+        "(2x-3)^2"
+      ],
+      "expected": "4x^2-12x+9",
+      "explanation": "El término cruzado es -12x."
+    },
+    {
+      "id": "m1-f05-c-4",
+      "family": "F05",
+      "stage": "C",
+      "operation": "equivalent",
+      "prompt": "Desarrolla (x-2)^3.",
+      "arguments": [
+        "(x-2)^3"
+      ],
+      "expected": "x^3-6x^2+12x-8",
+      "explanation": "Los coeficientes binomiales son 1,3,3,1 y los signos alternan."
+    },
+    {
+      "id": "m1-f05-t-5",
+      "family": "F05",
+      "stage": "T",
+      "operation": "equivalent",
+      "prompt": "Un cuadrado de lado x+5 pierde un cuadrado de lado x-5, con x>5. Expresa el área restante.",
+      "arguments": [
+        "(x+5)^2-(x-5)^2"
+      ],
+      "expected": "20x",
+      "explanation": "Usa diferencia de cuadrados o cancela los términos comunes."
+    },
+    {
+      "id": "m1-f05-e-6",
+      "family": "F05",
+      "stage": "E",
+      "operation": "equivalent",
+      "prompt": "Expande (3x+2)^2.",
+      "arguments": [
+        "(3x+2)^2"
+      ],
+      "expected": "9x^2+12x+4",
+      "explanation": "El doble producto es 12x."
+    },
+    {
+      "id": "m1-f06-a-1",
+      "family": "F06",
+      "stage": "A",
+      "operation": "factor_product",
+      "prompt": "Escribe dos factores no constantes de x^2+3x.",
+      "arguments": [
+        "x^2+3x"
+      ],
+      "expected": [
+        "x",
+        "x+3"
+      ],
+      "explanation": "Ambos términos tienen factor común x."
+    },
+    {
+      "id": "m1-f06-b-2",
+      "family": "F06",
+      "stage": "B",
+      "operation": "factor_product",
+      "prompt": "Escribe dos factores no constantes de x^2-16.",
+      "arguments": [
+        "x^2-16"
+      ],
+      "expected": [
+        "x-4",
+        "x+4"
+      ],
+      "explanation": "Es diferencia de cuadrados."
+    },
+    {
+      "id": "m1-f06-c-3",
+      "family": "F06",
+      "stage": "C",
+      "operation": "factor_product",
+      "prompt": "Factoriza 2x^2+7x+3 en dos factores no constantes.",
+      "arguments": [
+        "2x^2+7x+3"
+      ],
+      "expected": [
+        "2x+1",
+        "x+3"
+      ],
+      "explanation": "Los productos cruzados suman 7x."
+    },
+    {
+      "id": "m1-f06-c-4",
+      "family": "F06",
+      "stage": "C",
+      "operation": "factor_product",
+      "prompt": "Factoriza x^3+2x^2-9x-18 por agrupación.",
+      "arguments": [
+        "x^3+2x^2-9x-18"
+      ],
+      "expected": [
+        "x+2",
+        "x^2-9"
+      ],
+      "explanation": "Agrupa x^2(x+2)-9(x+2); se pide una factorización, no necesariamente completa."
+    },
+    {
+      "id": "m1-f06-t-5",
+      "family": "F06",
+      "stage": "T",
+      "operation": "factor_product",
+      "prompt": "Un área rectangular es x^2+8x+15. Escribe dos factores no constantes cuyo producto sea esa área (sin certificar restricciones geométricas).",
+      "arguments": [
+        "x^2+8x+15"
+      ],
+      "expected": [
+        "x+3",
+        "x+5"
+      ],
+      "explanation": "Las constantes suman ocho y su producto es quince."
+    },
+    {
+      "id": "m1-f06-e-6",
+      "family": "F06",
+      "stage": "E",
+      "operation": "factor_product",
+      "prompt": "Factoriza x^3-27 en dos factores no constantes.",
+      "arguments": [
+        "x^3-27"
+      ],
+      "expected": [
+        "x-3",
+        "x^2+3x+9"
+      ],
+      "explanation": "Aplica la identidad de diferencia de cubos."
+    },
+    {
+      "id": "m1-f07-a-1",
+      "family": "F07",
+      "stage": "A",
+      "operation": "division",
+      "prompt": "Divide x^2+3x entre x; indica cociente y residuo.",
+      "arguments": [
+        "x^2+3x",
+        "x"
+      ],
+      "expected": [
+        "x+3",
+        "0"
+      ],
+      "explanation": "Multiplica divisor por cociente y recupera el dividendo."
+    },
+    {
+      "id": "m1-f07-b-2",
+      "family": "F07",
+      "stage": "B",
+      "operation": "division",
+      "prompt": "Divide x^2+5x+7 entre x+2; indica cociente y residuo.",
+      "arguments": [
+        "x^2+5x+7",
+        "x+2"
+      ],
+      "expected": [
+        "x+3",
+        "1"
+      ],
+      "explanation": "El producto es x^2+5x+6 y falta una unidad."
+    },
+    {
+      "id": "m1-f07-c-3",
+      "family": "F07",
+      "stage": "C",
+      "operation": "division",
+      "prompt": "Divide x^3-2x+1 entre x-1; indica cociente y residuo.",
+      "arguments": [
+        "x^3-2x+1",
+        "x-1"
+      ],
+      "expected": [
+        "x^2+x-1",
+        "0"
+      ],
+      "explanation": "Incluye coeficiente cero para x^2; el residuo es cero."
+    },
+    {
+      "id": "m1-f07-c-4",
+      "family": "F07",
+      "stage": "C",
+      "operation": "division",
+      "prompt": "Divide x^4+2x^2+3 entre x^2+1; indica cociente y residuo.",
+      "arguments": [
+        "x^4+2x^2+3",
+        "x^2+1"
+      ],
+      "expected": [
+        "x^2+1",
+        "2"
+      ],
+      "explanation": "El producto es x^4+2x^2+1; el residuo constante tiene grado menor."
+    },
+    {
+      "id": "m1-f07-t-5",
+      "family": "F07",
+      "stage": "T",
+      "operation": "division",
+      "prompt": "Una distribución polinómica tiene total x^3+4x+3 y divisor x+1. Determina cociente y residuo.",
+      "arguments": [
+        "x^3+4x+3",
+        "x+1"
+      ],
+      "expected": [
+        "x^2-x+5",
+        "-2"
+      ],
+      "explanation": "Reconstruye el total con divisor por cociente más residuo."
+    },
+    {
+      "id": "m1-f07-e-6",
+      "family": "F07",
+      "stage": "E",
+      "operation": "division",
+      "prompt": "Divide 2x^3+x^2-5 entre x+1; indica cociente y residuo.",
+      "arguments": [
+        "2x^3+x^2-5",
+        "x+1"
+      ],
+      "expected": [
+        "2x^2-x+1",
+        "-6"
+      ],
+      "explanation": "El producto es 2x^3+x^2+1; el residuo es -6."
+    }
+  ]
+}
