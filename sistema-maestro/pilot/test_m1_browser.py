@@ -3,12 +3,14 @@ import json
 import os
 import sys
 import threading
+import tempfile
 import unittest
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 from mm110_m1_http import Server
+from mm110_m1_store import Store
 
 CASES=(
     ("F02",1,3,"m1-f02-c-3",["2"],2),
@@ -22,7 +24,9 @@ CASES=(
 class BrowserM1(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.server=Server(("127.0.0.1",0))
+        tmp=tempfile.TemporaryDirectory()
+        cls.addClassCleanup(tmp.cleanup)
+        cls.server=Server(("127.0.0.1",0),Store(Path(tmp.name)/"m1.sqlite"))
         thread=threading.Thread(target=cls.server.serve_forever,daemon=True)
         thread.start()
         def stop():
@@ -131,3 +135,15 @@ class BrowserM1(unittest.TestCase):
         expect(self.page.locator("#activity")).to_be_enabled()
         expect(self.page.locator("#review-title")).to_be_focused()
         self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+
+    def test_persistent_progress(self):
+        self.family("F04")
+        self.submit("m1-f04-c-3",["2x^2+7x-15"],2)
+        expect(self.page.locator("#progress")).to_contain_text("1 de 30")
+        self.page.reload()
+        expect(self.page.locator("#progress")).to_contain_text("1 de 30")
+        other=self.browser.new_context()
+        self.addCleanup(other.close)
+        page=other.new_page()
+        page.goto(self.url)
+        expect(page.locator("#progress")).to_contain_text("0 de 30")
