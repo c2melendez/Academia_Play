@@ -248,6 +248,7 @@ class BrowserF01(unittest.TestCase):
             ("f01-route-expand","14x-3",1),
             ("f01-c-expand-negative","-12x-20",1),
             ("f01-c-expand-rational","6x+6",2),
+            ("f01-c-expand-trinomial","-6x-6",0),
             ("f01-route-repair","5x-20",0),
             ("f01-tutor-inverse","6(3x-2)",0),
         ]:
