@@ -12,6 +12,11 @@ CASES = (
     ("f01-exam-inverse","6(5x-7)",1,"6(5x+7)"),
     ("f01-exam-context","5x+40",2,"5x+8"),
     ("f01-exam-combined","-10x+11",0,"-10x-19"),
+    ("f01-exam-rational-b","10x-15",1,"10x+15"),
+    ("f01-exam-repair-b","-10x-5",2,"-10x+11"),
+    ("f01-exam-inverse-b","6(-7x+4)",0,"6(7x+4)"),
+    ("f01-exam-context-b","-3x-12",1,"-3x+12"),
+    ("f01-exam-combined-b","8x-19",2,"8x+8"),
 )
 
 class ExamBankTests(unittest.TestCase):
@@ -44,4 +49,4 @@ class ExamBankTests(unittest.TestCase):
                 self.assertEqual(review,s.finish_exam(attempt))
         self.assertEqual([],s.snapshot()["mastery_evidence"])
         self.assertEqual([],s.snapshot()["access_grants"])
-        self.assertEqual(5,len(s.exam_history()))
+        self.assertEqual(len(CASES),len(s.exam_history()))
