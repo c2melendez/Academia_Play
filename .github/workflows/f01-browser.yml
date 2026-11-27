@@ -1,9 +1,10 @@
-name: Academia Play — F01 browser QA
+name: Academia Play — MM110 browser QA
 on:
   pull_request:
     paths:
       - 'sistema-maestro/pilot/**'
       - 'sistema-maestro/scripts/**'
+      - 'sistema-maestro/docs/mm110/MM110_M1_BANK.json'
       - '.github/workflows/f01-browser.yml'
 permissions:
   contents: read
@@ -25,4 +26,4 @@ jobs:
       - name: Run real browser pilot suite
         env:
           F01_AXE_PATH: ${{ runner.temp }}/f01-axe/node_modules/axe-core/axe.min.js
-        run: python -m unittest discover -s sistema-maestro/pilot -p 'test_f01_browser.py' -v
+        run: python -m unittest discover -s sistema-maestro/pilot -p 'test_*_browser.py' -v
