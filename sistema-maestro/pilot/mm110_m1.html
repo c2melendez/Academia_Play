@@ -6,20 +6,29 @@
 </style></head><body>
 <header><div><small>ACADEMIA PLAY · MM-110</small><h1>M1 · Polinomios</h1><p>Modo Repaso y práctica formativa</p></div></header>
 <main><p class="muted">Piloto local. Las respuestas formativas se conservan localmente; no acreditan dominio autónomo.</p>
+<button id="start-exam" type="button" class="primary" hidden>Iniciar examen M1</button>
 <nav id="families" aria-label="Familias de competencias"></nav><p id="notice" role="status" aria-live="polite"></p><p id="progress" role="status"></p>
 <section id="review" hidden aria-labelledby="review-title"><h2 id="review-title" tabindex="-1"></h2><p id="rule" class="rule"></p><p id="expression" class="expression"></p>
 <form id="prediction"><fieldset><legend id="question"></legend><div id="prediction-choices"></div></fieldset><button class="primary" type="submit">Comprobar predicción</button></form>
 <div id="worked" hidden><h3>Construcción paso a paso</h3><p id="review-feedback" class="feedback" role="status"></p><div class="scroll" tabindex="0" role="region" aria-label="Tabla del procedimiento"><table><caption id="table-caption">Organizador del procedimiento</caption><thead id="columns"></thead><tbody id="rows"></tbody></table></div><button id="next-step" type="button">Mostrar siguiente paso</button><p id="step-status" role="status"></p></div></section>
 <section id="practice" hidden aria-labelledby="practice-title"><h2 id="practice-title">Práctica formativa</h2><label for="activity">Actividad</label><select id="activity"></select><p id="stage"></p><p id="prompt" class="expression"></p><form id="assessment"><div id="answer"></div><fieldset><legend id="reasoning"></legend><div id="reason-choices"></div></fieldset><button class="primary" type="submit">Comprobar respuesta</button></form><p id="result" role="status" hidden></p><button id="next-activity" type="button">Siguiente actividad</button></section>
-<footer role="contentinfo">Escribe potencias con ^ (por ejemplo, x^2) y fracciones con /. El examen se incorporará cuando exista control de sesiones.</footer>
+<section id="exam" hidden aria-labelledby="exam-title">
+<h2 id="exam-title" tabindex="-1">Evaluación acumulativa M1</h2>
+<p id="exam-count" role="status"></p><progress id="exam-progress" aria-label="Respuestas registradas" max="6" value="0"></progress>
+<p id="exam-prompt" class="expression"></p>
+<form id="exam-form"><div id="exam-answer"></div><fieldset><legend id="exam-reasoning"></legend><div id="exam-choices"></div></fieldset><button type="submit" class="primary">Registrar respuesta</button></form>
+<p id="exam-status" role="status"></p><button id="finish-exam" type="button" class="primary" hidden>Finalizar y revisar</button>
+<div id="exam-review" hidden><h3 id="exam-score" tabindex="-1"></h3><ol id="exam-reviews"></ol><button id="back-study" type="button">Volver al repaso</button></div>
+</section>
+<footer role="contentinfo">Escribe potencias con ^ (por ejemplo, x^2) y fracciones con /. En el examen, las soluciones se muestran al finalizar.</footer>
 </main>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
-let catalog, family, item, organizer, revealRows=[], step=0, busy=false;
+let catalog, family, item, organizer, exam, examItem, revealRows=[], step=0, busy=false;
 const stages={A:"Fundamentos",B:"Puente conceptual",C:"Competencia",T:"Transferencia"};
 function node(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;}
-async function api(path,body){const options=body===undefined?{}:{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)};const r=await fetch(path,options);if(!r.ok)throw new Error("No se pudo completar la solicitud ("+r.status+").");return r.json();}
+async function api(path,body){const options=body===undefined?{}:{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)};const r=await fetch(path,options);if(r.status===409)throw new Error("No quedan evaluaciones inéditas en el banco actual.");if(!r.ok)throw new Error("No se pudo completar la solicitud ("+r.status+").");return r.json();}
 function lock(on){busy=on;document.querySelectorAll("button,select,input").forEach(e=>e.disabled=on);if(!on&&step>=revealRows.length)$("next-step").disabled=true;}
 async function action(fn){if(busy)return;lock(true);$("notice").textContent="";try{await fn();}catch(e){$("notice").textContent=e.message||"No se pudo completar la operación.";}finally{lock(false);}}
 function choices(container,name,values){container.replaceChildren();values.forEach((v,i)=>{const l=node("label");l.className="option";const input=node("input");input.type="radio";input.name=name;input.value=String(i);input.required=true;l.append(input,node("span",v));container.append(l);});}
@@ -35,5 +44,43 @@ $("prediction").addEventListener("submit",e=>{e.preventDefault();action(async()=
 $("next-step").addEventListener("click",showStep);$("activity").addEventListener("change",renderItem);
 $("next-activity").addEventListener("click",()=>{const s=$("activity");s.selectedIndex=(s.selectedIndex+1)%s.options.length;renderItem();$("ans0").focus();});
 $("assessment").addEventListener("submit",e=>{e.preventDefault();action(async()=>{let answer=$("ans0").value.trim();if(item.operation==="degree"){if($("undefined-degree").checked)answer=null;else if(/^\d{1,2}$/.test(answer))answer=Number(answer);else throw new Error("Escribe un grado entero no negativo.");}if(item.operation==="division"||item.operation==="factor_product")answer=[answer,$("ans1").value.trim()];const result=await api("/api/m1/assess",{item_id:item.id,answer,reason_choice:choice("reason")});if(result.status==="ASSESSED")feedback($("result"),result.accepted,result.feedback);else feedback($("result"),false,result.status==="RETRY"?"La comprobación no concluyó. Intenta nuevamente.":"Revisa el formato de la respuesta.");await refreshProgress();});});
-action(async()=>{await api("/api/m1/session",{});catalog=await api("/api/m1/catalog");await refreshProgress();for(const f of catalog.families){const b=node("button",f.id+" · "+f.title);b.type="button";b.dataset.family=f.id;b.setAttribute("aria-pressed","false");b.addEventListener("click",()=>action(()=>selectFamily(f.id)));$("families").append(b);}await selectFamily(catalog.families[0].id);});
+async function loadStudy(){
+    $("exam").hidden=true;$("exam-review").hidden=true;$("families").hidden=false;$("progress").hidden=false;
+    catalog=await api("/api/m1/catalog");await refreshProgress();$("families").replaceChildren();
+    for(const f of catalog.families){const b=node("button",f.id+" · "+f.title);b.type="button";b.dataset.family=f.id;b.setAttribute("aria-pressed","false");b.addEventListener("click",()=>action(()=>selectFamily(f.id)));$("families").append(b);}
+    await selectFamily(catalog.families[0].id);$("start-exam").hidden=false;
+}
+function renderExam(data){
+    exam=data;for(const id of ["review","practice","families","progress","start-exam"])$(id).hidden=true;
+    $("exam").hidden=false;$("exam-review").hidden=true;
+    const n=exam.items.filter(i=>i.recorded).length;$("exam-count").textContent=n+" de "+exam.maximum+" respuestas registradas";$("exam-progress").max=exam.maximum;$("exam-progress").value=n;
+    examItem=exam.items.find(i=>!i.recorded);$("exam-form").hidden=!examItem;$("finish-exam").hidden=!!examItem;
+    $("exam-prompt").textContent=examItem?examItem.family+" · "+examItem.prompt:"Todas las respuestas han sido registradas.";
+    $("exam-answer").replaceChildren();$("exam-choices").replaceChildren();
+    if(examItem){
+        const names=examItem.operation==="division"?["Cociente","Residuo"]:examItem.operation==="factor_product"?["Primer factor","Segundo factor"]:["Respuesta"];
+        names.forEach((name,i)=>{const l=node("label",name);l.htmlFor="exam-ans"+i;const input=node("input");input.id=l.htmlFor;input.type="text";input.required=true;input.maxLength=256;input.autocomplete="off";$("exam-answer").append(l,input);});
+        if(examItem.operation==="degree"){const l=node("label");l.className="option";const input=node("input");input.type="checkbox";input.id="exam-undefined";input.addEventListener("change",()=>{$("exam-ans0").required=!input.checked;$("exam-ans0").readOnly=input.checked;if(input.checked)$("exam-ans0").value="";});l.append(input,node("span","Grado indefinido (polinomio cero)"));$("exam-answer").append(l);}
+        $("exam-reasoning").textContent=examItem.reasoning_prompt;choices($("exam-choices"),"exam-reason",examItem.choices);
+    }
+    $("exam-title").focus();
+}
+$("start-exam").addEventListener("click",()=>action(async()=>{$("exam-status").textContent="";renderExam(await api("/api/m1/exam/start",{}));}));
+$("exam-form").addEventListener("submit",e=>{e.preventDefault();action(async()=>{
+    let answer=$("exam-ans0").value.trim();
+    if(examItem.operation==="degree"){if($("exam-undefined").checked)answer=null;else if(/^\d{1,2}$/.test(answer))answer=Number(answer);else throw new Error("Escribe un grado entero no negativo.");}
+    if(examItem.operation==="division"||examItem.operation==="factor_product")answer=[answer,$("exam-ans1").value.trim()];
+    const result=await api("/api/m1/submit",{attempt_id:examItem.attempt_id,answer,reason_choice:choice("exam-reason")});
+    if(result.status==="RECORDED"){renderExam(await api("/api/m1/exam/active"));$("exam-status").textContent="Respuesta registrada. No se revela la corrección.";}
+    else $("exam-status").textContent=result.status==="RETRY"?"Comprobación inconclusa; intenta nuevamente.":"Revisa el formato de la respuesta.";
+});});
+$("finish-exam").addEventListener("click",()=>action(async()=>{
+    const review=await api("/api/m1/exam/finish",{exam_id:exam.exam_id});
+    $("finish-exam").hidden=true;$("exam-status").textContent="Evaluación finalizada.";$("exam-review").hidden=false;
+    $("exam-score").textContent="Resultado: "+review.score+" de "+review.maximum;
+    $("exam-reviews").replaceChildren();for(const r of review.reviews){const i=exam.items.find(i=>i.id===r.item_id);const li=node("li");li.append(node("h4",i.family+" · "+(r.accepted?"Correcta":"No aceptada")),node("p",i.prompt),node("p","Respuesta esperada: "+(r.expected===null?"grado indefinido":Array.isArray(r.expected)?r.expected.join("; "):r.expected)),node("p","Justificación: "+i.choices[r.correct_reason]),node("p",r.explanation));$("exam-reviews").append(li);}
+    $("exam-score").focus();
+}));
+$("back-study").addEventListener("click",()=>action(loadStudy));
+action(async()=>{await api("/api/m1/session",{});const pending=await api("/api/m1/exam/active");if(pending)renderExam(pending);else await loadStudy();});
 </script></body></html>
