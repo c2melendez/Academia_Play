@@ -125,6 +125,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200,[{"item_id":i.item_id,"mode":i.mode,"family":i.family} for i in ITEMS])
         if self.path == "/api/f01/exam/set/active":
             return self._send(200,self.server.store.active_exam_set(learner))
+        if self.path == "/api/f01/exam/pending":
+            return self._send(200,self.server.store.pending_individual_exams(learner))
         if self.path == "/api/f01/exam/history":
             return self._send(200,self.server.store.exam_history(learner))
         if self.path == "/api/f01/guided":
