@@ -36,3 +36,20 @@ class MM110ManifestTests(unittest.TestCase):
     def test_approval_revision_mutation(self):
         self.data['sources'][0]['reconstruction']['design_revision_id'] = '0' * 64
         self.assertTrue(any('missing approved design revision' in e for e in validate_manifest(self.data)))
+
+    def test_manifest_matches_runtime_inventory(self):
+        from mm110_f01_activities import ITEMS
+        activity, = self.data['activities']
+        actual = {i.item_id:i for i in ITEMS}
+        variants = activity['variants']
+        self.assertEqual(len(actual),len(ITEMS))
+        self.assertEqual(len(actual),len(variants))
+        self.assertEqual(set(actual),{v['item_id'] for v in variants})
+        for v in variants:
+            item = actual[v['item_id']]
+            self.assertEqual(item.family,v['family'])
+            self.assertEqual('EXAM' if item.mode=='exam_preparation' else
+                             'TRANSFER' if item.family=='contextual' else 'PRACTICE',v['role'])
+        for mode,ids in activity['mode_item_ids'].items():
+            self.assertEqual(len(ids),len(set(ids)))
+            self.assertEqual({i.item_id for i in ITEMS if i.mode==mode},set(ids))
