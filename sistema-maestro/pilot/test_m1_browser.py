@@ -58,7 +58,7 @@ class BrowserM1(unittest.TestCase):
         expect(self.page.locator("#review-title")).to_contain_text(f)
         expect(self.page.locator("#activity")).to_be_enabled()
         expect(self.page.locator("#worked")).to_be_hidden()
-        expect(self.page.locator("#activity option")).to_have_count(5)
+        expect(self.page.locator("#activity option")).to_have_count(7)
 
     def predict(self,key,count):
         self.page.locator('input[name="prediction-choice"]').nth(key).check()
@@ -118,7 +118,7 @@ class BrowserM1(unittest.TestCase):
           const formative=await (await post('/api/m1/assess',{item_id:'m1-f02-c-3',answer:2,reason_choice:2})).json();
           return {catalog,review,forbidden:forbidden.status,formative};
         }""")
-        self.assertEqual(len(result["catalog"]["items"]),30)
+        self.assertEqual(len(result["catalog"]["items"]),42)
         self.assertTrue(all(i["stage"]!="E" and "expected" not in i and "correct_reason" not in i for i in result["catalog"]["items"]))
         self.assertNotIn("rows",result["review"])
         self.assertNotIn("correct",result["review"])
@@ -139,14 +139,14 @@ class BrowserM1(unittest.TestCase):
     def test_persistent_progress(self):
         self.family("F04")
         self.submit("m1-f04-c-3",["2x^2+7x-15"],2)
-        expect(self.page.locator("#progress")).to_contain_text("1 de 30")
+        expect(self.page.locator("#progress")).to_contain_text("1 de 42")
         self.page.reload()
-        expect(self.page.locator("#progress")).to_contain_text("1 de 30")
+        expect(self.page.locator("#progress")).to_contain_text("1 de 42")
         other=self.browser.new_context()
         self.addCleanup(other.close)
         page=other.new_page()
         page.goto(self.url)
-        expect(page.locator("#progress")).to_contain_text("0 de 30")
+        expect(page.locator("#progress")).to_contain_text("0 de 42")
 
     def test_exam_reload_and_deferred_review(self):
         self.page.locator("#start-exam").click()
@@ -156,14 +156,20 @@ class BrowserM1(unittest.TestCase):
         expect(self.page.locator("#finish-exam")).to_be_hidden()
         self.assertEqual(self.page.evaluate("async () => (await fetch('/api/m1/review/F02')).status"),403)
         self.page.locator("#exam-undefined").check()
-        self.page.locator('input[name="exam-reason"]').nth(2).check()
+        self.page.get_by_label("No queda ningún término de coeficiente no nulo",exact=True).check()
         self.page.locator("#exam-form button").click()
         expect(self.page.locator("#exam-count")).to_contain_text("1 de 6")
         expect(self.page.locator("#exam-review")).to_be_hidden()
         self.page.reload()
         expect(self.page.locator("#exam-count")).to_contain_text("1 de 6")
         self.audit("exam-active-recovered")
-        for n,answers in enumerate([["2x-2"],["3x^2-10x-8"],["9x^2+12x+4"],["x-3","x^2+3x+9"],["2x^2-x+1","-6"]],2):
+        for n,(answers,reason) in enumerate([
+            (["2x-2"],"Sus coeficientes son opuestos"),
+            (["3x^2-10x-8"],"Los productos cruzados suman -10x"),
+            (["9x^2+12x+4"],"Del doble producto de 3x y 2"),
+            (["x-3","x^2+3x+9"],"La diferencia de cubos"),
+            (["2x^2-x+1","-6"],"Dividendo = divisor por cociente más residuo, con grado del residuo menor")
+        ],2):
             for i,answer in enumerate(answers):
                 self.page.locator("#exam-ans"+str(i)).fill(answer)
             self.page.locator('input[name="exam-reason"]').nth(2).check()
@@ -180,4 +186,5 @@ class BrowserM1(unittest.TestCase):
         self.page.locator("#back-study").click()
         expect(self.page.locator("#review")).to_be_visible()
         self.page.locator("#start-exam").click()
-        expect(self.page.locator("#notice")).to_contain_text("No quedan evaluaciones inéditas")
+        expect(self.page.locator("#exam-count")).to_contain_text("0 de 6")
+        expect(self.page.locator("#exam-prompt")).to_contain_text("3x^3-3x^3+7")
