@@ -6,6 +6,10 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 from mm110_m1_store import Store
+from mm110_m1_activities import INDEX
+
+def displayed_key(item,canonical):
+    return item['choices'].index(INDEX[item['id']]['choices'][canonical])
 
 EXAM={
     "F02":(None,2),
@@ -59,8 +63,9 @@ class M1StoreTests(unittest.TestCase):
             self.store.start("a","m1-f03-a-1")
         for n,i in enumerate(e["items"]):
             answer,reason=EXAM[i["family"]]
+            reason=displayed_key(i,reason)
             if n==1:
-                reason=0
+                reason=(reason+1)%3
             self.assertEqual(self.store.submit("a",i["attempt_id"],answer,reason),{"status":"RECORDED"})
             self.store=Store(self.path)
             self.assertEqual(sum(i["recorded"] for i in self.store.active_exam("a")["items"]),n+1)
@@ -68,23 +73,42 @@ class M1StoreTests(unittest.TestCase):
         self.assertEqual((review["score"],review["maximum"]),(5,6))
         self.assertEqual(review,self.store.finish_exam("a",e["exam_id"]))
         self.assertIsNone(self.store.active_exam("a"))
-        with self.assertRaisesRegex(ValueError,"fresh exam bank exhausted"):
-            self.store.start_exam("a")
         self.assertTrue(self.store.submit("a",a,"5x^2",0)["accepted"])
         self.assertEqual(self.store.progress("a")["eligible_evidence"],0)
 
     def test_retry_invalid_and_duplicate_exam(self):
         e=self.store.start_exam("a")
         a=e["items"][0]["attempt_id"]
-        self.assertEqual(self.store.submit("a",a,"not a degree",2),{"status":"INVALID_INPUT"})
+        key=displayed_key(e["items"][0],2)
+        self.assertEqual(self.store.submit("a",a,"not a degree",key),{"status":"INVALID_INPUT"})
         self.assertFalse(self.store.active_exam("a")["items"][0]["recorded"])
-        self.assertEqual(self.store.submit("a",a,None,2),{"status":"RECORDED"})
-        self.assertEqual(self.store.submit("a",a,None,2),{"status":"RECORDED"})
+        self.assertEqual(self.store.submit("a",a,None,key),{"status":"RECORDED"})
+        self.assertEqual(self.store.submit("a",a,None,key),{"status":"RECORDED"})
         with self.assertRaises(ValueError):
-            self.store.submit("a",a,0,2)
+            self.store.submit("a",a,0,key)
 
     def test_concurrent_exam_start(self):
         with ThreadPoolExecutor(max_workers=2) as pool:
             result=list(pool.map(lambda _:self.store.start_exam("a"),range(2)))
         self.assertEqual(result[0],result[1])
         self.assertEqual(len(result[0]["items"]),6)
+
+    def test_three_disjoint_forms_and_exhaustion(self):
+        used=set()
+        for _ in range(3):
+            e=self.store.start_exam("rotation")
+            self.assertEqual(e,Store(self.path).active_exam("rotation"))
+            ids={i["id"] for i in e["items"]}
+            self.assertFalse(used & ids)
+            used.update(ids)
+            for i in e["items"]:
+                canonical=INDEX[i["id"]]["correct_reason"]
+                key=displayed_key(i,canonical)
+                self.assertEqual(self.store.submit("rotation",i["attempt_id"],INDEX[i["id"]]["expected"],key),{"status":"RECORDED"})
+            result=self.store.finish_exam("rotation",e["exam_id"])
+            self.assertEqual(result["score"],6)
+            for i,review in zip(e["items"],result["reviews"]):
+                self.assertEqual(i["choices"][review["correct_reason"]],INDEX[i["id"]]["choices"][INDEX[i["id"]]["correct_reason"]])
+        self.assertEqual(len(used),18)
+        with self.assertRaisesRegex(ValueError,"fresh exam bank exhausted"):
+            self.store.start_exam("rotation")
