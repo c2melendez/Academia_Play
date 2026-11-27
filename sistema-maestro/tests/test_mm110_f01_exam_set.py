@@ -70,3 +70,28 @@ class ExamSetTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.store.request_hint(self.user,exam["items"][0]["attempt_id"],0)
         self.assertEqual([],self.store.exam_history(self.user))
+
+    def test_two_disjoint_forms_and_persistent_rotation(self):
+        from test_mm110_f01_exam_bank import CASES
+        from mm110_f01_activities import INDEX
+        answers={i:(a,r) for i,a,r,_ in CASES}
+        families={"rational-identity","exam-repair","exam-inverse","exam-context","exam-combined"}
+        seen=set()
+        for round_index in range(2):
+            self.store=Store(self.path)
+            exam=self.store.start_exam_set(self.user)
+            ids={i["item_id"] for i in exam["items"]}
+            self.assertEqual(5,len(ids))
+            self.assertEqual(families,{INDEX[i].family for i in ids})
+            self.assertFalse(seen & ids)
+            seen.update(ids)
+            for item in exam["items"]:
+                self.assertEqual({"status":"RECORDED"},
+                    self.store.submit(self.user,item["attempt_id"],*answers[item["item_id"]]))
+            self.assertEqual(5,self.store.finish_exam_set(self.user,exam["exam_id"])["score"])
+        self.assertEqual(set(answers),seen)
+        third=Store(self.path).start_exam_set(self.user)
+        self.assertEqual(5,len(third["items"]))
+        self.assertEqual(families,{INDEX[i["item_id"]].family for i in third["items"]})
+        self.assertEqual([],self.store.exam_history(self.user))
+        self.assertEqual([],self.store.snapshot(self.user)["mastery_evidence"])
