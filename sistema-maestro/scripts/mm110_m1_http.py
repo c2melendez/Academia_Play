@@ -48,6 +48,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_data(200,self.server.store.active_exam(learner))
         if self.server.store.active_exam(learner):
             return self.send_data(403,{"error":"active exam"})
+        if self.path.startswith("/api/m1/guided/"):
+            family=self.path.split("/")[-1]
+            if family not in ORGANIZERS:
+                return self.send_data(404,{"error":"not found"})
+            return self.send_data(200,self.server.store.guided_progress(learner,family))
         if self.path=="/api/m1/progress":
             return self.send_data(200,self.server.store.progress(learner))
         if self.path=="/api/m1/catalog":
@@ -103,6 +108,8 @@ class Handler(BaseHTTPRequestHandler):
                 result=store.submit(learner,data["attempt_id"],data["answer"],data["reason_choice"])
             elif store.active_exam(learner):
                 return self.send_data(403,{"error":"active exam"})
+            elif self.path=="/api/m1/guided/start" and set(data)=={"family","item_id"}:
+                result=store.guided_start(learner,data["family"],data["item_id"])
             elif self.path=="/api/m1/predict" and set(data)=={"family","choice"}:
                 result=check_prediction(data["family"],data["choice"])
             elif self.path=="/api/m1/assess" and set(data)=={"item_id","answer","reason_choice"}:
