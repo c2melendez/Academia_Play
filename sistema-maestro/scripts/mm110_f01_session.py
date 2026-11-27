@@ -113,6 +113,8 @@ class Session:
         item = INDEX[item_id]
         if item.mode != mode:
             raise ValueError("Item unavailable in this mode")
+        if any(a.get("exam_set") and not a.get("exam_review") for a in self._attempts.values()) and mode == "exam_preparation":
+            raise ValueError("Complete active assessment first")
         key = uuid4().hex
         self._attempts[key] = {"item":item_id,"assisted":False,"closed":False}
         return {"attempt_id":key,**public_item(item_id)}
@@ -171,12 +173,48 @@ class Session:
         return deepcopy(public)
 
     @locked
+    def start_exam_set(self):
+        """Create one fixed five-item assessment, without exposing solutions."""
+        if any(a.get("exam_set") and not a.get("exam_review") for a in self._attempts.values()):
+            raise ValueError("An assessment is already active")
+        if any(INDEX[a["item"]].mode == "exam_preparation" and not a.get("exam_review") for a in self._attempts.values()):
+            raise ValueError("Finish individual assessment first")
+        ids = [i for i in INDEX if INDEX[i].mode == "exam_preparation"]
+        if len(ids) != 5:
+            raise ValueError("Assessment blueprint mismatch")
+        group = uuid4().hex
+        activities = []
+        for item_id in ids:
+            key = uuid4().hex
+            self._attempts[key] = {"item":item_id,"assisted":False,"closed":False,"exam_set":group}
+            activities.append({"attempt_id":key,**public_item(item_id)})
+        return {"exam_id":group,"items":activities,"maximum":len(activities)}
+
+    @locked
+    def finish_exam_set(self, exam_id):
+        members = [(key,a) for key,a in self._attempts.items() if a.get("exam_set") == exam_id]
+        if not isinstance(exam_id,str) or not exam_id or len(members) != 5:
+            raise ValueError("Unknown assessment")
+        if not all(a["closed"] for _,a in members):
+            raise ValueError("Complete all assessment items first")
+        reviews = []
+        for key,a in members:
+            reviews.append(self._make_exam_review(a))
+        return {"status":"FINISHED","exam_id":exam_id,"score":sum(r["score"] for r in reviews),"maximum":len(reviews),"reviews":reviews}
+
+    @locked
     def finish_exam(self, attempt_id):
         """Close the single-item F01 pilot assessment and release deferred review."""
         a = self._attempts[attempt_id]
         item = INDEX[a["item"]]
         if item.mode != "exam_preparation" or not a["closed"]:
             raise ValueError("Exam submission required")
+        if a.get("exam_set"):
+            raise ValueError("Finish the complete assessment")
+        return self._make_exam_review(a)
+
+    def _make_exam_review(self,a):
+        item = INDEX[a["item"]]
         if "exam_review" not in a:
             assessment = a["assessment"]
             a["exam_review"] = {
@@ -196,5 +234,7 @@ class Session:
     @locked
     def exam_history(self):
         """Only explicitly finished reviews; never disclose pending answers."""
+        if any(a.get("exam_set") and not a.get("exam_review") for a in self._attempts.values()):
+            return []
         return [{"attempt_id":key, **deepcopy(a["exam_review"])}
                 for key,a in self._attempts.items() if "exam_review" in a][-50:][::-1]
