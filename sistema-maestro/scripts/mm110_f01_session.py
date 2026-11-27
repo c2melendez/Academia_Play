@@ -174,14 +174,18 @@ class Session:
 
     @locked
     def start_exam_set(self):
-        """Create one fixed five-item assessment, without exposing solutions."""
+        """Select one least-exposed item per exam family, with stable tie ordering."""
         if any(a.get("exam_set") and not a.get("exam_review") for a in self._attempts.values()):
             raise ValueError("An assessment is already active")
         if any(INDEX[a["item"]].mode == "exam_preparation" and not a.get("exam_review") for a in self._attempts.values()):
             raise ValueError("Finish individual assessment first")
-        ids = [i for i in INDEX if INDEX[i].mode == "exam_preparation"]
-        if len(ids) != 5:
-            raise ValueError("Assessment blueprint mismatch")
+        families = ("rational-identity","exam-repair","exam-inverse","exam-context","exam-combined")
+        ids = []
+        for family in families:
+            pool = [i for i in INDEX if INDEX[i].mode == "exam_preparation" and INDEX[i].family == family]
+            if not pool:
+                raise ValueError("Assessment blueprint mismatch")
+            ids.append(min(pool,key=lambda i:sum(a["item"] == i for a in self._attempts.values())))
         group = uuid4().hex
         activities = []
         for item_id in ids:
