@@ -121,3 +121,26 @@ class ExamSetTests(unittest.TestCase):
         self.assertEqual(1,self.store.finish_exam(self.user,unfinished)["score"])
         self.assertEqual(1,self.store.finish_exam(self.user,submitted)["score"])
         self.assertEqual([],self.store.snapshot(self.user)["mastery_evidence"])
+
+    def test_pending_individual_contract_and_aggregate_suspension(self):
+        from test_mm110_f01_exam_bank import CASES
+        answers={i:(a,r) for i,a,r,_ in CASES}
+        first=self.store.start(self.user,"f01-exam-rational","exam_preparation")["attempt_id"]
+        second=self.store.start(self.user,"f01-exam-repair","exam_preparation")["attempt_id"]
+        self.store.submit(self.user,second,*answers["f01-exam-repair"])
+        self.store=Store(self.path)
+        pending=self.store.pending_individual_exams(self.user)
+        self.assertEqual({first:False,second:True},{p["attempt_id"]:p["recorded"] for p in pending})
+        for p in pending:
+            self.assertEqual({"attempt_id","item_id","mode","family","prompt","reasoning_prompt","choices","recorded"},set(p))
+        self.assertEqual([],self.store.pending_individual_exams("other"))
+        exam=self.store.start_exam_set(self.user)
+        self.assertEqual([],self.store.pending_individual_exams(self.user))
+        for item in exam["items"]:
+            self.store.submit(self.user,item["attempt_id"],*answers[item["item_id"]])
+        self.store.finish_exam_set(self.user,exam["exam_id"])
+        self.store=Store(self.path)
+        self.assertEqual(pending,self.store.pending_individual_exams(self.user))
+        self.store.finish_exam(self.user,second)
+        self.assertEqual([first],[p["attempt_id"] for p in self.store.pending_individual_exams(self.user)])
+        self.assertEqual([],self.store.snapshot(self.user)["mastery_evidence"])
