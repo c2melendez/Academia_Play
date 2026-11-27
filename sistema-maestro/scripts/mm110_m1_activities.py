@@ -77,4 +77,50 @@ def assess_math(item_id,answer):
 
 def public_item(item_id):
     i=INDEX[item_id]
-    return {k:i[k] for k in ("id","family","stage","operation","prompt")}
+    return {**{k:i[k] for k in ("id","family","stage","operation","prompt","reasoning_prompt")},
+            "choices":list(i["choices"])}
+
+def assess(item_id, answer, reason_choice, assisted=False):
+    """Internal combined assessment. Exam returns only a recording status.
+    Persistence, authorization, and exam completion belong to the controller.
+    """
+    i=INDEX[item_id]
+    if type(assisted) is not bool:
+        raise ValueError("assisted must be boolean")
+    if type(reason_choice) is not int or not 0 <= reason_choice < len(i["choices"]):
+        raise ValueError("invalid reasoning choice")
+    if i["stage"]=="E" and assisted:
+        raise ValueError("assistance forbidden in exam")
+    v=assess_math(item_id,answer)
+    if v.status=="INCONCLUSIVE":
+        return {"status":"RETRY"}
+    if v.reason=="INVALID_FORMAT_OR_DOMAIN":
+        return {"status":"INVALID_INPUT"}
+    correct=reason_choice==i["correct_reason"]
+    accepted=v.status=="VERIFIED" and correct
+    if i["stage"]=="E":
+        # Internal record only: never serialize this as a public response.
+        return {"status":"RECORDED","private_assessment":{
+            "accepted":accepted,"oracle_status":v.status,
+            "reasoning_correct":correct}}
+    if v.reason=="REQUIRED_REDUCED_FORM":
+        feedback="La expresión es equivalente, pero debes desarrollar y reunir términos semejantes."
+    elif v.reason=="REMAINDER_DEGREE":
+        feedback="El residuo no nulo debe tener grado menor que el divisor."
+    elif v.status!="VERIFIED":
+        feedback=i["explanation"]
+    elif not correct:
+        feedback="El resultado es correcto, pero revisa el fundamento: "+i["explanation"]
+    else:
+        feedback=i["explanation"]
+    return {"status":"ASSESSED","accepted":accepted,"oracle_status":v.status,
+            "oracle_reason":v.reason,"reasoning_correct":correct,"assisted":assisted,
+            "eligible_evidence":accepted and not assisted and i["stage"] in ("C","T"),
+            "feedback":feedback}
+
+def public_assessment(result):
+    """Strip private exam results at the public boundary; no mastery awarded."""
+    if result["status"]=="RECORDED":
+        return {"status":"RECORDED"}
+    return dict(result)
+
