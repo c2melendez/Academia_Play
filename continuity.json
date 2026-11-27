@@ -2,8 +2,8 @@
   "schema_version": "4.1",
   "repository_full_name": "c2melendez/Academia_Play",
   "active_branch": "curriculum/mm110",
-  "repo_head_sha": "cdbdf42f336acc8ae35654c1c9030c2dddd5fedd",
-  "last_observed_at": "2026-11-27T00:39:29.1037064Z",
+  "repo_head_sha": "41e1c04ca6e93a26c9d4e366cad008df511eee80",
+  "last_observed_at": "2026-11-27T01:18:09.8836438Z",
   "environment_mode": "FULL",
   "bootstrap_status": "PROVISIONED",
   "course_design_status": "DESIGN_APPROVED",
@@ -30,11 +30,12 @@
     "CI PR23 head bbe798201a7afbb3a863357f6df76c94bd891cc2: contract 45775264767 SUCCESS 258 tests; Chromium 45775264821 SUCCESS 13 tests; logs inspected. Timestamp reflects last observed test output, not a new Render observation.",
     "CI ed663f7: contract 45870072615 261 PASS; browser 45870072687 13 PASS; PostgreSQL 45870072508 5 PASS. Render plan exe-dc4772p5efls73d91e20 planned, no notices; not deployed.",
     "CI eda5d0b: contract 45873415949 263 PASS; browser 45873415813 13 PASS; PostgreSQL 45873415810 5 PASS. Render plan exe-dc47deeq1p3s73d56lg0 planned without notices; not deployed.",
-    "CI cdbdf42: contract 45917876404 268 PASS; Chromium 45917876339 14 PASS; PostgreSQL local 45917876391 5 PASS; logs inspeccionados. 287 pruebas. Axe aggregate-active/recorded/finished sin infracciones."
+    "CI cdbdf42: contract 45917876404 268 PASS; Chromium 45917876339 14 PASS; PostgreSQL local 45917876391 5 PASS; logs inspeccionados. 287 pruebas. Axe aggregate-active/recorded/finished sin infracciones.",
+    "CI 41e1c04: contract 45921695021 281 PASS; browser 45921694964 14 PASS; PostgreSQL 45921694935 5 PASS; logs inspected, 300 total. Generic polynomial worker verified, not M1 curriculum."
   ],
-  "next_action": "Verificar CI de reconciliación manifiesto 29 actividades y prueba anti-divergencia. Cotejar fuentes M1 y propuesta MM110_M1_DISENO_PROPUESTO.md, obtener aprobación exacta de diseño antes de implementación curricular M1. Continuar correcciones F01 independientes; mantener Supabase y Render dinámico diferidos hasta certificación pedagógica/funcional local MM-110.",
+  "next_action": "Cotejar fuentes originales de M1 y formalizar aprobación de revisión exacta; expediente pendiente MM110_REVISION_M1_PROPUESTA.json. Continuar correcciones F01 (banco de examen finito, recuperación y reuso) sin esperar M1. No configurar Supabase ni aplicar Render dinámico hasta certificación local MM-110.",
   "render_service_id": "srv-dc06lp67bikc739hlghg",
   "last_verified_deploy_sha": "7f98bf70141b6be076a8317ae00a77f013aacc93",
   "last_verified_deploy_at": "2026-11-24T23:33:45.158178Z",
-  "qa_ci_verified_sha": "cdbdf42f336acc8ae35654c1c9030c2dddd5fedd"
+  "qa_ci_verified_sha": "41e1c04ca6e93a26c9d4e366cad008df511eee80"
 }
