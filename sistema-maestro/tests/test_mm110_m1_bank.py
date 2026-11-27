@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from collections import Counter
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
-from mm110_m1_activities import ITEMS, INDEX, assess_math, public_item, reduced_form
+from mm110_m1_activities import ITEMS, INDEX, assess_math, public_item, reduced_form, assess, public_assessment
 
 # Authored independently of the bank's expected field; positive and negative answers.
 CASES = (
@@ -56,7 +56,7 @@ class M1BankTests(unittest.TestCase):
     def test_public_fields(self):
         for item in ITEMS:
             with self.subTest(id=item["id"]):
-                self.assertEqual(set(public_item(item["id"])),{"id","family","stage","operation","prompt"})
+                self.assertEqual(set(public_item(item["id"])),{"id","family","stage","operation","prompt","reasoning_prompt","choices"})
     def test_required_form(self):
         cases=[("m1-f04-c-3","(2x-3)(x+5)"),
                ("m1-f04-c-3","2x^2+10x-3x-15"),
@@ -92,3 +92,37 @@ def make_test(item,correct,wrong):
 
 for item,correct,wrong in CASES:
     setattr(M1BankTests,"test_"+item.replace("-","_"),make_test(item,correct,wrong))
+
+class M1ReasoningTests(unittest.TestCase):
+    def test_all_items_reasoning(self):
+        # Independently specified correct option indices for the current 36 items.
+        keys=(0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2,0,1,2)
+        for (item,correct,wrong),key in zip(CASES,keys):
+            with self.subTest(item=item):
+                data=INDEX[item]
+                self.assertEqual(data["correct_reason"],key)
+                self.assertEqual(len(set(data["choices"])),3)
+                good=assess(item,correct,key)
+                bad_reason=assess(item,correct,(key+1)%3)
+                bad_math=assess(item,wrong,key)
+                if data["stage"]=="E":
+                    for result in (good,bad_reason,bad_math):
+                        self.assertEqual(public_assessment(result),{"status":"RECORDED"})
+                    self.assertTrue(good["private_assessment"]["accepted"])
+                    self.assertFalse(bad_reason["private_assessment"]["accepted"])
+                    self.assertFalse(bad_math["private_assessment"]["accepted"])
+                else:
+                    self.assertTrue(good["accepted"])
+                    self.assertFalse(bad_reason["accepted"])
+                    self.assertFalse(bad_math["accepted"])
+                    self.assertEqual(good["eligible_evidence"],data["stage"] in ("C","T"))
+                    self.assertFalse(assess(item,correct,key,True)["eligible_evidence"])
+    def test_reasoning_input(self):
+        for reason in (True,None,"0",-1,3):
+            with self.assertRaises(ValueError):
+                assess("m1-f02-a-1",3,reason)
+        with self.assertRaises(ValueError):
+            assess("m1-f02-e-6",None,2,True)
+    def test_retry_and_invalid_do_not_reveal_solution(self):
+        self.assertEqual(assess("m1-f04-c-3","x"*257,2),{"status":"RETRY"})
+        self.assertEqual(assess("m1-f02-a-1",True,0),{"status":"INVALID_INPUT"})
