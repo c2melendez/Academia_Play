@@ -186,3 +186,37 @@ class Store:
                 s["attempts"][key].update(result=result,submission=[answer,reason_choice])
             return public_assessment(result)
         return self._run(learner,run)
+
+    @staticmethod
+    def _guided_view(s,family):
+        if family not in FAMILIES or Store._active(s):
+            raise ValueError("guided route unavailable")
+        pool=[i for i in ITEMS if i["family"]==family and i["stage"]!="E"]
+        done={a["item"] for a in s["attempts"].values()
+              if a.get("guided") and a.get("result",{}).get("accepted")}
+        for stage,required in (("A",1),("B",1),("C",2),("T",1)):
+            candidates=[i["id"] for i in pool if i["stage"]==stage]
+            completed=[i for i in candidates if i in done]
+            if len(completed)<required:
+                pending=[i for i in candidates if i not in done]
+                return {"family":family,"stage":stage,"completed":sorted(done & {i["id"] for i in pool}),
+                        "pending":pending,"required":5,"mastery":"UNASSESSED"}
+        return {"family":family,"stage":"COMPLETE","completed":sorted(done & {i["id"] for i in pool}),
+                "pending":[],"required":5,"mastery":"UNASSESSED"}
+
+    def guided_progress(self,learner,family):
+        return self._run(learner,lambda s:self._guided_view(s,family))
+
+    def guided_start(self,learner,family,item):
+        def run(s):
+            view=self._guided_view(s,family)
+            if item not in view["pending"]:
+                raise ValueError("guided prerequisite not satisfied")
+            # Resume an open attempt rather than multiplying attempts on reload.
+            key=next((k for k,a in s["attempts"].items()
+                      if a.get("guided") and a["item"]==item and "result" not in a),None)
+            if key is None:
+                key=self._new(s,item)
+                s["attempts"][key]["guided"]=True
+            return {"attempt_id":key,**public_item(item)}
+        return self._run(learner,run)
