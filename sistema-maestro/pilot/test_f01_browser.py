@@ -287,5 +287,31 @@ class BrowserF01(unittest.TestCase):
             expect(page.locator("#history-status")).to_contain_text("Aún no hay")
             expect(page.locator("#history-list li")).to_have_count(0)
 
+    def test_complete_exam_resume_and_score(self):
+        self.page.locator("#mode").select_option("exam_set")
+        self.page.locator("#start").click()
+        expect(self.page.locator("#set-status")).to_contain_text("0/5")
+        expect(self.page.locator("#hint")).to_be_hidden()
+        self.audit_accessibility("aggregate-active")
+        def record(expression,reason,count):
+            self.page.locator("#answer").fill(expression)
+            self.page.locator('input[name="reason"]').nth(reason).check()
+            self.page.locator("#submit").click()
+            expect(self.page.locator("#set-status")).to_contain_text(str(count)+"/5")
+            expect(self.page.locator("#exam-result")).to_be_hidden()
+        record("-6x+9",0,1)
+        self.page.reload()
+        expect(self.page.locator("#set-status")).to_contain_text("1/5")
+        expect(self.page.locator("#mode")).to_be_disabled()
+        for i,(expression,reason) in enumerate([("12x-19",0),("6(5x-7)",1),("5x+8",2),("-10x+11",0)],2):
+            record(expression,reason,i)
+        expect(self.page.locator("#finish-exam")).to_be_enabled()
+        self.audit_accessibility("aggregate-recorded")
+        self.page.locator("#finish-exam").click()
+        expect(self.page.locator("#exam-score")).to_contain_text("4/5")
+        expect(self.page.locator("#exam-explanation")).to_contain_text("5x+40")
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 0")
+        self.audit_accessibility("aggregate-finished")
+
 if __name__=="__main__":
     unittest.main()
