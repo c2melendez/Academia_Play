@@ -95,3 +95,29 @@ class ExamSetTests(unittest.TestCase):
         self.assertEqual(families,{INDEX[i["item_id"]].family for i in third["items"]})
         self.assertEqual([],self.store.exam_history(self.user))
         self.assertEqual([],self.store.snapshot(self.user)["mastery_evidence"])
+
+    def test_abandoned_individual_does_not_block_aggregate(self):
+        from test_mm110_f01_exam_bank import CASES
+        answers={i:(a,r) for i,a,r,_ in CASES}
+        unfinished=self.store.start(self.user,"f01-exam-rational","exam_preparation")["attempt_id"]
+        submitted=self.store.start(self.user,"f01-exam-repair","exam_preparation")["attempt_id"]
+        self.store.submit(self.user,submitted,*answers["f01-exam-repair"])
+        self.store=Store(self.path)
+        exam=self.store.start_exam_set(self.user)
+        self.assertNotIn("f01-exam-rational",{i["item_id"] for i in exam["items"]})
+        self.assertNotIn("f01-exam-repair",{i["item_id"] for i in exam["items"]})
+        with self.assertRaises(ValueError):
+            self.store.submit(self.user,unfinished,*answers["f01-exam-rational"])
+        with self.assertRaises(ValueError):
+            self.store.finish_exam(self.user,submitted)
+        self.assertEqual([],self.store.exam_history(self.user))
+        for item in exam["items"]:
+            self.assertEqual({"status":"RECORDED"},
+                self.store.submit(self.user,item["attempt_id"],*answers[item["item_id"]]))
+        self.assertEqual(5,self.store.finish_exam_set(self.user,exam["exam_id"])["score"])
+        self.store=Store(self.path)
+        self.assertEqual({"status":"RECORDED"},
+            self.store.submit(self.user,unfinished,*answers["f01-exam-rational"]))
+        self.assertEqual(1,self.store.finish_exam(self.user,unfinished)["score"])
+        self.assertEqual(1,self.store.finish_exam(self.user,submitted)["score"])
+        self.assertEqual([],self.store.snapshot(self.user)["mastery_evidence"])
