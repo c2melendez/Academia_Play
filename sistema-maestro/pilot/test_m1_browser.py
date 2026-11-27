@@ -172,7 +172,7 @@ class BrowserM1(unittest.TestCase):
         ],2):
             for i,answer in enumerate(answers):
                 self.page.locator("#exam-ans"+str(i)).fill(answer)
-            self.page.locator('input[name="exam-reason"]').nth(2).check()
+            self.page.get_by_label(reason,exact=True).check()
             self.page.locator("#exam-form button").click()
             expect(self.page.locator("#exam-count")).to_contain_text(str(n)+" de 6")
             expect(self.page.locator("#exam-review")).to_be_hidden()
