@@ -15,6 +15,9 @@ CASES = [
     ("f01-c-repair-rational","4x+4",1,"4x+8","f01-omit"),
     ("f01-c-inverse-negative","6(-4x+3)",2,"6(-4x+18)","f01-omit"),
     ("f01-c-inverse-rational","6(3/2x-1/2)",0,"6(3/2x+1/2)","f01-sign"),
+    ("f01-c-expand-trinomial","-6x+6",0,"-6x-6","f01-sign"),
+    ("f01-c-repair-nested","6x-13",1,"6x-3","f01-sign"),
+    ("f01-c-inverse-combine","6(3x-3)",2,"6(2x-3)","f01-omit"),
 ]
 PRE=[("f01-a-sign-positive","15",0),("f01-a-fraction-negative","-3/2",1),
      ("f01-b-group","28",1),("f01-b-predict","4x+12",2)]
@@ -70,7 +73,7 @@ class RemediationTests(unittest.TestCase):
     def test_exhaustion_blocks_transfer(self):
         self.prep()
         for item,wrong,reason in [("f01-route-expand","14x-3",1),
-            ("f01-c-expand-negative","-12x-20",1),("f01-c-expand-rational","6x+6",2)]:
+            ("f01-c-expand-negative","-12x-20",1),("f01-c-expand-rational","6x+6",2),("f01-c-expand-trinomial","-6x-6",0)]:
             self.assertFalse(self.resolve(item,wrong,reason)["accepted"])
         self.assertTrue(self.resolve("f01-route-repair","5x-20",0)["accepted"])
         self.assertTrue(self.resolve("f01-tutor-inverse","6(3x-2)",0)["accepted"])
@@ -91,3 +94,17 @@ class RemediationTests(unittest.TestCase):
             self.assertTrue(s.submit(key,answer,reason)["eligible_evidence"])
         self.assertEqual("DEVELOPING",s.snapshot()["mastery_estimate"])
         self.assertEqual([],s.snapshot()["access_grants"])
+
+    def test_fourth_variant_recovers_full_guided_route(self):
+        self.prep()
+        for item,wrong,reason in [("f01-route-expand","14x-3",1),
+            ("f01-c-expand-negative","-12x-20",1),("f01-c-expand-rational","6x+6",2)]:
+            self.assertFalse(self.resolve(item,wrong,reason)["accepted"])
+        self.s=Store(self.path)
+        self.assertIn("f01-c-expand-trinomial",self.s.guided_progress(self.user)["pending"])
+        self.assertTrue(self.resolve("f01-c-expand-trinomial","-6x+6",0)["eligible_evidence"])
+        self.assertTrue(self.resolve("f01-route-repair","5x-20",0)["accepted"])
+        self.assertTrue(self.resolve("f01-tutor-inverse","6(3x-2)",0)["accepted"])
+        self.assertEqual("T",self.s.guided_progress(self.user)["stage"])
+        self.assertTrue(self.resolve("f01-route-transfer","8x+48",1)["accepted"])
+        self.assertEqual("COMPLETE",Store(self.path).guided_progress(self.user)["stage"])
