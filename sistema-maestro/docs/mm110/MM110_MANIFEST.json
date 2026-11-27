@@ -198,7 +198,7 @@
       "difficulty_rubric": "De factores positivos a negativos y racionales, reparación e inversión; no variar solo constantes",
       "transfer_variant_id": "f01-v-transfer",
       "accessibility_fallback": "Texto y tabla equivalentes, teclado y lector de pantalla",
-      "evidence_rationale": "Diseño r3 aprobado; CI 15020fb contract 45768886699 y Chromium 45768886690 SUCCESS. Seis variantes C añadidas; resolución guiada inédita por familia exigida; agotamiento explícito. CI de ampliación pendiente. Eficacia empírica no evaluada.",
+      "evidence_rationale": "Diseño r3 aprobado para F01; 29 actividades reconciliadas con código. CI cdbdf42: contract 45917876404 (268), Chromium 45917876339 (14), PostgreSQL local 45917876391 (5), SUCCESS; logs inspeccionados. Evaluación múltiple y recuperación verificadas. Revisión docente, accesibilidad manual y eficacia empírica pendientes.",
       "interaction_type": "SYMBOLIC_WITH_OPTIONAL_AREA",
       "revision": "r3-pilot",
       "variants": [
@@ -355,6 +355,55 @@
           "representation": "ALGEBRAIC",
           "role": "PRACTICE",
           "item_id": "f01-c-inverse-rational"
+        },
+        {
+          "variant_id": "f01-v-c-expand-trinomial",
+          "family": "expansion",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-expand-trinomial"
+        },
+        {
+          "variant_id": "f01-v-c-repair-nested",
+          "family": "repair",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-repair-nested"
+        },
+        {
+          "variant_id": "f01-v-c-inverse-combine",
+          "family": "inverse",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-inverse-combine"
+        },
+        {
+          "variant_id": "f01-v-exam-repair",
+          "family": "exam-repair",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-repair"
+        },
+        {
+          "variant_id": "f01-v-exam-inverse",
+          "family": "exam-inverse",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-inverse"
+        },
+        {
+          "variant_id": "f01-v-exam-context",
+          "family": "exam-context",
+          "representation": "VERBAL",
+          "role": "EXAM",
+          "item_id": "f01-exam-context"
+        },
+        {
+          "variant_id": "f01-v-exam-combined",
+          "family": "exam-combined",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-combined"
         }
       ],
       "mode_item_ids": {
@@ -376,15 +425,22 @@
           "f01-c-expand-negative",
           "f01-c-expand-rational",
           "f01-c-repair-sign",
-          "f01-c-repair-rational"
+          "f01-c-repair-rational",
+          "f01-c-expand-trinomial",
+          "f01-c-repair-nested"
         ],
         "practice_tutor": [
           "f01-tutor-inverse",
           "f01-c-inverse-negative",
-          "f01-c-inverse-rational"
+          "f01-c-inverse-rational",
+          "f01-c-inverse-combine"
         ],
         "exam_preparation": [
-          "f01-exam-rational"
+          "f01-exam-rational",
+          "f01-exam-repair",
+          "f01-exam-inverse",
+          "f01-exam-context",
+          "f01-exam-combined"
         ]
       }
     }
