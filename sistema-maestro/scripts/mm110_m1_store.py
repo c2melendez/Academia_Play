@@ -53,12 +53,22 @@ class Store:
             raise ValueError("attempt limit")
         key=uuid4().hex
         s["attempts"][key]={"item":item,"exam":exam}
+        if exam is not None:
+            order=list(range(len(INDEX[item]["choices"])))
+            secrets.SystemRandom().shuffle(order)
+            s["attempts"][key]["choice_order"]=order
         return key
+    @staticmethod
+    def _exam_item(a):
+        item=public_item(a["item"])
+        order=a.get("choice_order",list(range(len(item["choices"]))))
+        item["choices"]=[item["choices"][i] for i in order]
+        return item
     @staticmethod
     def _exam_view(s,key):
         e=s["exams"][key]
         return {"exam_id":key,"maximum":len(e["attempts"]),"items":[
-            {"attempt_id":a,**public_item(s["attempts"][a]["item"]),
+            {"attempt_id":a,**Store._exam_item(s["attempts"][a]),
              "recorded":"result" in s["attempts"][a]} for a in e["attempts"]]}
     def start(self,learner,item):
         def run(s):
@@ -85,7 +95,8 @@ class Store:
                 if a["submission"]!=submission:
                     raise ValueError("conflicting replay")
                 return public_assessment(a["result"])
-            result=assess(a["item"],answer,reason_choice,assisted=a["exam"] is None)
+            canonical_choice=a.get("choice_order",[0,1,2])[reason_choice]
+            result=assess(a["item"],answer,canonical_choice,assisted=a["exam"] is None)
             if result["status"] in ("RETRY","INVALID_INPUT"):
                 return result
             a.update(result=result,submission=submission)
@@ -98,7 +109,7 @@ class Store:
                 return self._exam_view(s,active)
             if len(s["exams"])>=MAX_EXAMS:
                 raise ValueError("exam limit")
-            # A single available form is deliberately not reused for the same learner.
+            # Never reuse a previously exposed exam item for the same learner.
             pool=[i for i in ITEMS if i["stage"]=="E"]
             used={a["item"] for a in s["attempts"].values() if a["exam"] is not None}
             selected=[]
@@ -129,7 +140,7 @@ class Store:
             review=[{"item_id":a["item"],**a["result"]["private_assessment"],
                      "expected":INDEX[a["item"]]["expected"],
                      "explanation":INDEX[a["item"]]["explanation"],
-                     "correct_reason":INDEX[a["item"]]["correct_reason"]} for a in records]
+                     "correct_reason":a.get("choice_order",[0,1,2]).index(INDEX[a["item"]]["correct_reason"])} for a in records]
             e["review"]={"exam_id":exam,"maximum":len(review),"score":sum(r["accepted"] for r in review),"reviews":review}
             return e["review"]
         return self._run(learner,run)
