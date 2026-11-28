@@ -1,8 +1,12 @@
-/* Shared formative area grid, derived from F01's positive-area organizer.
+/* Shared formative grid, derived from F01's positive-area organizer.
+ * Symbolic products are not geometric areas (signed coefficients allowed).
  * Schematic only. Accessible mathematical equivalents remain in the page/table.
  * No network, session, bank, evaluation or mastery state.
  */
-function renderStemAreaGrid(container, rows, visibleRows) {
+function renderStemAreaGrid(container, rows, visibleRows, representation = "area") {
+    if (!['area', 'symbolic-products'].includes(representation)) {
+        throw new Error("Representación no admitida");
+    }
     if (!Array.isArray(rows) || rows.length < 1 || rows.length > 2 ||
         !Array.isArray(rows[0]) || rows[0].length < 1 || rows[0].length > 2 ||
         rows.some(row => !Array.isArray(row) || row.length !== rows[0].length ||
@@ -13,6 +17,7 @@ function renderStemAreaGrid(container, rows, visibleRows) {
     container.replaceChildren();
     container.setAttribute("aria-hidden", "true");
     const grid = document.createElement("div");
+    grid.dataset.stemRepresentation = representation;
     Object.assign(grid.style, {
         display:"grid",gridTemplateColumns:"repeat("+rows[0].length+",minmax(0,1fr))",
         maxWidth:"360px",margin:"14px 0",border:"2px solid #174c87",gap:"2px",
