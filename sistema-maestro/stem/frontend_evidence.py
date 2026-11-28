@@ -61,10 +61,10 @@ def observed(row):
         if re.match(r"(Test Files|Tests)\s+\d+ passed",line): counts.append(line)
     if current is not None or tuple(p[0] for p in phases)!=PHASES or len(set(p[1:] for p in phases))!=1:
         raise ValueError("incomplete or inconsistent phase identity")
-    if len(images)!=1 or len(versions)!=1 or len(counts)!=2:
+    if len(images)!=1 or len(versions)!=2 or len(counts)!=2:
         raise ValueError("missing runner image or test summary")
     checkout,node,npm,lock=phases[0][1:]
-    context={"repository":row["repository"],"checkout":checkout,"node":node,"npm":npm,"lockfile":lock,"image":images[0],"image_version":versions[0],"test_summary":counts,"phases":declared,"runner":job.get("runs-on"),"setup":[s for s in job["steps"] if str(s.get("uses","")).startswith(("actions/checkout@","actions/setup-node@"))],"workflow_env":spec.get("env",{}),"job_env":job.get("env",{})}
+    context={"repository":row["repository"],"checkout":checkout,"node":node,"npm":npm,"lockfile":lock,"image":images[0],"image_provisioner_version":versions[0],"image_version":versions[1],"test_summary":counts,"phases":declared,"runner":job.get("runs-on"),"setup":[s for s in job["steps"] if str(s.get("uses","")).startswith(("actions/checkout@","actions/setup-node@"))],"workflow_env":spec.get("env",{}),"job_env":job.get("env",{})}
     return {"context":context,"exclusive_steps":exclusive,"run_id":row["run_id"],"workflow":row["workflow"],"head_sha":row["head_sha"],"event":row["event"]}
 
 def compare(left,right):
