@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from workflow_overlap import audit as overlap_audit
 from frontend_evidence import audit as evidence_audit
+from cross_repo_productivity import summarize_cross_repo
 
 ROOT=Path(__file__).resolve().parent
 REPO="c2melendez/Academia_Play"
@@ -85,6 +86,7 @@ def report():
     overlap=overlap_audit(load("workflow-observations.json")["observations"])
     evidence=evidence_audit(load("frontend-run-observations.json"))
     result["precision_overlap"]={"candidate_groups":len(overlap["candidates"]),"potential_runner_seconds_lower_bound":overlap["paired_runner_seconds_lower_bound"],"observed_pairs":[{"repository":r["repository"],"decision":r["decision"],"reuse_authorized":r["reuse_authorized"]} for r in evidence],"actual_time_saved_seconds":None}
+    result["cross_repo"]=summarize_cross_repo(load("cross-repo-productivity-observations.json"))
     return result
 
 if __name__=="__main__":
