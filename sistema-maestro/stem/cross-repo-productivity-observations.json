@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "scope": "observed successful CI; no reuse authorization",
+  "phuma": [
+    {
+      "phase": "before",
+      "repository": "c2melendez/desafio-gramatical",
+      "run_id": 46109167723,
+      "job_id": 140868609665,
+      "head_sha": "94a895525b930321736f7b3051d98e189c341dc9",
+      "event": "pull_request",
+      "run_attempt": 1,
+      "conclusion": "success",
+      "report": {
+        "schema_version": 1,
+        "checkout_sha": "0a146c06758f6f87ec6203b60fe5719286efde27",
+        "scope": "M0-nested-commands",
+        "tree_modified": true,
+        "groups": [
+          {
+            "command": [
+              "bun",
+              "run",
+              "test"
+            ],
+            "calls": [
+              {
+                "stage": "regresion_suite_existente",
+                "status": "PASS",
+                "exit_code": 0,
+                "observed_seconds": 72.606,
+                "execution_complete": true,
+                "stdout_tail_sha256": "f46bd3e8abdbd6357987cfb9b7301774df69a45b7a82b23ba287edb422124e8f"
+              },
+              {
+                "stage": "regresion_y_funcional",
+                "status": "PASS",
+                "exit_code": 0,
+                "observed_seconds": 72.618,
+                "execution_complete": true,
+                "stdout_tail_sha256": "8066ce9edc3887f4cf6db7a360b0e433d76c37fd7ffd263a685760c4c96319eb"
+              }
+            ],
+            "decision": "REVIEW",
+            "observed_min_seconds": 72.606,
+            "reuse_authorized": false
+          },
+          {
+            "command": [
+              "node",
+              "--import",
+              "./scripts/ts-resolve.mjs",
+              "scripts/test-m0-critical-mutations.mjs"
+            ],
+            "calls": [
+              {
+                "stage": "mutaciones_m0_integracion_y_progreso",
+                "status": "PASS",
+                "exit_code": 0,
+                "observed_seconds": 0.267,
+                "execution_complete": true,
+                "stdout_tail_sha256": "fe5a20624cc042a745258d02967d31ddc54c499088e4f61719bcd088805ae169"
+              },
+              {
+                "stage": "mutacion_critica",
+                "status": "PASS",
+                "exit_code": 0,
+                "observed_seconds": 0.279,
+                "execution_complete": true,
+                "stdout_tail_sha256": "fe5a20624cc042a745258d02967d31ddc54c499088e4f61719bcd088805ae169"
+              }
+            ],
+            "decision": "REVIEW",
+            "observed_min_seconds": 0.267,
+            "reuse_authorized": false
+          }
+        ],
+        "saved_seconds": 0,
+        "limitations": "Command equality and log tails do not establish input/environment or semantic equivalence. Outer CI and browser jobs remain independent."
+      },
+      "test_summary": "Tests  535 passed (535)",
+      "rdg": {
+        "selected": 450,
+        "registered_pass": 135,
+        "reusable": 135,
+        "revalidation": 0,
+        "review": 315,
+        "new_pass": 0
+      }
+    },
+    {
+      "phase": "after",
+      "repository": "c2melendez/desafio-gramatical",
+      "run_id": 46111499167,
+      "job_id": 140875819260,
+      "head_sha": "7651dcde565efb22a8260d6638f71f8c38ae9830",
+      "event": "push",
+      "run_attempt": 1,
+      "conclusion": "success",
+      "report": {
+        "schema_version": 1,
+        "checkout_sha": "7651dcde565efb22a8260d6638f71f8c38ae9830",
+        "scope": "M0-nested-commands",
+        "tree_modified": true,
+        "groups": [
+          {
+            "command": [
+              "bun",
+              "run",
+              "test"
+            ],
+            "calls": [
+              {
+                "stage": "regresion_suite_existente",
+                "status": "PASS",
+                "exit_code": 0,
+                "observed_seconds": 48.911,
+                "execution_complete": true,
+                "shared_execution_from": null,
+                "stdout_tail_sha256": "1784e912754293354045292cbd031a5eac80d46594fb071af24f2aeacf95432c"
+              },
+              {
+                "stage": "regresion_y_funcional",
+                "status": "PASS",
+                "exit_code": 0,
+                "observed_seconds": 0,
+                "execution_complete": false,
+                "shared_execution_from": "regresion_suite_existente",
+                "stdout_tail_sha256": null
+              }
+            ],
+            "decision": "CONSOLIDATED",
+            "observed_min_seconds": null,
+            "reuse_authorized": false,
+            "actual_successful_executions": 1
+          },
+          {
+            "command": [
+              "node",
+              "--import",
+              "./scripts/ts-resolve.mjs",
+              "scripts/test-m0-critical-mutations.mjs"
+            ],
+            "calls": [
+              {
+                "stage": "mutaciones_m0_integracion_y_progreso",
+                "status": "PASS",
+                "exit_code": 0,
+                "observed_seconds": 0.19,
+                "execution_complete": true,
+                "shared_execution_from": null,
+                "stdout_tail_sha256": "fe5a20624cc042a745258d02967d31ddc54c499088e4f61719bcd088805ae169"
+              },
+              {
+                "stage": "mutacion_critica",
+                "status": "PASS",
+                "exit_code": 0,
+                "observed_seconds": 0.19,
+                "execution_complete": true,
+                "shared_execution_from": null,
+                "stdout_tail_sha256": "fe5a20624cc042a745258d02967d31ddc54c499088e4f61719bcd088805ae169"
+              }
+            ],
+            "decision": "REVIEW",
+            "observed_min_seconds": 0.19,
+            "reuse_authorized": false,
+            "actual_successful_executions": 2
+          }
+        ],
+        "shared_obligations": 1,
+        "saved_seconds": 0,
+        "limitations": "Command equality and log tails do not establish input/environment or semantic equivalence. Outer CI and browser jobs remain independent."
+      },
+      "test_summary": "Tests  535 passed (535)",
+      "rdg": {
+        "selected": 450,
+        "registered_pass": 135,
+        "reusable": 135,
+        "revalidation": 0,
+        "review": 315,
+        "new_pass": 0
+      }
+    }
+  ],
+  "precision": [
+    {
+      "repository": "c2melendez/precision-lab-lite",
+      "product": "lite",
+      "profile": "ci",
+      "run_id": 46109029201,
+      "job_id": 140868176301,
+      "conclusion": "success",
+      "phases": [
+        {
+          "name": "Install dependencies",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:45:52Z",
+          "completed_at": "2026-11-28T04:45:55Z"
+        },
+        {
+          "name": "Typecheck",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:45:57Z",
+          "completed_at": "2026-11-28T04:46:03Z"
+        },
+        {
+          "name": "Unit and parity tests",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:46:03Z",
+          "completed_at": "2026-11-28T04:47:56Z"
+        },
+        {
+          "name": "Production build",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:47:56Z",
+          "completed_at": "2026-11-28T04:48:11Z"
+        }
+      ],
+      "log_excerpt": [
+        "2026-11-28T04:45:47.7281861Z Version: 20261111.635",
+        "2026-11-28T04:45:47.7291620Z Image: ubuntu-26.04",
+        "2026-11-28T04:45:47.7292188Z Version: 20261122.9.1",
+        "2026-11-28T04:45:52.1837573Z STEM frontend phase=install checkout=4d6e232786306d96c8d9389dc22f9a010d7d29d9 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:45:52.1860225Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T04:45:57.8688891Z STEM frontend phase=typecheck checkout=4d6e232786306d96c8d9389dc22f9a010d7d29d9 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:45:57.8716282Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T04:46:03.6328392Z STEM frontend phase=test checkout=4d6e232786306d96c8d9389dc22f9a010d7d29d9 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:46:03.6356775Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T04:47:56.4926705Z  Test Files  535 passed (535)",
+        "2026-11-28T04:47:56.4947243Z       Tests  3135 passed | 10 expected fail | 34 todo (3179)",
+        "2026-11-28T04:47:56.6702288Z STEM frontend phase=build checkout=4d6e232786306d96c8d9389dc22f9a010d7d29d9 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:47:56.6730167Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json"
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-lite",
+      "product": "lite",
+      "profile": "cumulative",
+      "run_id": 46109029278,
+      "job_id": 140868176472,
+      "conclusion": "success",
+      "phases": [
+        {
+          "name": "Install dependencies",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:45:52Z",
+          "completed_at": "2026-11-28T04:45:55Z"
+        },
+        {
+          "name": "Typecheck",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:45:55Z",
+          "completed_at": "2026-11-28T04:46:00Z"
+        },
+        {
+          "name": "Unit and parity regression",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:46:00Z",
+          "completed_at": "2026-11-28T04:47:31Z"
+        },
+        {
+          "name": "Production build",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:47:31Z",
+          "completed_at": "2026-11-28T04:47:42Z"
+        }
+      ],
+      "log_excerpt": [
+        "2026-11-28T04:45:47.8483946Z Version: 20261111.635",
+        "2026-11-28T04:45:47.8492020Z Image: ubuntu-26.04",
+        "2026-11-28T04:45:47.8492518Z Version: 20261116.202.1",
+        "2026-11-28T04:45:52.7420157Z STEM frontend phase=install checkout=4d6e232786306d96c8d9389dc22f9a010d7d29d9 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:45:52.7440236Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T04:45:55.6776241Z STEM frontend phase=typecheck checkout=4d6e232786306d96c8d9389dc22f9a010d7d29d9 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:45:55.6801891Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T04:46:00.2279176Z STEM frontend phase=test checkout=4d6e232786306d96c8d9389dc22f9a010d7d29d9 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:46:00.2304825Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T04:47:30.9664220Z  Test Files  535 passed (535)",
+        "2026-11-28T04:47:30.9681360Z       Tests  3135 passed | 10 expected fail | 34 todo (3179)",
+        "2026-11-28T04:47:31.1328194Z STEM frontend phase=build checkout=4d6e232786306d96c8d9389dc22f9a010d7d29d9 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:47:31.1353615Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json"
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-plus",
+      "product": "plus",
+      "profile": "ci",
+      "run_id": 46109886318,
+      "job_id": 140870845477,
+      "conclusion": "success",
+      "phases": [
+        {
+          "name": "Install dependencies",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:57:35Z",
+          "completed_at": "2026-11-28T04:57:58Z"
+        },
+        {
+          "name": "Typecheck",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:57:59Z",
+          "completed_at": "2026-11-28T04:58:03Z"
+        },
+        {
+          "name": "Unit and parity tests",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:58:03Z",
+          "completed_at": "2026-11-28T04:58:43Z"
+        },
+        {
+          "name": "Production build",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:58:43Z",
+          "completed_at": "2026-11-28T04:59:04Z"
+        }
+      ],
+      "log_excerpt": [
+        "2026-11-28T04:57:31.5351440Z Version: 20261111.635",
+        "2026-11-28T04:57:31.5357106Z Image: ubuntu-26.04",
+        "2026-11-28T04:57:31.5357485Z Version: 20261122.9.1",
+        "2026-11-28T04:57:35.5365204Z STEM frontend phase=install checkout=2790a2fde12242120c87e3c8eb394c38aa9e132c node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:57:35.5385687Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T04:57:59.7091245Z STEM frontend phase=typecheck checkout=2790a2fde12242120c87e3c8eb394c38aa9e132c node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:57:59.7116175Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T04:58:03.1461155Z STEM frontend phase=test checkout=2790a2fde12242120c87e3c8eb394c38aa9e132c node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:58:03.1485534Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T04:58:43.5775990Z  Test Files  150 passed (150)",
+        "2026-11-28T04:58:43.5778685Z       Tests  1055 passed | 28 todo (1083)",
+        "2026-11-28T04:58:43.7101248Z STEM frontend phase=build checkout=2790a2fde12242120c87e3c8eb394c38aa9e132c node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:58:43.7126515Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json"
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-plus",
+      "product": "plus",
+      "profile": "cumulative",
+      "run_id": 46109886326,
+      "job_id": 140870845578,
+      "conclusion": "success",
+      "phases": [
+        {
+          "name": "Install dependencies",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:57:36Z",
+          "completed_at": "2026-11-28T04:58:14Z"
+        },
+        {
+          "name": "Typecheck",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:58:14Z",
+          "completed_at": "2026-11-28T04:58:19Z"
+        },
+        {
+          "name": "Unit and parity regression",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:58:19Z",
+          "completed_at": "2026-11-28T04:59:19Z"
+        },
+        {
+          "name": "Production build",
+          "conclusion": "success",
+          "started_at": "2026-11-28T04:59:19Z",
+          "completed_at": "2026-11-28T04:59:47Z"
+        }
+      ],
+      "log_excerpt": [
+        "2026-11-28T04:57:31.7347215Z Version: 20261111.635",
+        "2026-11-28T04:57:31.7357416Z Image: ubuntu-26.04",
+        "2026-11-28T04:57:31.7358077Z Version: 20261122.9.1",
+        "2026-11-28T04:57:36.4220243Z STEM frontend phase=install checkout=2790a2fde12242120c87e3c8eb394c38aa9e132c node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:57:36.4241171Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T04:58:14.5738072Z STEM frontend phase=typecheck checkout=2790a2fde12242120c87e3c8eb394c38aa9e132c node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:58:14.5764423Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T04:58:19.6080407Z STEM frontend phase=test checkout=2790a2fde12242120c87e3c8eb394c38aa9e132c node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:58:19.6108540Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T04:59:19.6008177Z  Test Files  150 passed (150)",
+        "2026-11-28T04:59:19.6013604Z       Tests  1055 passed | 28 todo (1083)",
+        "2026-11-28T04:59:19.7388361Z STEM frontend phase=build checkout=2790a2fde12242120c87e3c8eb394c38aa9e132c node=v22.23.5 npm=10.9.9",
+        "2026-11-28T04:59:19.7414167Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json"
+      ]
+    }
+  ]
+}
