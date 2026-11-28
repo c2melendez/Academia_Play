@@ -1,0 +1,2 @@
+# STEM-07 — candidato educativo compartido
+Dos actividades guiadas y tres transferencias nuevas, con cuatro opciones y explicación causal de distractores. El oráculo independiente de aritmética racional comprueba los resultados y descarta opciones matemáticamente equivalentes. El recurso es un candidato transversal: no constituye M0 de un curso universitario, RDG_READY de PHUMA ni evidencia empírica. No reemplaza revisión disciplinar, pedagógica, originalidad contra bancos completos ni aprobación curricular. No se habilita navegación pública.
