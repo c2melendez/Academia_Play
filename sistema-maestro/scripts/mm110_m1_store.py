@@ -183,7 +183,7 @@ class Store:
     def assess_formative(self,learner,item,answer,reason_choice):
         """Atomic start-and-submit for the existing formative interface."""
         def run(s):
-            if self._active(s) or INDEX[item]["stage"]=="E":
+            if self._active(s) or self._reserve_open(s) or INDEX[item]["stage"]=="E":
                 raise ValueError("unavailable")
             result=assess(item,answer,reason_choice,True)
             if result["status"]=="ASSESSED":
