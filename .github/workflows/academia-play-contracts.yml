@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 jobs:
   contracts:
     runs-on: ubuntu-latest
@@ -48,3 +49,8 @@ jobs:
           test -f web/index.html
           test -f PROMPT_EJECUTOR_REPOSITORIO.md
           grep -q "Academia_Play" PROMPT_EJECUTOR_REPOSITORIO.md
+      - name: Observe branch continuity without changing gates
+        if: ${{ always() && github.repository == 'c2melendez/Academia_Play' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python sistema-maestro/scripts/branch_continuity.py
