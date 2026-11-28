@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "course": "unah-mm110",
+  "scope": "M0/F01 y M1/F02-F07",
+  "status": "STATIC_INVENTORY_REVIEW",
+  "sources": [
+    {
+      "id": "design",
+      "repository": "c2melendez/Academia_Play",
+      "commit": "133e7d6c24df48124cbfa6b389e322073d66e22f",
+      "path": "sistema-maestro/docs/mm110/MM110_M1_DISENO_PROPUESTO.md",
+      "blob": "305faf877f9fb46ed6bdd2e2006006a784d8d965"
+    },
+    {
+      "id": "f01design",
+      "repository": "c2melendez/Academia_Play",
+      "commit": "133e7d6c24df48124cbfa6b389e322073d66e22f",
+      "path": "sistema-maestro/docs/mm110/MM110_DISENO_PEDAGOGICO.md",
+      "blob": "6bf2c983be1e2673e279ede339358bdd83cc2740"
+    },
+    {
+      "id": "oracle",
+      "repository": "c2melendez/Academia_Play",
+      "commit": "133e7d6c24df48124cbfa6b389e322073d66e22f",
+      "path": "sistema-maestro/scripts/mm110_f01_oracle.py",
+      "blob": "263fd02535ec42f8ad2054172129cf8c092df630"
+    },
+    {
+      "id": "worker",
+      "repository": "c2melendez/Academia_Play",
+      "commit": "133e7d6c24df48124cbfa6b389e322073d66e22f",
+      "path": "sistema-maestro/scripts/mm110_polynomial_worker.py",
+      "blob": "bacd227a7acffa7d57cba71ebab986fe7646dd34"
+    },
+    {
+      "id": "checks",
+      "repository": "c2melendez/Academia_Play",
+      "commit": "133e7d6c24df48124cbfa6b389e322073d66e22f",
+      "path": "sistema-maestro/scripts/mm110_polynomial_checks.py",
+      "blob": "d86610fdc582264dadcfac2b0b9193349270454b"
+    },
+    {
+      "id": "phuma-review",
+      "repository": "c2melendez/desafio-gramatical",
+      "commit": "e0543729ca41f1634f2d1895b1f1397bee154320",
+      "path": "src/components/review/SharedReview.tsx",
+      "blob": "05f569a9b041b2254fd4829218791b179de355e4"
+    },
+    {
+      "id": "phuma-operations",
+      "repository": "c2melendez/desafio-gramatical",
+      "commit": "e0543729ca41f1634f2d1895b1f1397bee154320",
+      "path": "src/lib/rdg/operations.ts",
+      "blob": "57d7a6b8ebbf337650c73fb409a8c1ac7ae9b1c3"
+    },
+    {
+      "id": "lite-expand",
+      "repository": "c2melendez/precision-lab-lite",
+      "commit": "d736f14b7e7be622185bb62135a93a3df28fdb6f",
+      "path": "tests/algebra114AsExp01.audit.test.ts",
+      "blob": "373593e7216e1d3e710963bb7431cc96a208eca9"
+    },
+    {
+      "id": "lite-factor",
+      "repository": "c2melendez/precision-lab-lite",
+      "commit": "d736f14b7e7be622185bb62135a93a3df28fdb6f",
+      "path": "tests/algebra114AsFac01.audit.test.ts",
+      "blob": "a6f6ebfe43b7e131dfc80ef960b1f542dac4d2f9"
+    },
+    {
+      "id": "lite-division",
+      "repository": "c2melendez/precision-lab-lite",
+      "commit": "d736f14b7e7be622185bb62135a93a3df28fdb6f",
+      "path": "tests/algebra114AsDiv01.audit.test.ts",
+      "blob": "f189b6ed5909fccbb72ac8d6de6a6a949e677e61"
+    },
+    {
+      "id": "plus-expand",
+      "repository": "c2melendez/precision-lab-plus",
+      "commit": "c5d4e8527934c9d0da9fa7936313b4de72ad824a",
+      "path": "backend/tests/test_algebra114_as_exp01.py",
+      "blob": "2e5d576303a5a5b780ba8e87d89b2a84908e3e53"
+    },
+    {
+      "id": "plus-factor",
+      "repository": "c2melendez/precision-lab-plus",
+      "commit": "c5d4e8527934c9d0da9fa7936313b4de72ad824a",
+      "path": "backend/tests/test_algebra114_as_fac01.py",
+      "blob": "bed07271026b7d8b36251246ca70abd5572e2fba"
+    },
+    {
+      "id": "plus-division",
+      "repository": "c2melendez/precision-lab-plus",
+      "commit": "c5d4e8527934c9d0da9fa7936313b4de72ad824a",
+      "path": "backend/tests/test_algebra114_as_div01.py",
+      "blob": "a43fbaa79265410008c988837241fdb578658dce"
+    }
+  ],
+  "entries": [
+    {
+      "family": "F01",
+      "module": "M0",
+      "title": "Distributividad y equivalencia",
+      "source_ids": [
+        "f01design",
+        "oracle",
+        "phuma-operations",
+        "phuma-review",
+        "lite-expand",
+        "plus-expand"
+      ],
+      "decision": "ADAPT",
+      "limits": "Oráculo local exacto y puente visual PHUMA; conservar justificación y límites de recursos.",
+      "certification_transfer": false
+    },
+    {
+      "family": "F02",
+      "module": "M1",
+      "title": "Estructura y grado",
+      "source_ids": [
+        "design",
+        "oracle",
+        "checks",
+        "worker"
+      ],
+      "decision": "REUSE_LOCAL",
+      "limits": "Grado del cero indefinido; reducir antes de contar grado. No se verificó proveedor externo equivalente.",
+      "certification_transfer": false
+    },
+    {
+      "family": "F03",
+      "module": "M1",
+      "title": "Suma y resta",
+      "source_ids": [
+        "design",
+        "oracle",
+        "checks"
+      ],
+      "decision": "REUSE_LOCAL",
+      "limits": "Comparación exacta de coeficientes; no usar muestreo.",
+      "certification_transfer": false
+    },
+    {
+      "family": "F04",
+      "module": "M1",
+      "title": "Multiplicación",
+      "source_ids": [
+        "design",
+        "oracle",
+        "phuma-operations",
+        "lite-expand",
+        "plus-expand"
+      ],
+      "decision": "ADAPT",
+      "limits": "Reutilizar criterio de expansión, no la aprobación de otra aplicación.",
+      "certification_transfer": false
+    },
+    {
+      "family": "F05",
+      "module": "M1",
+      "title": "Productos notables",
+      "source_ids": [
+        "design",
+        "oracle",
+        "lite-expand",
+        "plus-expand"
+      ],
+      "decision": "ADAPT",
+      "limits": "Contrastar identidades y falsos positivos, con aritmética exacta.",
+      "certification_transfer": false
+    },
+    {
+      "family": "F06",
+      "module": "M1",
+      "title": "Factorización",
+      "source_ids": [
+        "design",
+        "checks",
+        "worker",
+        "lite-factor",
+        "plus-factor"
+      ],
+      "decision": "ADAPT",
+      "limits": "Equivalencia y forma no son prueba de irreducibilidad; revisar dominio Q.",
+      "certification_transfer": false
+    },
+    {
+      "family": "F07",
+      "module": "M1",
+      "title": "División",
+      "source_ids": [
+        "design",
+        "checks",
+        "worker",
+        "lite-division",
+        "plus-division"
+      ],
+      "decision": "ADAPT",
+      "limits": "D=dq+r y grado(r)<grado(d); distinguir dominio original de función racional.",
+      "certification_transfer": false
+    }
+  ],
+  "restrictions": [
+    "No modificar bancos, aprobaciones ni rama curriculum/mm110 desde main.",
+    "No copiar motores, ni declarar equivalencia de productos por coincidencia de casos.",
+    "No incorporar actividades reservadas ni exámenes.",
+    "No desplegar persistencia dinámica."
+  ]
+}
