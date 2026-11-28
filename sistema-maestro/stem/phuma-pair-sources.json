@@ -40,7 +40,7 @@
     },
     {
       "filename": "formato-contestacion(10).pdf",
-      "sha256": null,
+      "sha256": "59552dd53ce2088f2e23f38de1f5ba37234c840211e3d8f5be16efefbc9a4f5b",
       "authority": "UNX complementaria",
       "scope": "p.1 hoja PAA"
     },
@@ -57,5 +57,5 @@
       "scope": "p.1 titulada Simulación 17; correspondencia pendiente"
     }
   ],
-  "note": "Files provided by owner; not republished. No claim of exhaustive difficulty calibration, rights, or verified answer-key correspondence. Null digest not registered."
+  "note": "Files provided by owner; not republished. No claim of exhaustive difficulty calibration, rights, or verified answer-key correspondence."
 }
