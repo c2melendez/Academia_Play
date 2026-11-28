@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "observations": [
+    {
+      "repository": "c2melendez/precision-lab-lite",
+      "run_id": 46089897618,
+      "head_sha": "ec75dbc1e7a8a84f8978a3ce6d6dec7cdd9f5adc",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "workflow": ".github/workflows/ci.yml",
+      "workflow_blob": "e7376864c56dc9b680e0c2fe21020ff503fad75e",
+      "workflow_yaml": "name: CI\n\non:\n  push:\n    branches: [main, master, qa/exhaustive-suite-module-01, qa/syntax-audit-in625-a1]\n    paths-ignore:\n      - '**/*.md'\n      - 'README.md'\n      - 'qa/certification/continuity.json'\n  pull_request:\n    paths-ignore:\n      - '**/*.md'\n      - 'README.md'\n      - 'qa/certification/continuity.json'\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  frontend:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@v7\n      - uses: actions/setup-node@v7\n        with:\n          node-version: 22\n          cache: npm\n      - name: Install dependencies\n        run: bash scripts/certification/frontend-runner.sh install\n      - name: Vendor deepmerge patch regressions\n        run: node --test vendor/deepmerge/test/prototype-poisoning.node-test.cjs\n      - name: QA dependency audit (hard gate)\n        run: npm audit --package-lock-only --json > npm-audit.json\n      - name: Upload npm audit report\n        if: always()\n        uses: actions/upload-artifact@v7\n        with:\n          name: lite-npm-audit\n          path: npm-audit.json\n          if-no-files-found: warn\n          retention-days: 14\n      - name: Typecheck\n        run: bash scripts/certification/frontend-runner.sh typecheck\n      - name: Unit and parity tests\n        run: bash scripts/certification/frontend-runner.sh test\n      - name: Production build\n        run: bash scripts/certification/frontend-runner.sh build\n      - name: Upload production build\n        if: always()\n        uses: actions/upload-artifact@v7\n        with:\n          name: lite-dist\n          path: dist\n          if-no-files-found: ignore\n          retention-days: 7\n",
+      "job": {
+        "id": 140808124528,
+        "name": "frontend",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Run actions/setup-node@v7",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Install dependencies",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Vendor deepmerge patch regressions",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "QA dependency audit (hard gate)",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Upload npm audit report",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Typecheck",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Unit and parity tests",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Production build",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Upload production build",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Post Run actions/setup-node@v7",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success",
+            "status": "completed"
+          }
+        ]
+      },
+      "log_excerpt": [
+        "2026-11-28T00:49:05.5254239Z Version: 20261111.635",
+        "2026-11-28T00:49:05.5266272Z Image: ubuntu-26.04",
+        "2026-11-28T00:49:05.5267063Z Version: 20261116.202.1",
+        "2026-11-28T00:49:08.8497127Z STEM frontend phase=install checkout=f4e08f7b556d8032c082289d94e8f8dafbac3cb7 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:08.8517745Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T00:49:12.9336597Z STEM frontend phase=typecheck checkout=f4e08f7b556d8032c082289d94e8f8dafbac3cb7 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:12.9360684Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T00:49:17.5349064Z STEM frontend phase=test checkout=f4e08f7b556d8032c082289d94e8f8dafbac3cb7 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:17.5374607Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T00:50:45.8946241Z  Test Files  535 passed (535)",
+        "2026-11-28T00:50:45.8962435Z       Tests  3135 passed | 10 expected fail | 34 todo (3179)",
+        "2026-11-28T00:50:46.0596922Z STEM frontend phase=build checkout=f4e08f7b556d8032c082289d94e8f8dafbac3cb7 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:50:46.0620680Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json"
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-lite",
+      "run_id": 46089897537,
+      "head_sha": "ec75dbc1e7a8a84f8978a3ce6d6dec7cdd9f5adc",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "workflow": ".github/workflows/in625-cumulative-certification.yml",
+      "workflow_blob": "f322beeee64ab8eac0670a662869d1162c2fd466",
+      "workflow_yaml": "name: IN625 Cumulative Certification Gate\n\non:\n  push:\n    branches: [qa/syntax-audit-in625-a1]\n    paths:\n      - '**'\n      - '!**/*.md'\n      - '!qa/certification/continuity.json'\n      - 'qa/certification/EXECUTION_PROTOCOL.md'\n      - 'qa/certification/SG28_DISTRIBUTED_ACCEPTANCE.md'\n      - 'qa/certification/SY_P_23_CONVENTION.md'\n      - 'qa/certification/SY_X_04_LENGTH_CONTRACT.md'\n      - 'qa/certification/SY_X_04_LENGTH_DECISION.md'\n      - 'qa/certification/SG28_INTEGRATION_EXIT_CRITERIA.md'\n  pull_request:\n    paths:\n      - '**'\n      - '!**/*.md'\n      - '!qa/certification/continuity.json'\n      - 'qa/certification/EXECUTION_PROTOCOL.md'\n      - 'qa/certification/SG28_DISTRIBUTED_ACCEPTANCE.md'\n      - 'qa/certification/SY_P_23_CONVENTION.md'\n      - 'qa/certification/SY_X_04_LENGTH_CONTRACT.md'\n      - 'qa/certification/SY_X_04_LENGTH_DECISION.md'\n      - 'qa/certification/SG28_INTEGRATION_EXIT_CRITERIA.md'\n  workflow_dispatch:\n    inputs:\n      reason:\n        description: 'Reason for revalidating this SHA (recorded in the guard log)'\n        required: true\n        type: string\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  cumulative:\n    runs-on: ubuntu-latest\n    timeout-minutes: 30\n    steps:\n      - uses: actions/checkout@v4\n      - name: Reuse only verified evidence for this checkout\n        id: certification_guard\n        working-directory: .\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          REVALIDATION_REASON: ${{ inputs.reason }}\n        run: python3 scripts/certification/ci_guard.py --profile lite-cumulative\n      - name: Validate original Algebra114 fixture integrity\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 qa/certification/check_algebra114_fixture.py\n      - name: Certification continuity and CI guard regressions\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 -m unittest discover -s scripts/certification -p 'test_*.py'\n      - uses: actions/setup-node@v4\n        if: steps.certification_guard.outputs.skip != 'true'\n        with:\n          node-version: '22'\n          cache: npm\n      - name: Install dependencies\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: bash scripts/certification/frontend-runner.sh install\n      - name: Typecheck\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: bash scripts/certification/frontend-runner.sh typecheck\n      - name: Unit and parity regression\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: bash scripts/certification/frontend-runner.sh test\n      - name: Production build\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: bash scripts/certification/frontend-runner.sh build",
+      "job": {
+        "id": 140808124479,
+        "name": "cumulative",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Reuse only verified evidence for this checkout",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Validate original Algebra114 fixture integrity",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Certification continuity and CI guard regressions",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Install dependencies",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Typecheck",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Unit and parity regression",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Production build",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success",
+            "status": "completed"
+          }
+        ]
+      },
+      "log_excerpt": [
+        "2026-11-28T00:49:53.0366158Z Version: 20261111.635",
+        "2026-11-28T00:49:53.0373526Z Image: ubuntu-26.04",
+        "2026-11-28T00:49:53.0373982Z Version: 20261122.9.1",
+        "2026-11-28T00:49:56.9032590Z STEM frontend phase=install checkout=f4e08f7b556d8032c082289d94e8f8dafbac3cb7 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:56.9051003Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T00:49:59.5948959Z STEM frontend phase=typecheck checkout=f4e08f7b556d8032c082289d94e8f8dafbac3cb7 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:59.5972476Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T00:50:04.0238935Z STEM frontend phase=test checkout=f4e08f7b556d8032c082289d94e8f8dafbac3cb7 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:50:04.0266372Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json",
+        "2026-11-28T00:51:32.4450387Z  Test Files  535 passed (535)",
+        "2026-11-28T00:51:32.4478849Z       Tests  3135 passed | 10 expected fail | 34 todo (3179)",
+        "2026-11-28T00:51:32.6014881Z STEM frontend phase=build checkout=f4e08f7b556d8032c082289d94e8f8dafbac3cb7 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:51:32.6038964Z Lockfile SHA256: c26a643e20e3f4a13381ce1acc3469a41475ca2689c6f461322e1ad089be31c4  package-lock.json"
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-plus",
+      "run_id": 46089895018,
+      "head_sha": "4bb0860c109703a0a10ecd939fd232ed117e09f9",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "workflow": ".github/workflows/ci.yml",
+      "workflow_blob": "f38f65c91289910753ec033d311f90484bc19b67",
+      "workflow_yaml": "name: CI\n\non:\n  push:\n    branches: [main, master, qa/exhaustive-suite-module-01, qa/syntax-audit-in625-a1]\n    paths-ignore:\n      - '**/*.md'\n      - 'README.md'\n      - 'qa/certification/continuity.json'\n  pull_request:\n    paths-ignore:\n      - '**/*.md'\n      - 'README.md'\n      - 'qa/certification/continuity.json'\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  backend:\n    runs-on: ubuntu-latest\n    # The 2026-11-12 EC-H-07 runs were cancelled at the 15-minute ceiling twice\n    # while the same 2,973-test suite finished in 10:56 inside the Cumulative\n    # gate. Extend only the wall-clock ceiling; test selection, coverage\n    # threshold (75%) and every assertion remain unchanged.\n    timeout-minutes: 30\n    env:\n      CORS_ORIGINS: https://security-test.example\n    defaults:\n      run:\n        working-directory: backend\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.12\"\n          cache: pip\n          cache-dependency-path: |\n            backend/requirements.txt\n            backend/requirements-qa.txt\n      - name: Install backend dependencies\n        run: pip install -r requirements.txt -r requirements-qa.txt pytest-cov\n      - name: Backend tests\n        run: pytest -q --cov=app --cov-report=term-missing --cov-fail-under=75 --disable-warnings\n\n  frontend:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    defaults:\n      run:\n        working-directory: frontend\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n          cache: npm\n          cache-dependency-path: frontend/package-lock.json\n      - name: Install dependencies\n        run: bash ../scripts/certification/frontend-runner.sh install\n      - name: QA dependency audit\n        continue-on-error: true\n        run: npm audit --audit-level=moderate\n      - name: Typecheck\n        run: bash ../scripts/certification/frontend-runner.sh typecheck\n      - name: Unit and parity tests\n        run: bash ../scripts/certification/frontend-runner.sh test\n      - name: Production build\n        run: bash ../scripts/certification/frontend-runner.sh build\n      - name: Upload production build\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: plus-frontend-dist\n          path: frontend/dist\n          if-no-files-found: ignore\n          retention-days: 7\n",
+      "job": {
+        "id": 140808116252,
+        "name": "frontend",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Install dependencies",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "QA dependency audit",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Typecheck",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Unit and parity tests",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Production build",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Upload production build",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success",
+            "status": "completed"
+          }
+        ]
+      },
+      "log_excerpt": [
+        "2026-11-28T00:49:05.1424472Z Version: 20261111.635",
+        "2026-11-28T00:49:05.1434129Z Image: ubuntu-26.04",
+        "2026-11-28T00:49:05.1434737Z Version: 20261122.9.1",
+        "2026-11-28T00:49:09.9108692Z STEM frontend phase=install checkout=7d8415db8069019c95c1f7284e30461690577781 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:09.9134645Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T00:49:48.9078630Z STEM frontend phase=typecheck checkout=7d8415db8069019c95c1f7284e30461690577781 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:48.9106787Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T00:49:53.9128564Z STEM frontend phase=test checkout=7d8415db8069019c95c1f7284e30461690577781 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:53.9156597Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T00:50:58.9273872Z  Test Files  150 passed (150)",
+        "2026-11-28T00:50:58.9280933Z       Tests  1055 passed | 28 todo (1083)",
+        "2026-11-28T00:50:59.0864347Z STEM frontend phase=build checkout=7d8415db8069019c95c1f7284e30461690577781 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:50:59.0893467Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json"
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-plus",
+      "run_id": 46089895027,
+      "head_sha": "4bb0860c109703a0a10ecd939fd232ed117e09f9",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "workflow": ".github/workflows/in625-cumulative-certification.yml",
+      "workflow_blob": "907fac1350a09110da0093c2cea9f6117c752b5c",
+      "workflow_yaml": "name: IN625 Cumulative Certification Gate\n\non:\n  push:\n    branches: [qa/syntax-audit-in625-a1]\n    paths:\n      - '**'\n      - '!**/*.md'\n      - '!qa/certification/continuity.json'\n      - 'qa/certification/EXECUTION_PROTOCOL.md'\n      - 'qa/certification/SG28_DISTRIBUTED_ACCEPTANCE.md'\n      - 'qa/certification/SY_P_23_CONVENTION.md'\n      - 'qa/certification/SY_X_04_LENGTH_CONTRACT.md'\n      - 'qa/certification/SY_X_04_LENGTH_DECISION.md'\n      - 'qa/certification/SG28_INTEGRATION_EXIT_CRITERIA.md'\n  pull_request:\n    paths:\n      - '**'\n      - '!**/*.md'\n      - '!qa/certification/continuity.json'\n      - 'qa/certification/EXECUTION_PROTOCOL.md'\n      - 'qa/certification/SG28_DISTRIBUTED_ACCEPTANCE.md'\n      - 'qa/certification/SY_P_23_CONVENTION.md'\n      - 'qa/certification/SY_X_04_LENGTH_CONTRACT.md'\n      - 'qa/certification/SY_X_04_LENGTH_DECISION.md'\n      - 'qa/certification/SG28_INTEGRATION_EXIT_CRITERIA.md'\n  workflow_dispatch:\n    inputs:\n      reason:\n        description: 'Reason for revalidating this SHA (recorded in the guard log)'\n        required: true\n        type: string\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  backend:\n    runs-on: ubuntu-latest\n    timeout-minutes: 35\n    env:\n      CORS_ORIGINS: https://security-test.example\n    defaults:\n      run:\n        working-directory: backend\n    steps:\n      - uses: actions/checkout@v4\n      - name: Reuse only verified evidence for this checkout\n        id: certification_guard\n        working-directory: .\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          REVALIDATION_REASON: ${{ inputs.reason }}\n        run: python3 scripts/certification/ci_guard.py --profile plus-cumulative\n      - name: Validate original Algebra114 fixture integrity\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 qa/certification/check_algebra114_fixture.py\n      - name: Certification continuity and CI guard regressions\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 -m unittest discover -s scripts/certification -p 'test_*.py'\n      - uses: actions/setup-python@v5\n        if: steps.certification_guard.outputs.skip != 'true'\n        with:\n          python-version: '3.12'\n          cache: pip\n          cache-dependency-path: |\n            backend/requirements.txt\n            backend/requirements-qa.txt\n      - name: Install dependencies\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: pip install -r requirements.txt -r requirements-qa.txt pytest-cov pytest-timeout\n      - name: Backend regression\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: pytest -vv -ra --durations=15 --timeout=60 --timeout-method=signal --cov=app --cov-report=term-missing --cov-fail-under=75 --disable-warnings\n\n  frontend:\n    runs-on: ubuntu-latest\n    timeout-minutes: 25\n    defaults:\n      run:\n        working-directory: frontend\n    steps:\n      - uses: actions/checkout@v4\n      - name: Reuse only verified evidence for this checkout\n        id: certification_guard\n        working-directory: .\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          REVALIDATION_REASON: ${{ inputs.reason }}\n        run: python3 scripts/certification/ci_guard.py --profile plus-cumulative\n      - name: Certification continuity and CI guard regressions\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 -m unittest discover -s scripts/certification -p 'test_*.py'\n      - uses: actions/setup-node@v4\n        if: steps.certification_guard.outputs.skip != 'true'\n        with:\n          node-version: '22'\n          cache: npm\n          cache-dependency-path: frontend/package-lock.json\n      - name: Install dependencies\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: bash ../scripts/certification/frontend-runner.sh install\n      - name: Typecheck\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: bash ../scripts/certification/frontend-runner.sh typecheck\n      - name: Unit and parity regression\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: bash ../scripts/certification/frontend-runner.sh test\n      - name: Production build\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: bash ../scripts/certification/frontend-runner.sh build",
+      "job": {
+        "id": 140808116110,
+        "name": "frontend",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Reuse only verified evidence for this checkout",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Certification continuity and CI guard regressions",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Install dependencies",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Typecheck",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Unit and parity regression",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Production build",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "conclusion": "success",
+            "status": "completed"
+          },
+          {
+            "name": "Complete job",
+            "conclusion": "success",
+            "status": "completed"
+          }
+        ]
+      },
+      "log_excerpt": [
+        "2026-11-28T00:49:04.0581342Z Version: 20261111.635",
+        "2026-11-28T00:49:04.0586441Z Image: ubuntu-26.04",
+        "2026-11-28T00:49:04.0586804Z Version: 20261122.9.1",
+        "2026-11-28T00:49:08.2290737Z STEM frontend phase=install checkout=7d8415db8069019c95c1f7284e30461690577781 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:08.2307254Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T00:49:31.5668885Z STEM frontend phase=typecheck checkout=7d8415db8069019c95c1f7284e30461690577781 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:31.5691121Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T00:49:34.5775734Z STEM frontend phase=test checkout=7d8415db8069019c95c1f7284e30461690577781 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:49:34.5798689Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json",
+        "2026-11-28T00:50:12.4506967Z  Test Files  150 passed (150)",
+        "2026-11-28T00:50:12.4511055Z       Tests  1055 passed | 28 todo (1083)",
+        "2026-11-28T00:50:12.5568144Z STEM frontend phase=build checkout=7d8415db8069019c95c1f7284e30461690577781 node=v22.23.5 npm=10.9.9",
+        "2026-11-28T00:50:12.5589921Z Lockfile SHA256: f8000c8dd9b9c59da2bf74caae5dd9bfe71c06144af48076d9304929d265c057  package-lock.json"
+      ]
+    }
+  ]
+}
