@@ -9,6 +9,8 @@ from mm110_polynomial_worker import verify_isolated
 BANK = Path(__file__).resolve().parents[1]/"docs"/"mm110"/"MM110_M1_BANK.json"
 ITEMS = tuple(json.loads(BANK.read_text(encoding="utf-8"))["items"])
 INDEX = {i["id"]:i for i in ITEMS}
+RESERVED = tuple(json.loads(BANK.with_name("MM110_M1_RESERVED.json").read_text(encoding="utf-8"))["items"])
+RESERVED_INDEX = {i["id"]:i for i in RESERVED}
 
 def reduced_form(answer):
     """Recognize sums of distinct nonzero monomials; order is immaterial.
@@ -47,7 +49,9 @@ def reduced_form(answer):
 
 def assess_math(item_id,answer):
     """Internal mathematical verdict; not a student session or mastery score."""
-    i=INDEX[item_id]
+    return _assess_math(INDEX[item_id],answer)
+
+def _assess_math(i,answer):
     op=i["operation"]
     args=i["arguments"]
     invalid=Verdict("REJECTED","INVALID_FORMAT_OR_DOMAIN")
@@ -76,7 +80,9 @@ def assess_math(item_id,answer):
     return invalid
 
 def public_item(item_id):
-    i=INDEX[item_id]
+    return _public_item(INDEX[item_id])
+
+def _public_item(i):
     return {**{k:i[k] for k in ("id","family","stage","operation","prompt","reasoning_prompt")},
             "choices":list(i["choices"])}
 
@@ -84,14 +90,16 @@ def assess(item_id, answer, reason_choice, assisted=False):
     """Internal combined assessment. Exam returns only a recording status.
     Persistence, authorization, and exam completion belong to the controller.
     """
-    i=INDEX[item_id]
+    return _assess(INDEX[item_id],answer,reason_choice,assisted)
+
+def _assess(i,answer,reason_choice,assisted):
     if type(assisted) is not bool:
         raise ValueError("assisted must be boolean")
     if type(reason_choice) is not int or not 0 <= reason_choice < len(i["choices"]):
         raise ValueError("invalid reasoning choice")
     if i["stage"]=="E" and assisted:
         raise ValueError("assistance forbidden in exam")
-    v=assess_math(item_id,answer)
+    v=_assess_math(i,answer)
     if v.status=="INCONCLUSIVE":
         return {"status":"RETRY"}
     if v.reason=="INVALID_FORMAT_OR_DOMAIN":
@@ -124,3 +132,10 @@ def public_assessment(result):
         return {"status":"RECORDED"}
     return dict(result)
 
+
+def reserved_public_item(item_id):
+    return _public_item(RESERVED_INDEX[item_id])
+
+def assess_reserved(item_id,answer,reason_choice):
+    """Internal only; first exposure and evidence policy belong to the store."""
+    return _assess(RESERVED_INDEX[item_id],answer,reason_choice,False)
