@@ -1,5 +1,5 @@
 """M1 local transactional sessions; trusted learner IDs supplied by caller.
-No HTTP exposure or mastery grants. All existing formative pilot work stays assisted.
+Local pilot only; no mastery grants. Existing formative work stays assisted.
 """
 import json
 import hashlib
@@ -9,7 +9,8 @@ import sqlite3
 from contextlib import closing
 from pathlib import Path
 from uuid import uuid4
-from mm110_m1_activities import ITEMS, INDEX, public_item, assess, public_assessment
+from mm110_m1_activities import (ITEMS, INDEX, public_item, assess, public_assessment,
+    RESERVED, RESERVED_INDEX, reserved_public_item, assess_reserved)
 
 REVISION="bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53"
 MAX_ATTEMPTS=300
@@ -72,7 +73,7 @@ class Store:
              "recorded":"result" in s["attempts"][a]} for a in e["attempts"]]}
     def start(self,learner,item):
         def run(s):
-            if self._active(s) or INDEX[item]["stage"]=="E":
+            if self._active(s) or self._reserve_open(s) or INDEX[item]["stage"]=="E":
                 raise ValueError("unavailable")
             key=self._new(s,item)
             return {"attempt_id":key,**public_item(item)}
@@ -88,7 +89,7 @@ class Store:
             raise ValueError("answer format")
         def run(s):
             a=s["attempts"][attempt]
-            if self._active(s)!=a["exam"]:
+            if self._reserve_open(s) or self._active(s)!=a["exam"]:
                 raise ValueError("active exam boundary")
             submission=[answer,reason_choice]
             if "result" in a:
@@ -106,6 +107,8 @@ class Store:
         return self._run(learner,run)
     def start_exam(self,learner):
         def run(s):
+            if self._reserve_open(s):
+                raise ValueError("complete pending reserved attempt")
             active=self._active(s)
             if active:
                 return self._exam_view(s,active)
@@ -211,6 +214,8 @@ class Store:
 
     def guided_start(self,learner,family,item):
         def run(s):
+            if self._reserve_open(s):
+                raise ValueError("complete pending reserved attempt")
             view=self._guided_view(s,family)
             if item not in view["pending"]:
                 raise ValueError("guided prerequisite not satisfied")
@@ -221,4 +226,101 @@ class Store:
                 key=self._new(s,item)
                 s["attempts"][key]["guided"]=True
             return {"attempt_id":key,**public_item(item)}
+        return self._run(learner,run)
+
+    @staticmethod
+    def _reserve_open(s):
+        return next((k for k,a in s.get("reserved_attempts",{}).items()
+                     if "result" not in a),None)
+
+    @staticmethod
+    def _reserve_view(s,family):
+        if family not in FAMILIES:
+            raise ValueError("unknown family")
+        records=s.get("reserved_attempts",{})
+        pool=[i for i in RESERVED if i["family"]==family]
+        used={a["item"] for a in records.values()}
+        credited={RESERVED_INDEX[a["item"]]["slot"] for a in records.values()
+                  if a["item"] in RESERVED_INDEX and RESERVED_INDEX[a["item"]]["family"]==family
+                  and a.get("result",{}).get("eligible_evidence")}
+        open_key=Store._reserve_open(s)
+        for slot in ("C1","C2","T"):
+            if slot not in credited:
+                available=sum(i["slot"]==slot and i["id"] not in used for i in pool)
+                return {"family":family,"slot":slot,"credited_slots":sorted(credited),
+                        "available":available,"pending":bool(open_key),
+                        "status":"IN_PROGRESS" if open_key or available else "EXHAUSTED",
+                        "mastery":"UNASSESSED"}
+        return {"family":family,"slot":None,"credited_slots":sorted(credited),
+                "available":0,"pending":False,"status":"EVIDENCE_COLLECTED","mastery":"UNASSESSED"}
+
+    @staticmethod
+    def _reserve_public(key,a):
+        data=reserved_public_item(a["item"])
+        data["choices"]=[data["choices"][i] for i in a["choice_order"]]
+        return {"attempt_id":key,**data}
+
+    def reserved_progress(self,learner,family):
+        def run(s):
+            if self._active(s):
+                raise ValueError("active exam boundary")
+            return self._reserve_view(s,family)
+        return self._run(learner,run)
+
+    def reserved_start(self,learner,family):
+        def run(s):
+            if self._active(s):
+                raise ValueError("active exam boundary")
+            if self._guided_view(s,family)["stage"]!="COMPLETE":
+                raise ValueError("guided route prerequisite not satisfied")
+            records=s.setdefault("reserved_attempts",{})
+            key=self._reserve_open(s)
+            if key:
+                if RESERVED_INDEX[records[key]["item"]]["family"]!=family:
+                    raise ValueError("complete pending reserved attempt")
+                return self._reserve_public(key,records[key])
+            view=self._reserve_view(s,family)
+            if view["status"]!="IN_PROGRESS":
+                raise ValueError("reserved slot complete or exhausted")
+            used={a["item"] for a in records.values()}
+            item=next(i for i in RESERVED if i["family"]==family and i["slot"]==view["slot"] and i["id"] not in used)
+            key=uuid4().hex
+            order=list(range(3))
+            secrets.SystemRandom().shuffle(order)
+            records[key]={"item":item["id"],"choice_order":order}
+            return self._reserve_public(key,records[key])
+        return self._run(learner,run)
+
+    def reserved_submit(self,learner,attempt,answer,reason_choice):
+        if type(reason_choice) is not int or not 0<=reason_choice<3:
+            raise ValueError("reason")
+        if not (answer is None or type(answer) is int and 0<=answer<=16 or
+                isinstance(answer,str) and len(answer)<=256 or
+                isinstance(answer,list) and len(answer)==2 and
+                all(isinstance(x,str) and len(x)<=256 for x in answer)):
+            raise ValueError("answer format")
+        def run(s):
+            if self._active(s):
+                raise ValueError("active exam boundary")
+            a=s.get("reserved_attempts",{})[attempt]
+            submission=[answer,reason_choice]
+            if "result" in a:
+                if a["submission"]!=submission:
+                    raise ValueError("conflicting replay")
+                return dict(a["result"])
+            if self._reserve_open(s)!=attempt:
+                raise ValueError("inactive reserved attempt")
+            result=assess_reserved(a["item"],answer,a["choice_order"][reason_choice])
+            if result["status"] in ("RETRY","INVALID_INPUT"):
+                return result
+            # A failed attempt consumes its variant. No second opportunity after feedback.
+            result["mastery"]="UNASSESSED"
+            a.update(result=result,submission=submission)
+            return dict(result)
+        return self._run(learner,run)
+
+    def reserved_active(self,learner):
+        def run(s):
+            key=self._reserve_open(s)
+            return self._reserve_public(key,s["reserved_attempts"][key]) if key else None
         return self._run(learner,run)
