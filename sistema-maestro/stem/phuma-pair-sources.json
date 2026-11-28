@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "status": "PARTIAL_SOURCE_REVIEW",
+  "sources": [
+    {
+      "filename": "GUIA-PRE-U-UNAH(20261128-061726).pdf",
+      "sha256": "0e0c9881ab8049e404fffa176490bef77b50181b5d4af16e9fbd6293e7b6f65c",
+      "authority": "UNAH 2025",
+      "scope": "p.4 estructura; índice y ejemplos"
+    },
+    {
+      "filename": "GUIA-PRE-U-UNAH-2026(10).pdf",
+      "sha256": "cd248afe2a90605b1037f3b2fa6d32f070a6a457a6c4830d24b6c6784eaeabf0",
+      "authority": "UNAH 2026",
+      "scope": "p.4 impresa estructura; pp.42–47 instrucciones; índice de práctica"
+    },
+    {
+      "filename": "Guia_de_estudios_PAA(10).pdf",
+      "sha256": "6bcb3efc6c4074e0a7b1272d67b50bd8835cfb3e486411020039ba84b932e1fc",
+      "authority": "College Board 2021",
+      "scope": "índice de competencias; calibración pendiente por ítem"
+    },
+    {
+      "filename": "0-PAA-Prueba-Practica (1)(10).pdf",
+      "sha256": "5801f046a0caa7236fc80f4680c511fbb09203c547e979b4d710cc05cd349c86",
+      "authority": "College Board 2018",
+      "scope": "p.1 instrucciones y propósito; calibración pendiente"
+    },
+    {
+      "filename": "0-PAA-Prueba-Practica(10).pdf",
+      "sha256": "5801f046a0caa7236fc80f4680c511fbb09203c547e979b4d710cc05cd349c86",
+      "authority": "College Board 2018",
+      "scope": "duplicado binario exacto del anterior"
+    },
+    {
+      "filename": "Temario-GENERAL-PAA-UNX(10).pdf",
+      "sha256": "9fa76bf27c46efe3958a44d33c0439773a55c10aac6eeedc5d7f5146af5e3656",
+      "authority": "UNX complementaria",
+      "scope": "p.1 temario no oficial"
+    },
+    {
+      "filename": "formato-contestacion(10).pdf",
+      "sha256": null,
+      "authority": "UNX complementaria",
+      "scope": "p.1 hoja PAA"
+    },
+    {
+      "filename": "PAA-UNAH-EXAMEN-0(10).pdf",
+      "sha256": "792085b771425f727b259827e6d35f0eaf4412007db1de828b48ab51f2b17021",
+      "authority": "UNX complementaria",
+      "scope": "portada y lectura visual parcial; escaneado"
+    },
+    {
+      "filename": "Respuestas-00-Gratuito-UNAH-PAA(10).pdf",
+      "sha256": "4a16559d33db85786b108be6ef9ff963c42c35ee03982cde4bce8bac44ebc752",
+      "authority": "UNX complementaria",
+      "scope": "p.1 titulada Simulación 17; correspondencia pendiente"
+    }
+  ],
+  "note": "Files provided by owner; not republished. No claim of exhaustive difficulty calibration, rights, or verified answer-key correspondence. Null digest not registered."
+}
