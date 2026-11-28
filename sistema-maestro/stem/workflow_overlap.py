@@ -30,7 +30,7 @@ def inventory(observations):
         if key in seen:
             raise ValueError("duplicate run")
         seen.add(key)
-        doc=yaml.safe_load(obs["workflow_yaml"])
+        doc=yaml.load(obs["workflow_yaml"], Loader=yaml.BaseLoader)
         for job in obs["jobs"]:
             spec=doc["jobs"].get(job["name"])
             if not spec:
