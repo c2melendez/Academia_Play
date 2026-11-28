@@ -1,0 +1,770 @@
+{
+  "revision": "bb8efaa1adb12a5181e9dbbc897c02f9ed6ba9e0b12608568fc63219a7c14f53",
+  "status": "RESERVED_PILOT_NOT_MASTERY_CERTIFIED",
+  "items": [
+    {
+      "id": "m1-f02-reserve-c1-1",
+      "family": "F02",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "degree",
+      "arguments": [
+        "6x^5-6x^5-2x^3+8"
+      ],
+      "expected": 3,
+      "prompt": "Determina el grado tras reducir 6x^5-6x^5-2x^3+8.",
+      "reasoning_prompt": "¿Qué determina el grado?",
+      "choices": [
+        "El mayor exponente escrito inicialmente",
+        "El mayor exponente con coeficiente reducido no nulo",
+        "El número de términos"
+      ],
+      "correct_reason": 1,
+      "explanation": "Se cancelan los quintos grados; queda -2x^3+8."
+    },
+    {
+      "id": "m1-f02-reserve-c1-2",
+      "family": "F02",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "degree",
+      "arguments": [
+        "(x^2+1)-(x^2+1)"
+      ],
+      "expected": null,
+      "prompt": "Determina el grado de (x^2+1)-(x^2+1).",
+      "reasoning_prompt": "¿Por qué no tiene grado cero?",
+      "choices": [
+        "Todo resultado constante tiene grado indefinido",
+        "El grado es dos aunque se cancele",
+        "No queda ningún coeficiente distinto de cero"
+      ],
+      "correct_reason": 2,
+      "explanation": "Es el polinomio cero, de grado indefinido."
+    },
+    {
+      "id": "m1-f02-reserve-c2-1",
+      "family": "F02",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "coefficient",
+      "arguments": [
+        "(3x+4)(x-2)",
+        1
+      ],
+      "expected": "-2",
+      "prompt": "Determina el coeficiente de x en (3x+4)(x-2).",
+      "reasoning_prompt": "¿Qué términos aportan al coeficiente lineal?",
+      "choices": [
+        "Los productos cruzados -6x y 4x",
+        "Solo el producto 3x por x",
+        "Solo el producto 4 por -2"
+      ],
+      "correct_reason": 0,
+      "explanation": "El producto es 3x^2-2x-8."
+    },
+    {
+      "id": "m1-f02-reserve-c2-2",
+      "family": "F02",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "coefficient",
+      "arguments": [
+        "5x^4-7x^2+1",
+        3
+      ],
+      "expected": "0",
+      "prompt": "Determina el coeficiente de x^3 en 5x^4-7x^2+1.",
+      "reasoning_prompt": "¿Qué significa que no aparezca x^3?",
+      "choices": [
+        "Su coeficiente es uno",
+        "Su coeficiente es cinco",
+        "Su coeficiente es cero"
+      ],
+      "correct_reason": 2,
+      "explanation": "El término ausente tiene coeficiente cero."
+    },
+    {
+      "id": "m1-f02-reserve-t-1",
+      "family": "F02",
+      "slot": "T",
+      "stage": "T",
+      "operation": "degree",
+      "arguments": [
+        "(7x^4+2x^2-3)-(7x^4+2x^2-8)"
+      ],
+      "expected": 0,
+      "prompt": "Dos modelos difieren en (7x^4+2x^2-3)-(7x^4+2x^2-8). Determina el grado de la diferencia.",
+      "reasoning_prompt": "¿Por qué es una constante no nula?",
+      "choices": [
+        "Se suman los términos de cuarto grado",
+        "Se cancelan las potencias positivas y queda 5",
+        "Toda diferencia tiene grado uno"
+      ],
+      "correct_reason": 1,
+      "explanation": "La diferencia es 5, de grado cero."
+    },
+    {
+      "id": "m1-f02-reserve-t-2",
+      "family": "F02",
+      "slot": "T",
+      "stage": "T",
+      "operation": "degree",
+      "arguments": [
+        "(x^3+4x^2-x+1)-(x^3+4x^2+2x+1)"
+      ],
+      "expected": 1,
+      "prompt": "Determina el grado de la diferencia de los modelos x^3+4x^2-x+1 y x^3+4x^2+2x+1.",
+      "reasoning_prompt": "¿Qué explica la reducción del grado?",
+      "choices": [
+        "Se cancelan los términos cúbicos y cuadráticos",
+        "El grado depende del número de factores",
+        "Se dividen los exponentes por tres"
+      ],
+      "correct_reason": 0,
+      "explanation": "Queda -3x, de grado uno."
+    },
+    {
+      "id": "m1-f03-reserve-c1-1",
+      "family": "F03",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(2x^3-4x+9)+(5x^2+4x-3)"
+      ],
+      "expected": "2x^3+5x^2+6",
+      "prompt": "Suma y reduce (2x^3-4x+9)+(5x^2+4x-3).",
+      "reasoning_prompt": "¿Por qué desaparece el término lineal?",
+      "choices": [
+        "Los exponentes se suman",
+        "Se omiten los términos negativos",
+        "Los coeficientes lineales son opuestos"
+      ],
+      "correct_reason": 2,
+      "explanation": "-4x+4x=0; las constantes suman 6."
+    },
+    {
+      "id": "m1-f03-reserve-c1-2",
+      "family": "F03",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(2/3x^2+5x)+(1/3x^2-8x+2)"
+      ],
+      "expected": "x^2-3x+2",
+      "prompt": "Suma y reduce (2/3x^2+5x)+(1/3x^2-8x+2).",
+      "reasoning_prompt": "¿Cómo se combinan los coeficientes cuadráticos?",
+      "choices": [
+        "Se suman las fracciones de igual denominador",
+        "Se suman los denominadores",
+        "Se multiplican las fracciones"
+      ],
+      "correct_reason": 0,
+      "explanation": "2/3+1/3=1 y 5-8=-3."
+    },
+    {
+      "id": "m1-f03-reserve-c2-1",
+      "family": "F03",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(x^3-2x^2+1)-(2x^3-5x^2-4)"
+      ],
+      "expected": "-x^3+3x^2+5",
+      "prompt": "Resta y reduce (x^3-2x^2+1)-(2x^3-5x^2-4).",
+      "reasoning_prompt": "¿Qué efecto tiene el signo exterior?",
+      "choices": [
+        "Invierte solo el primer signo",
+        "Invierte todos los signos del sustraendo",
+        "Invierte únicamente los signos positivos"
+      ],
+      "correct_reason": 1,
+      "explanation": "Se obtiene x^3-2x^2+1-2x^3+5x^2+4."
+    },
+    {
+      "id": "m1-f03-reserve-c2-2",
+      "family": "F03",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(3x^2-7)-(5x-2)"
+      ],
+      "expected": "3x^2-5x-5",
+      "prompt": "Resta y reduce (3x^2-7)-(5x-2).",
+      "reasoning_prompt": "¿Cómo se trata el término lineal ausente en el minuendo?",
+      "choices": [
+        "Su coeficiente es uno",
+        "No se puede restar",
+        "Su coeficiente es cero; se resta 5"
+      ],
+      "correct_reason": 2,
+      "explanation": "0x-5x=-5x y -7+2=-5."
+    },
+    {
+      "id": "m1-f03-reserve-t-1",
+      "family": "F03",
+      "slot": "T",
+      "stage": "T",
+      "operation": "equivalent",
+      "arguments": [
+        "(8x^2+2x+11)-(3x^2-4x+6)"
+      ],
+      "expected": "5x^2+6x+5",
+      "prompt": "El beneficio es ingreso menos costo. Los modelos son 8x^2+2x+11 y 3x^2-4x+6. Reduce el beneficio.",
+      "reasoning_prompt": "¿Por qué aumenta el coeficiente lineal?",
+      "choices": [
+        "Se resta el coeficiente negativo -4",
+        "Se multiplica 2 por -4",
+        "Se suman los costos a los ingresos"
+      ],
+      "correct_reason": 0,
+      "explanation": "2-(-4)=6; los demás coeficientes se restan."
+    },
+    {
+      "id": "m1-f03-reserve-t-2",
+      "family": "F03",
+      "slot": "T",
+      "stage": "T",
+      "operation": "equivalent",
+      "arguments": [
+        "(3x^3-2x+8)+(2x^3+7x-11)"
+      ],
+      "expected": "5x^3+5x-3",
+      "prompt": "Dos aportes netos son 3x^3-2x+8 y 2x^3+7x-11. Reduce el total.",
+      "reasoning_prompt": "¿Qué ocurre con los términos constantes?",
+      "choices": [
+        "Se restan 8 y -11",
+        "Se suman 8 y -11",
+        "Se multiplican 8 y -11"
+      ],
+      "correct_reason": 1,
+      "explanation": "El total es 5x^3+5x-3."
+    },
+    {
+      "id": "m1-f04-reserve-c1-1",
+      "family": "F04",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "-2x^2(3x^2-x+4)"
+      ],
+      "expected": "-6x^4+2x^3-8x^2",
+      "prompt": "Desarrolla y reduce -2x^2(3x^2-x+4).",
+      "reasoning_prompt": "¿Por qué el término cúbico es positivo?",
+      "choices": [
+        "Se restan los exponentes",
+        "Toda potencia impar es positiva",
+        "Se multiplican dos coeficientes negativos"
+      ],
+      "correct_reason": 2,
+      "explanation": "El factor se distribuye; -2 por -1 da 2."
+    },
+    {
+      "id": "m1-f04-reserve-c1-2",
+      "family": "F04",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(3/2x)(2x^2-4x+6)"
+      ],
+      "expected": "3x^3-6x^2+9x",
+      "prompt": "Desarrolla y reduce (3/2x)(2x^2-4x+6).",
+      "reasoning_prompt": "¿Qué se hace con las potencias de x al multiplicar?",
+      "choices": [
+        "Se multiplican los exponentes",
+        "Se suman los exponentes",
+        "Se restan los exponentes"
+      ],
+      "correct_reason": 1,
+      "explanation": "Cada término se multiplica por 3x/2."
+    },
+    {
+      "id": "m1-f04-reserve-c2-1",
+      "family": "F04",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(2x+3)(x-7)"
+      ],
+      "expected": "2x^2-11x-21",
+      "prompt": "Desarrolla y reduce (2x+3)(x-7).",
+      "reasoning_prompt": "¿Qué productos forman el término lineal?",
+      "choices": [
+        "-14x y 3x",
+        "2x^2 y -21",
+        "14x y 3x"
+      ],
+      "correct_reason": 0,
+      "explanation": "La suma de los cruzados es -11x."
+    },
+    {
+      "id": "m1-f04-reserve-c2-2",
+      "family": "F04",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(x^2+x-2)(x+3)"
+      ],
+      "expected": "x^3+4x^2+x-6",
+      "prompt": "Desarrolla y reduce (x^2+x-2)(x+3).",
+      "reasoning_prompt": "¿Cuántos productos parciales hay?",
+      "choices": [
+        "Cinco",
+        "Tres",
+        "Seis"
+      ],
+      "correct_reason": 2,
+      "explanation": "Se generan seis productos y se reducen por potencia."
+    },
+    {
+      "id": "m1-f04-reserve-t-1",
+      "family": "F04",
+      "slot": "T",
+      "stage": "T",
+      "operation": "equivalent",
+      "arguments": [
+        "(2x+5)(x+4)"
+      ],
+      "expected": "2x^2+13x+20",
+      "prompt": "Un rectángulo de lados 2x+5 y x+4, x>0, tiene un área polinómica. Desarrolla y reduce el área.",
+      "reasoning_prompt": "¿Qué representan los productos cruzados?",
+      "choices": [
+        "El perímetro completo",
+        "Dos regiones rectangulares de áreas 8x y 5x",
+        "La constante del área"
+      ],
+      "correct_reason": 1,
+      "explanation": "El área suma 2x^2, 8x, 5x y 20."
+    },
+    {
+      "id": "m1-f04-reserve-t-2",
+      "family": "F04",
+      "slot": "T",
+      "stage": "T",
+      "operation": "equivalent",
+      "arguments": [
+        "(3x-1)(x+6)"
+      ],
+      "expected": "3x^2+17x-6",
+      "prompt": "Calcula el área de un rectángulo de lados 3x-1 y x+6, x>1/3. Desarrolla y reduce.",
+      "reasoning_prompt": "¿Por qué se exige x>1/3?",
+      "choices": [
+        "Para que ambos lados sean positivos",
+        "Para que el término constante sea positivo",
+        "Porque x no puede ser racional"
+      ],
+      "correct_reason": 0,
+      "explanation": "El producto da 3x^2+18x-x-6."
+    },
+    {
+      "id": "m1-f05-reserve-c1-1",
+      "family": "F05",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(4x-1)^2"
+      ],
+      "expected": "16x^2-8x+1",
+      "prompt": "Desarrolla y reduce (4x-1)^2.",
+      "reasoning_prompt": "¿Qué aporta el doble producto?",
+      "choices": [
+        "8x",
+        "-8x",
+        "-4x"
+      ],
+      "correct_reason": 1,
+      "explanation": "El doble producto es 2(4x)(-1)=-8x."
+    },
+    {
+      "id": "m1-f05-reserve-c1-2",
+      "family": "F05",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(x+9)(x-9)"
+      ],
+      "expected": "x^2-81",
+      "prompt": "Desarrolla y reduce (x+9)(x-9).",
+      "reasoning_prompt": "¿Qué identidad corresponde?",
+      "choices": [
+        "Cuadrado de una suma",
+        "Suma de cuadrados",
+        "Diferencia de cuadrados"
+      ],
+      "correct_reason": 2,
+      "explanation": "Los términos cruzados se cancelan."
+    },
+    {
+      "id": "m1-f05-reserve-c2-1",
+      "family": "F05",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(x+4)^3"
+      ],
+      "expected": "x^3+12x^2+48x+64",
+      "prompt": "Desarrolla y reduce (x+4)^3.",
+      "reasoning_prompt": "¿Qué coeficientes acompañan los productos mixtos?",
+      "choices": [
+        "3 y 3",
+        "2 y 2",
+        "1 y 1"
+      ],
+      "correct_reason": 0,
+      "explanation": "El cubo de una suma contiene cuatro términos."
+    },
+    {
+      "id": "m1-f05-reserve-c2-2",
+      "family": "F05",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "equivalent",
+      "arguments": [
+        "(3x-1)^3"
+      ],
+      "expected": "27x^3-27x^2+9x-1",
+      "prompt": "Desarrolla y reduce (3x-1)^3.",
+      "reasoning_prompt": "¿Qué patrón de signos corresponde?",
+      "choices": [
+        "Todos positivos",
+        "Positivo, negativo, positivo, negativo",
+        "Positivo, negativo, negativo, positivo"
+      ],
+      "correct_reason": 1,
+      "explanation": "Se aplica a^3-3a^2b+3ab^2-b^3."
+    },
+    {
+      "id": "m1-f05-reserve-t-1",
+      "family": "F05",
+      "slot": "T",
+      "stage": "T",
+      "operation": "equivalent",
+      "arguments": [
+        "(x+7)^2-(x-7)^2"
+      ],
+      "expected": "28x",
+      "prompt": "Para x>7, halla la diferencia de áreas de cuadrados de lados x+7 y x-7. Reduce.",
+      "reasoning_prompt": "¿Qué términos se cancelan al restar?",
+      "choices": [
+        "Los términos lineales",
+        "Todos los términos",
+        "Los cuadrados de x y las constantes"
+      ],
+      "correct_reason": 2,
+      "explanation": "Los términos lineales suman 14x+14x."
+    },
+    {
+      "id": "m1-f05-reserve-t-2",
+      "family": "F05",
+      "slot": "T",
+      "stage": "T",
+      "operation": "equivalent",
+      "arguments": [
+        "(x+3)^2-x^2"
+      ],
+      "expected": "6x+9",
+      "prompt": "Un cuadrado de lado x+3 contiene otro de lado x, x>0. Reduce el área sobrante.",
+      "reasoning_prompt": "¿Qué identidad permite encontrarla?",
+      "choices": [
+        "Desarrollar el cuadrado de suma y restar x^2",
+        "Restar los lados y elevar al cuadrado",
+        "Sumar los cuadrados de los lados"
+      ],
+      "correct_reason": 0,
+      "explanation": "El área sobrante es 6x+9."
+    },
+    {
+      "id": "m1-f06-reserve-c1-1",
+      "family": "F06",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "factor_product",
+      "arguments": [
+        "5x^2+15x"
+      ],
+      "expected": [
+        "5x",
+        "x+3"
+      ],
+      "prompt": "Escribe dos factores no constantes de 5x^2+15x.",
+      "reasoning_prompt": "¿Qué factor común puede extraerse?",
+      "choices": [
+        "x+3",
+        "5x",
+        "x^2"
+      ],
+      "correct_reason": 1,
+      "explanation": "5x(x+3) recupera los términos."
+    },
+    {
+      "id": "m1-f06-reserve-c1-2",
+      "family": "F06",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "factor_product",
+      "arguments": [
+        "9x^2-25"
+      ],
+      "expected": [
+        "3x-5",
+        "3x+5"
+      ],
+      "prompt": "Escribe dos factores no constantes de 9x^2-25.",
+      "reasoning_prompt": "¿Qué estructura tiene el polinomio?",
+      "choices": [
+        "Suma de cuadrados",
+        "Cubo de una diferencia",
+        "Diferencia de dos cuadrados"
+      ],
+      "correct_reason": 2,
+      "explanation": "(3x)^2-5^2 es producto de conjugados."
+    },
+    {
+      "id": "m1-f06-reserve-c2-1",
+      "family": "F06",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "factor_product",
+      "arguments": [
+        "6x^2+11x+3"
+      ],
+      "expected": [
+        "3x+1",
+        "2x+3"
+      ],
+      "prompt": "Escribe dos factores no constantes de 6x^2+11x+3.",
+      "reasoning_prompt": "¿Cómo se comprueba el coeficiente lineal?",
+      "choices": [
+        "Los productos cruzados son 9x y 2x",
+        "Los términos principales suman 5x",
+        "Los términos constantes suman 4"
+      ],
+      "correct_reason": 0,
+      "explanation": "(3x+1)(2x+3) desarrolla 6x^2+11x+3."
+    },
+    {
+      "id": "m1-f06-reserve-c2-2",
+      "family": "F06",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "factor_product",
+      "arguments": [
+        "x^3+5x^2+4x+20"
+      ],
+      "expected": [
+        "x+5",
+        "x^2+4"
+      ],
+      "prompt": "Escribe dos factores no constantes de x^3+5x^2+4x+20.",
+      "reasoning_prompt": "¿Qué binomio se repite al agrupar?",
+      "choices": [
+        "x+4",
+        "x+5",
+        "x^2+5"
+      ],
+      "correct_reason": 1,
+      "explanation": "x^2(x+5)+4(x+5)=(x+5)(x^2+4)."
+    },
+    {
+      "id": "m1-f06-reserve-t-1",
+      "family": "F06",
+      "slot": "T",
+      "stage": "T",
+      "operation": "factor_product",
+      "arguments": [
+        "x^2+11x+28"
+      ],
+      "expected": [
+        "x+4",
+        "x+7"
+      ],
+      "prompt": "El área de un modelo se expresa como x^2+11x+28. Escribe dos factores no constantes.",
+      "reasoning_prompt": "¿Qué deben cumplir las constantes de una pareja mónica?",
+      "choices": [
+        "Sumar 28 y multiplicar 11",
+        "Ser ambas 11",
+        "Sumar 11 y multiplicar 28"
+      ],
+      "correct_reason": 2,
+      "explanation": "4+7=11 y 4*7=28."
+    },
+    {
+      "id": "m1-f06-reserve-t-2",
+      "family": "F06",
+      "slot": "T",
+      "stage": "T",
+      "operation": "factor_product",
+      "arguments": [
+        "2x^2+10x"
+      ],
+      "expected": [
+        "2x",
+        "x+5"
+      ],
+      "prompt": "Un modelo de área se expresa como 2x^2+10x. Escribe dos factores no constantes.",
+      "reasoning_prompt": "¿Por qué es posible extraer 2x?",
+      "choices": [
+        "Ambos términos son divisibles por 2x",
+        "El término lineal no contiene x",
+        "Los términos tienen distinto signo"
+      ],
+      "correct_reason": 0,
+      "explanation": "2x(x+5) reproduce el área."
+    },
+    {
+      "id": "m1-f07-reserve-c1-1",
+      "family": "F07",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "division",
+      "arguments": [
+        "x^3+2x^2-5x+1",
+        "x+1"
+      ],
+      "expected": [
+        "x^2+x-6",
+        "7"
+      ],
+      "prompt": "Divide x^3+2x^2-5x+1 entre x+1. Escribe cociente y residuo reducidos.",
+      "reasoning_prompt": "¿En qué valor se evalúa el dividendo para obtener el residuo?",
+      "choices": [
+        "x=1",
+        "x=-1",
+        "x=0"
+      ],
+      "correct_reason": 1,
+      "explanation": "P(-1)=7; el cociente es x^2+x-6."
+    },
+    {
+      "id": "m1-f07-reserve-c1-2",
+      "family": "F07",
+      "slot": "C1",
+      "stage": "C",
+      "operation": "division",
+      "arguments": [
+        "2x^3-3x^2+x-5",
+        "x-1"
+      ],
+      "expected": [
+        "2x^2-x",
+        "-5"
+      ],
+      "prompt": "Divide 2x^3-3x^2+x-5 entre x-1. Escribe cociente y residuo reducidos.",
+      "reasoning_prompt": "¿Qué condición permite la división sintética ordinaria?",
+      "choices": [
+        "El divisor tiene grado dos",
+        "El dividendo carece de constante",
+        "El divisor tiene forma x-a"
+      ],
+      "correct_reason": 2,
+      "explanation": "P(1)=-5; el producto del divisor y cociente reproduce los términos restantes."
+    },
+    {
+      "id": "m1-f07-reserve-c2-1",
+      "family": "F07",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "division",
+      "arguments": [
+        "x^4+3x^2+7",
+        "x^2+2"
+      ],
+      "expected": [
+        "x^2+1",
+        "5"
+      ],
+      "prompt": "Divide x^4+3x^2+7 entre x^2+2. Escribe cociente y residuo reducidos.",
+      "reasoning_prompt": "¿Por qué termina el algoritmo?",
+      "choices": [
+        "El residuo tiene grado menor que dos",
+        "El residuo debe tener grado dos",
+        "El cociente es constante"
+      ],
+      "correct_reason": 0,
+      "explanation": "(x^2+2)(x^2+1)+5 da el dividendo."
+    },
+    {
+      "id": "m1-f07-reserve-c2-2",
+      "family": "F07",
+      "slot": "C2",
+      "stage": "C",
+      "operation": "division",
+      "arguments": [
+        "3x^2+2",
+        "x^3-1"
+      ],
+      "expected": [
+        "0",
+        "3x^2+2"
+      ],
+      "prompt": "Divide 3x^2+2 entre x^3-1. Escribe cociente y residuo reducidos.",
+      "reasoning_prompt": "¿Por qué no hay cociente no nulo?",
+      "choices": [
+        "El divisor es cero",
+        "El dividendo tiene grado inferior al divisor",
+        "El dividendo no tiene término lineal"
+      ],
+      "correct_reason": 1,
+      "explanation": "El cociente es cero y el residuo es el dividendo."
+    },
+    {
+      "id": "m1-f07-reserve-t-1",
+      "family": "F07",
+      "slot": "T",
+      "stage": "T",
+      "operation": "division",
+      "arguments": [
+        "2x^3+5x^2+4x+6",
+        "x+2"
+      ],
+      "expected": [
+        "2x^2+x+2",
+        "2"
+      ],
+      "prompt": "Un total 2x^3+5x^2+4x+6 se reparte algebraicamente entre x+2. Determina cociente y residuo reducidos.",
+      "reasoning_prompt": "¿Cómo compruebas el resultado?",
+      "choices": [
+        "Se suman divisor y cociente",
+        "Se multiplica el residuo por el cociente",
+        "Divisor por cociente más residuo reproduce el total"
+      ],
+      "correct_reason": 2,
+      "explanation": "(x+2)(2x^2+x+2)+2 reconstruye el total."
+    },
+    {
+      "id": "m1-f07-reserve-t-2",
+      "family": "F07",
+      "slot": "T",
+      "stage": "T",
+      "operation": "division",
+      "arguments": [
+        "x^4+2x^3+x+5",
+        "x^2+2x"
+      ],
+      "expected": [
+        "x^2",
+        "x+5"
+      ],
+      "prompt": "Para el reparto algebraico de x^4+2x^3+x+5 entre x^2+2x, determina cociente y residuo reducidos.",
+      "reasoning_prompt": "¿Por qué es válido un residuo lineal?",
+      "choices": [
+        "Su grado uno es menor que el grado dos del divisor",
+        "El residuo debe ser siempre constante",
+        "Su grado es mayor que el del divisor"
+      ],
+      "correct_reason": 0,
+      "explanation": "(x^2+2x)x^2+x+5 reproduce el total."
+    }
+  ]
+}
