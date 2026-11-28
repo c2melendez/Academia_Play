@@ -56,6 +56,16 @@ class BrowserF01(unittest.TestCase):
         self.page.locator("#submit").click()
         expect(self.page.locator("#submit")).to_be_disabled()
 
+    def test_shared_positive_area_grid(self):
+        grid=self.page.locator("#f01-area")
+        expect(grid).to_be_visible()
+        expect(grid).to_have_attribute("aria-hidden","true")
+        expect(grid.locator("[data-area-cell]")).to_have_count(2)
+        expect(grid).to_contain_text("3x")
+        expect(grid).to_contain_text("12")
+        expect(self.page.locator("#review")).to_contain_text("3(x + 4) = 3x + 12")
+        self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+
     def test_mastery_and_reload(self):
         for item,answer,reason in [
             ("f01-route-expand","14x-21",1),

@@ -8,6 +8,7 @@ import threading
 import socket
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from mm110_pilot_page import render_pilot_page
 from http.cookies import SimpleCookie
 from mm110_f01_store import Store, SESSION_TTL
 from mm110_f01_activities import ITEMS
@@ -108,7 +109,7 @@ class Handler(BaseHTTPRequestHandler):
         if not self._access_ok():
             return self._challenge()
         if self.path in ("/", "/f01"):
-            raw = (Path(__file__).resolve().parents[1] / "pilot" / "mm110_f01.html").read_bytes()
+            raw = render_pilot_page("mm110_f01.html")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(raw)))

@@ -1,6 +1,7 @@
 """Loopback-only formative M1 pilot, independent of F01 and its exams."""
 import json
 from pathlib import Path
+from mm110_pilot_page import render_pilot_page
 from http.cookies import SimpleCookie
 from mm110_m1_store import Store, SESSION_TTL
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -40,7 +41,7 @@ class Handler(BaseHTTPRequestHandler):
         if not self.host_ok():
             return self.send_data(403,{"error":"host"})
         if self.path in ("/","/m1"):
-            return self.send_data(200,(Path(__file__).resolve().parents[1]/"pilot"/"mm110_m1.html").read_bytes(),"text/html")
+            return self.send_data(200,render_pilot_page("mm110_m1.html"),"text/html")
         learner=self.learner()
         if not learner:
             return self.send_data(401,{"error":"session required"})
