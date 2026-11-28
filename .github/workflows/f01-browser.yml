@@ -23,6 +23,9 @@ jobs:
         run: python -m playwright install --with-deps chromium
       - name: Install pinned accessibility auditor
         run: npm install --prefix "$RUNNER_TEMP/f01-axe" --ignore-scripts --no-audit --no-fund --save-exact axe-core@4.10.3
+      - name: Verify exact STEM mathematical contrasts on curriculum PRs
+        if: github.base_ref == 'curriculum/mm110'
+        run: python -m unittest discover -s sistema-maestro/tests -p 'test_stem_mm110_contrasts.py' -v
       - name: Run real browser pilot suite
         env:
           F01_AXE_PATH: ${{ runner.temp }}/f01-axe/node_modules/axe-core/axe.min.js

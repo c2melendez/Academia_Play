@@ -5,6 +5,7 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 from mm110_f01_oracle_worker import compare_isolated
 from mm110_polynomial_worker import verify_isolated
+from mm110_m1_review import get_organizer, check_prediction
 
 class STEMMM110Contrasts(unittest.TestCase):
     def assert_verdict(self, result, expected):
@@ -45,3 +46,28 @@ class STEMMM110Contrasts(unittest.TestCase):
         self.assert_verdict(compare_isolated("(x^2-4)/(x-2)","x+2"),("REJECTED","INVALID_FORMAT_OR_DOMAIN"))
     def test_computation_limit_is_not_failure_or_pass(self):
         self.assert_verdict(compare_isolated("x^17","0"),("INCONCLUSIVE","COMPUTATION_LIMIT"))
+
+    def test_f04_shared_symbolic_grid_exact_products(self):
+        # Use the worked data that feeds the browser, not another copy of its rows.
+        organizer = get_organizer("F04")
+        worked = check_prediction("F04", 0)
+        self.assertTrue(worked["correct"])
+        self.assertTrue(worked["assisted"])
+        self.assertFalse(worked["eligible_evidence"])
+        self.assertNotIn("correct", organizer)
+        columns = organizer["columns"][1:]
+        rows = worked["rows"]
+        def ascii_expr(value):
+            return value.replace("−", "-").replace("²", "^2")
+        for row in rows:
+            for factor, product in zip(columns, row[1:]):
+                with self.subTest(row=row[0], column=factor):
+                    self.assert_verdict(compare_isolated(
+                        "(" + ascii_expr(row[0]) + ")(" + ascii_expr(factor) + ")",
+                        ascii_expr(product)), ("VERIFIED", "EXACT_IDENTITY"))
+        reconstructed = "+".join("(" + ascii_expr(x) + ")" for row in rows for x in row[1:])
+        self.assert_verdict(compare_isolated("(2x-3)(x+4)", reconstructed),
+                            ("VERIFIED", "EXACT_IDENTITY"))
+        self.assert_verdict(compare_isolated("(2x-3)(x+4)", reconstructed.replace("(-12)", "(12)")),
+                            ("REJECTED", "UNEQUAL_COEFFICIENTS"))
+        self.assertFalse(check_prediction("F04", 1)["eligible_evidence"])
