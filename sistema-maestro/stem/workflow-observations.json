@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "observations": [
+    {
+      "repository": "c2melendez/precision-lab-lite",
+      "commit": "a12256f92a908b4dc39275c95f673700bb9e47d1",
+      "path": ".github/workflows/ci.yml",
+      "blob": "dbbec06fa32da3df4f232600d82a8e49fe0a5825",
+      "workflow_yaml": "name: CI\n\non:\n  push:\n    branches: [main, master, qa/exhaustive-suite-module-01, qa/syntax-audit-in625-a1]\n    paths-ignore:\n      - '**/*.md'\n      - 'README.md'\n      - 'qa/certification/continuity.json'\n  pull_request:\n    paths-ignore:\n      - '**/*.md'\n      - 'README.md'\n      - 'qa/certification/continuity.json'\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  frontend:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@v7\n      - uses: actions/setup-node@v7\n        with:\n          node-version: 22\n          cache: npm\n      - name: Install dependencies\n        run: npm ci\n      - name: Vendor deepmerge patch regressions\n        run: node --test vendor/deepmerge/test/prototype-poisoning.node-test.cjs\n      - name: QA dependency audit (hard gate)\n        run: npm audit --package-lock-only --json > npm-audit.json\n      - name: Upload npm audit report\n        if: always()\n        uses: actions/upload-artifact@v7\n        with:\n          name: lite-npm-audit\n          path: npm-audit.json\n          if-no-files-found: warn\n          retention-days: 14\n      - name: Typecheck\n        run: npm run typecheck\n      - name: Unit and parity tests\n        run: npm test\n      - name: Production build\n        run: npm run build\n      - name: Upload production build\n        if: always()\n        uses: actions/upload-artifact@v7\n        with:\n          name: lite-dist\n          path: dist\n          if-no-files-found: ignore\n          retention-days: 7\n",
+      "run_id": 46086908309,
+      "jobs": [
+        {
+          "id": 140798496808,
+          "name": "frontend",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": [
+            {
+              "name": "Set up job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:33Z",
+              "completed_at": "2026-11-28T00:15:35Z"
+            },
+            {
+              "name": "Run actions/checkout@v7",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:35Z",
+              "completed_at": "2026-11-28T00:15:40Z"
+            },
+            {
+              "name": "Run actions/setup-node@v7",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:40Z",
+              "completed_at": "2026-11-28T00:15:46Z"
+            },
+            {
+              "name": "Install dependencies",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:46Z",
+              "completed_at": "2026-11-28T00:15:49Z"
+            },
+            {
+              "name": "Vendor deepmerge patch regressions",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:49Z",
+              "completed_at": "2026-11-28T00:15:50Z"
+            },
+            {
+              "name": "QA dependency audit (hard gate)",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:50Z",
+              "completed_at": "2026-11-28T00:15:50Z"
+            },
+            {
+              "name": "Upload npm audit report",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:50Z",
+              "completed_at": "2026-11-28T00:15:52Z"
+            },
+            {
+              "name": "Typecheck",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:52Z",
+              "completed_at": "2026-11-28T00:15:55Z"
+            },
+            {
+              "name": "Unit and parity tests",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:55Z",
+              "completed_at": "2026-11-28T00:17:09Z"
+            },
+            {
+              "name": "Production build",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:09Z",
+              "completed_at": "2026-11-28T00:17:20Z"
+            },
+            {
+              "name": "Upload production build",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:20Z",
+              "completed_at": "2026-11-28T00:17:22Z"
+            },
+            {
+              "name": "Post Run actions/setup-node@v7",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:22Z",
+              "completed_at": "2026-11-28T00:17:22Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v7",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:22Z",
+              "completed_at": "2026-11-28T00:17:22Z"
+            },
+            {
+              "name": "Complete job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:22Z",
+              "completed_at": "2026-11-28T00:17:22Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-lite",
+      "commit": "a12256f92a908b4dc39275c95f673700bb9e47d1",
+      "path": ".github/workflows/in625-cumulative-certification.yml",
+      "blob": "6a853cd49ff29dcee410973bd134bff7393bf60d",
+      "workflow_yaml": "name: IN625 Cumulative Certification Gate\n\non:\n  push:\n    branches: [qa/syntax-audit-in625-a1]\n    paths:\n      - '**'\n      - '!**/*.md'\n      - '!qa/certification/continuity.json'\n      - 'qa/certification/EXECUTION_PROTOCOL.md'\n      - 'qa/certification/SG28_DISTRIBUTED_ACCEPTANCE.md'\n      - 'qa/certification/SY_P_23_CONVENTION.md'\n      - 'qa/certification/SY_X_04_LENGTH_CONTRACT.md'\n      - 'qa/certification/SY_X_04_LENGTH_DECISION.md'\n      - 'qa/certification/SG28_INTEGRATION_EXIT_CRITERIA.md'\n  pull_request:\n    paths:\n      - '**'\n      - '!**/*.md'\n      - '!qa/certification/continuity.json'\n      - 'qa/certification/EXECUTION_PROTOCOL.md'\n      - 'qa/certification/SG28_DISTRIBUTED_ACCEPTANCE.md'\n      - 'qa/certification/SY_P_23_CONVENTION.md'\n      - 'qa/certification/SY_X_04_LENGTH_CONTRACT.md'\n      - 'qa/certification/SY_X_04_LENGTH_DECISION.md'\n      - 'qa/certification/SG28_INTEGRATION_EXIT_CRITERIA.md'\n  workflow_dispatch:\n    inputs:\n      reason:\n        description: 'Reason for revalidating this SHA (recorded in the guard log)'\n        required: true\n        type: string\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  cumulative:\n    runs-on: ubuntu-latest\n    timeout-minutes: 30\n    steps:\n      - uses: actions/checkout@v4\n      - name: Reuse only verified evidence for this checkout\n        id: certification_guard\n        working-directory: .\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          REVALIDATION_REASON: ${{ inputs.reason }}\n        run: python3 scripts/certification/ci_guard.py --profile lite-cumulative\n      - name: Validate original Algebra114 fixture integrity\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 qa/certification/check_algebra114_fixture.py\n      - name: Certification continuity and CI guard regressions\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 -m unittest discover -s scripts/certification -p 'test_*.py'\n      - uses: actions/setup-node@v4\n        if: steps.certification_guard.outputs.skip != 'true'\n        with:\n          node-version: '22'\n          cache: npm\n      - name: Install dependencies\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: npm ci\n      - name: Typecheck\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: npm run typecheck\n      - name: Unit and parity regression\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: npm test\n      - name: Production build\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: npm run build\n",
+      "run_id": 46086908318,
+      "jobs": [
+        {
+          "id": 140798496980,
+          "name": "cumulative",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": [
+            {
+              "name": "Set up job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:33Z",
+              "completed_at": "2026-11-28T00:15:33Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:33Z",
+              "completed_at": "2026-11-28T00:15:34Z"
+            },
+            {
+              "name": "Reuse only verified evidence for this checkout",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:34Z",
+              "completed_at": "2026-11-28T00:15:34Z"
+            },
+            {
+              "name": "Validate original Algebra114 fixture integrity",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:34Z",
+              "completed_at": "2026-11-28T00:15:34Z"
+            },
+            {
+              "name": "Certification continuity and CI guard regressions",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:34Z",
+              "completed_at": "2026-11-28T00:15:35Z"
+            },
+            {
+              "name": "Run actions/setup-node@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:35Z",
+              "completed_at": "2026-11-28T00:15:36Z"
+            },
+            {
+              "name": "Install dependencies",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:36Z",
+              "completed_at": "2026-11-28T00:15:40Z"
+            },
+            {
+              "name": "Typecheck",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:40Z",
+              "completed_at": "2026-11-28T00:15:46Z"
+            },
+            {
+              "name": "Unit and parity regression",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:46Z",
+              "completed_at": "2026-11-28T00:17:41Z"
+            },
+            {
+              "name": "Production build",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:41Z",
+              "completed_at": "2026-11-28T00:17:56Z"
+            },
+            {
+              "name": "Post Run actions/setup-node@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:56Z",
+              "completed_at": "2026-11-28T00:17:56Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:56Z",
+              "completed_at": "2026-11-28T00:17:56Z"
+            },
+            {
+              "name": "Complete job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:56Z",
+              "completed_at": "2026-11-28T00:17:56Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-plus",
+      "commit": "bc9f5666f348f85c9f273767324711dfcbcdaaf8",
+      "path": ".github/workflows/ci.yml",
+      "blob": "d6203c56f29ac778f3bbd46b65962e7c91ae97a3",
+      "workflow_yaml": "name: CI\n\non:\n  push:\n    branches: [main, master, qa/exhaustive-suite-module-01, qa/syntax-audit-in625-a1]\n    paths-ignore:\n      - '**/*.md'\n      - 'README.md'\n      - 'qa/certification/continuity.json'\n  pull_request:\n    paths-ignore:\n      - '**/*.md'\n      - 'README.md'\n      - 'qa/certification/continuity.json'\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  backend:\n    runs-on: ubuntu-latest\n    # The 2026-11-12 EC-H-07 runs were cancelled at the 15-minute ceiling twice\n    # while the same 2,973-test suite finished in 10:56 inside the Cumulative\n    # gate. Extend only the wall-clock ceiling; test selection, coverage\n    # threshold (75%) and every assertion remain unchanged.\n    timeout-minutes: 30\n    env:\n      CORS_ORIGINS: https://security-test.example\n    defaults:\n      run:\n        working-directory: backend\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.12\"\n          cache: pip\n          cache-dependency-path: |\n            backend/requirements.txt\n            backend/requirements-qa.txt\n      - name: Install backend dependencies\n        run: pip install -r requirements.txt -r requirements-qa.txt pytest-cov\n      - name: Backend tests\n        run: pytest -q --cov=app --cov-report=term-missing --cov-fail-under=75 --disable-warnings\n\n  frontend:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    defaults:\n      run:\n        working-directory: frontend\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n          cache: npm\n          cache-dependency-path: frontend/package-lock.json\n      - name: Install dependencies\n        run: npm ci\n      - name: QA dependency audit\n        continue-on-error: true\n        run: npm audit --audit-level=moderate\n      - name: Typecheck\n        run: npm run typecheck\n      - name: Unit and parity tests\n        run: npm test\n      - name: Production build\n        run: npm run build\n      - name: Upload production build\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: plus-frontend-dist\n          path: frontend/dist\n          if-no-files-found: ignore\n          retention-days: 7\n",
+      "run_id": 46086912249,
+      "jobs": [
+        {
+          "id": 140798509023,
+          "name": "frontend",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": [
+            {
+              "name": "Set up job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:54Z",
+              "completed_at": "2026-11-28T00:16:55Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:55Z",
+              "completed_at": "2026-11-28T00:16:56Z"
+            },
+            {
+              "name": "Run actions/setup-node@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:56Z",
+              "completed_at": "2026-11-28T00:16:58Z"
+            },
+            {
+              "name": "Install dependencies",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:58Z",
+              "completed_at": "2026-11-28T00:17:36Z"
+            },
+            {
+              "name": "QA dependency audit",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:36Z",
+              "completed_at": "2026-11-28T00:17:38Z"
+            },
+            {
+              "name": "Typecheck",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:38Z",
+              "completed_at": "2026-11-28T00:17:43Z"
+            },
+            {
+              "name": "Unit and parity tests",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:43Z",
+              "completed_at": "2026-11-28T00:18:51Z"
+            },
+            {
+              "name": "Production build",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:18:51Z",
+              "completed_at": "2026-11-28T00:19:22Z"
+            },
+            {
+              "name": "Upload production build",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:19:22Z",
+              "completed_at": "2026-11-28T00:19:23Z"
+            },
+            {
+              "name": "Post Run actions/setup-node@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:19:23Z",
+              "completed_at": "2026-11-28T00:19:23Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:19:24Z",
+              "completed_at": "2026-11-28T00:19:24Z"
+            },
+            {
+              "name": "Complete job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:19:24Z",
+              "completed_at": "2026-11-28T00:19:24Z"
+            }
+          ]
+        },
+        {
+          "id": 140798509222,
+          "name": "backend",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:49Z",
+              "completed_at": "2026-11-28T00:17:50Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:50Z",
+              "completed_at": "2026-11-28T00:17:51Z"
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:51Z",
+              "completed_at": "2026-11-28T00:17:53Z"
+            },
+            {
+              "name": "Install backend dependencies",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:53Z",
+              "completed_at": "2026-11-28T00:18:06Z"
+            },
+            {
+              "name": "Backend tests",
+              "conclusion": null,
+              "started_at": "2026-11-28T00:18:06Z",
+              "completed_at": null
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "conclusion": null,
+              "started_at": null,
+              "completed_at": null
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "conclusion": null,
+              "started_at": null,
+              "completed_at": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "c2melendez/precision-lab-plus",
+      "commit": "bc9f5666f348f85c9f273767324711dfcbcdaaf8",
+      "path": ".github/workflows/in625-cumulative-certification.yml",
+      "blob": "ec44c6f9f6d91128a4351ffab33194432d062b73",
+      "workflow_yaml": "name: IN625 Cumulative Certification Gate\n\non:\n  push:\n    branches: [qa/syntax-audit-in625-a1]\n    paths:\n      - '**'\n      - '!**/*.md'\n      - '!qa/certification/continuity.json'\n      - 'qa/certification/EXECUTION_PROTOCOL.md'\n      - 'qa/certification/SG28_DISTRIBUTED_ACCEPTANCE.md'\n      - 'qa/certification/SY_P_23_CONVENTION.md'\n      - 'qa/certification/SY_X_04_LENGTH_CONTRACT.md'\n      - 'qa/certification/SY_X_04_LENGTH_DECISION.md'\n      - 'qa/certification/SG28_INTEGRATION_EXIT_CRITERIA.md'\n  pull_request:\n    paths:\n      - '**'\n      - '!**/*.md'\n      - '!qa/certification/continuity.json'\n      - 'qa/certification/EXECUTION_PROTOCOL.md'\n      - 'qa/certification/SG28_DISTRIBUTED_ACCEPTANCE.md'\n      - 'qa/certification/SY_P_23_CONVENTION.md'\n      - 'qa/certification/SY_X_04_LENGTH_CONTRACT.md'\n      - 'qa/certification/SY_X_04_LENGTH_DECISION.md'\n      - 'qa/certification/SG28_INTEGRATION_EXIT_CRITERIA.md'\n  workflow_dispatch:\n    inputs:\n      reason:\n        description: 'Reason for revalidating this SHA (recorded in the guard log)'\n        required: true\n        type: string\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  backend:\n    runs-on: ubuntu-latest\n    timeout-minutes: 35\n    env:\n      CORS_ORIGINS: https://security-test.example\n    defaults:\n      run:\n        working-directory: backend\n    steps:\n      - uses: actions/checkout@v4\n      - name: Reuse only verified evidence for this checkout\n        id: certification_guard\n        working-directory: .\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          REVALIDATION_REASON: ${{ inputs.reason }}\n        run: python3 scripts/certification/ci_guard.py --profile plus-cumulative\n      - name: Validate original Algebra114 fixture integrity\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 qa/certification/check_algebra114_fixture.py\n      - name: Certification continuity and CI guard regressions\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 -m unittest discover -s scripts/certification -p 'test_*.py'\n      - uses: actions/setup-python@v5\n        if: steps.certification_guard.outputs.skip != 'true'\n        with:\n          python-version: '3.12'\n          cache: pip\n          cache-dependency-path: |\n            backend/requirements.txt\n            backend/requirements-qa.txt\n      - name: Install dependencies\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: pip install -r requirements.txt -r requirements-qa.txt pytest-cov pytest-timeout\n      - name: Backend regression\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: pytest -vv -ra --durations=15 --timeout=60 --timeout-method=signal --cov=app --cov-report=term-missing --cov-fail-under=75 --disable-warnings\n\n  frontend:\n    runs-on: ubuntu-latest\n    timeout-minutes: 25\n    defaults:\n      run:\n        working-directory: frontend\n    steps:\n      - uses: actions/checkout@v4\n      - name: Reuse only verified evidence for this checkout\n        id: certification_guard\n        working-directory: .\n        env:\n          GITHUB_TOKEN: ${{ github.token }}\n          REVALIDATION_REASON: ${{ inputs.reason }}\n        run: python3 scripts/certification/ci_guard.py --profile plus-cumulative\n      - name: Certification continuity and CI guard regressions\n        if: steps.certification_guard.outputs.skip != 'true'\n        working-directory: .\n        run: python3 -m unittest discover -s scripts/certification -p 'test_*.py'\n      - uses: actions/setup-node@v4\n        if: steps.certification_guard.outputs.skip != 'true'\n        with:\n          node-version: '22'\n          cache: npm\n          cache-dependency-path: frontend/package-lock.json\n      - name: Install dependencies\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: npm ci\n      - name: Typecheck\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: npm run typecheck\n      - name: Unit and parity regression\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: npm test\n      - name: Production build\n        if: steps.certification_guard.outputs.skip != 'true'\n        run: npm run build\n",
+      "run_id": 46086912254,
+      "jobs": [
+        {
+          "id": 140798508659,
+          "name": "frontend",
+          "status": "completed",
+          "conclusion": "success",
+          "steps": [
+            {
+              "name": "Set up job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:34Z",
+              "completed_at": "2026-11-28T00:15:35Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:35Z",
+              "completed_at": "2026-11-28T00:15:36Z"
+            },
+            {
+              "name": "Reuse only verified evidence for this checkout",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:36Z",
+              "completed_at": "2026-11-28T00:15:36Z"
+            },
+            {
+              "name": "Certification continuity and CI guard regressions",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:36Z",
+              "completed_at": "2026-11-28T00:15:36Z"
+            },
+            {
+              "name": "Run actions/setup-node@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:36Z",
+              "completed_at": "2026-11-28T00:15:38Z"
+            },
+            {
+              "name": "Install dependencies",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:15:38Z",
+              "completed_at": "2026-11-28T00:16:16Z"
+            },
+            {
+              "name": "Typecheck",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:16Z",
+              "completed_at": "2026-11-28T00:16:21Z"
+            },
+            {
+              "name": "Unit and parity regression",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:21Z",
+              "completed_at": "2026-11-28T00:17:27Z"
+            },
+            {
+              "name": "Production build",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:27Z",
+              "completed_at": "2026-11-28T00:17:56Z"
+            },
+            {
+              "name": "Post Run actions/setup-node@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:56Z",
+              "completed_at": "2026-11-28T00:17:57Z"
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:57Z",
+              "completed_at": "2026-11-28T00:17:57Z"
+            },
+            {
+              "name": "Complete job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:17:57Z",
+              "completed_at": "2026-11-28T00:17:57Z"
+            }
+          ]
+        },
+        {
+          "id": 140798508841,
+          "name": "backend",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:47Z",
+              "completed_at": "2026-11-28T00:16:48Z"
+            },
+            {
+              "name": "Run actions/checkout@v4",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:48Z",
+              "completed_at": "2026-11-28T00:16:49Z"
+            },
+            {
+              "name": "Reuse only verified evidence for this checkout",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:49Z",
+              "completed_at": "2026-11-28T00:16:49Z"
+            },
+            {
+              "name": "Validate original Algebra114 fixture integrity",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:49Z",
+              "completed_at": "2026-11-28T00:16:49Z"
+            },
+            {
+              "name": "Certification continuity and CI guard regressions",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:49Z",
+              "completed_at": "2026-11-28T00:16:49Z"
+            },
+            {
+              "name": "Run actions/setup-python@v5",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:49Z",
+              "completed_at": "2026-11-28T00:16:50Z"
+            },
+            {
+              "name": "Install dependencies",
+              "conclusion": "success",
+              "started_at": "2026-11-28T00:16:50Z",
+              "completed_at": "2026-11-28T00:17:07Z"
+            },
+            {
+              "name": "Backend regression",
+              "conclusion": null,
+              "started_at": "2026-11-28T00:17:07Z",
+              "completed_at": null
+            },
+            {
+              "name": "Post Run actions/setup-python@v5",
+              "conclusion": null,
+              "started_at": null,
+              "completed_at": null
+            },
+            {
+              "name": "Post Run actions/checkout@v4",
+              "conclusion": null,
+              "started_at": null,
+              "completed_at": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
