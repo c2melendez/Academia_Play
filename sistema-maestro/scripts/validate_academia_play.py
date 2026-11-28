@@ -26,6 +26,47 @@ def unique_index(data,kind,key,errors):
   index[ident]=item
  return index
 
+def validate_reconstruction(source, institution):
+ """Check local pinned adoption artifacts; does not authenticate human identity."""
+ import hashlib, unicodedata
+ from validate_reconstructed_curriculum import validate_dossier
+ meta=source['reconstruction']
+ repo=ROOT.parent.resolve()
+ def local_path(value):
+  p=(repo/value).resolve()
+  if not p.is_relative_to(repo/'sistema-maestro'/'docs') or not p.is_file():
+   raise ValueError('reconstruction artifact must exist under sistema-maestro/docs')
+  return p
+ try:
+  dossier_path=local_path(meta['dossier_path'])
+  raw=dossier_path.read_bytes()
+  if hashlib.sha256(raw).hexdigest()!=source['sha256']:
+   raise ValueError('dossier SHA-256 mismatch')
+  dossier=json.loads(raw)
+  problems=validate_dossier(dossier)
+  if problems:raise ValueError('invalid dossier: '+'; '.join(problems))
+  if dossier['provenance']!='RECONSTRUCTED_PROPOSED':
+   raise ValueError('reconstruction requires supported proposed provenance')
+  if institution and dossier['university']!=institution['name']:
+   raise ValueError('reconstruction institution mismatch')
+  approval=json.loads(local_path(meta['approval_path']).read_bytes())
+  revision=meta['design_revision_id']
+  if approval.get('status')!='DESIGN_APPROVED' or approval.get('approval_status')!='HUMAN_APPROVED' or approval.get('design_revision_id')!=revision:
+   raise ValueError('missing approved design revision')
+  act=approval.get('approval',{})
+  if act.get('approved_revision_id')!=revision or act.get('command')!='APROBAR_DISEÑO '+revision or act.get('source')!='direct_explicit_user_instruction_in_conversation':
+   raise ValueError('approval record mismatch')
+  design=local_path(approval['design_path']).read_text(encoding='utf8')
+  canonical=unicodedata.normalize('NFC',design.replace('\r\n','\n').replace('\r','\n')).rstrip('\n')+'\n'
+  if hashlib.sha256(canonical.encode('utf8')).hexdigest()!=revision:
+   raise ValueError('design SHA-256 mismatch')
+  blob=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+  if blob not in canonical:
+   raise ValueError('approved design does not pin dossier blob')
+ except (OSError,ValueError,KeyError,TypeError,AttributeError) as exc:
+  return ['reconstruction: '+str(exc)]
+ return []
+
 def validate_manifest(data):
  errors=check_schema(data,'manifest.schema.json')
  if errors:return errors
@@ -43,7 +84,8 @@ def validate_manifest(data):
   for r in course['route_ids']:req(r,'routes',c)
   if not course['route_ids']:errors.append(f'{c}: no learning route')
   s=ix['sources'].get(course['syllabus_source_id'])
-  if s and s['kind']!='SYLLABUS':errors.append(f'{c}: syllabus source has wrong kind')
+  if s and s['kind'] not in ('SYLLABUS','RECONSTRUCTED'):errors.append(f'{c}: syllabus source has wrong kind')
+  if s and s['kind']=='RECONSTRUCTED':errors.extend(f'{c}: {e}' for e in validate_reconstruction(s,ix['institutions'].get(course['institution_id'])))
  for o in data['objectives']:
   ident=o['objective_id'];req(o['course_id'],'courses',ident);check_refs(o['source_refs'],ident)
   for x in o['prerequisite_ids']:req(x,'objectives',ident)

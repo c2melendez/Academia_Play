@@ -1,0 +1,205 @@
+{
+  "schema_version": "4.3",
+  "university": "Universidad Nacional Autónoma de Honduras",
+  "course_name": "Matemática I",
+  "course_code": "MM-110",
+  "period_scope": "2008 y I PAC 2024; vigencia actual no acreditada",
+  "provenance": "RECONSTRUCTED_PROPOSED",
+  "adoption_status": "PENDING_HUMAN_APPROVAL",
+  "sources": [
+    {
+      "source_id": "S1",
+      "title": "Plan de estudios UNAH",
+      "url": "https://ie.unah.edu.hn/estudiantes/plan-de-estudios/",
+      "source_type": "INSTITUTIONAL",
+      "origin_id": "UNAH-IE",
+      "inspected_sections": [
+        "Identidad, UV y requisitos; observación registrada en corrida anterior"
+      ],
+      "access_status": "PARTIAL",
+      "observed_at": "2026-11-25",
+      "publication_period": null
+    },
+    {
+      "source_id": "S2",
+      "title": "Programa histórico, anexo VI",
+      "url": "https://tzibalnaah.unah.edu.hn/bitstream/handle/123456789/4467/T-MSc00144.pdf?isAllowed=y&sequence=2",
+      "source_type": "ACADEMIC",
+      "origin_id": "CURC-2008",
+      "inspected_sections": [
+        "Tres bloques; consulta textual registrada anteriormente, captura no recuperada"
+      ],
+      "access_status": "PARTIAL",
+      "observed_at": "2026-11-25",
+      "publication_period": "2008"
+    },
+    {
+      "source_id": "S3",
+      "title": "Sílabo UNAH-VS I PAC 2024",
+      "url": "https://www.studocu.com/latam/document/universidad-nacional-autonoma-de-honduras/matematica-1/silabo-de-matematica-i-mm-110-i-pac-2024-1-07b017bc8b25215-f0d3183637530201-a/84177969",
+      "source_type": "COURSE_DOCUMENT",
+      "origin_id": "VS-2024",
+      "inspected_sections": [
+        "Competencias 16–32 y bibliografía según registro previo"
+      ],
+      "access_status": "PARTIAL",
+      "observed_at": "2026-11-25",
+      "publication_period": "I PAC 2024"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "C1",
+      "text": "Identidad MM110, 5 UV, sin requisito formal",
+      "classification": "INSTITUTIONALLY_CONFIRMED",
+      "source_ids": [
+        "S1"
+      ],
+      "is_core": true,
+      "confidence_rationale": "Registro previo del plan institucional.",
+      "contradictions": []
+    },
+    {
+      "claim_id": "C2",
+      "text": "Expresiones algebraicas, ecuaciones e inecuaciones",
+      "classification": "DOCUMENT_CORROBORATED",
+      "source_ids": [
+        "S2",
+        "S3"
+      ],
+      "is_core": true,
+      "confidence_rationale": "Coincidencia general registrada en corridas anteriores; no acredita vigencia.",
+      "contradictions": []
+    },
+    {
+      "claim_id": "C3",
+      "text": "M0 como apoyo transversal",
+      "classification": "ACADEMICALLY_INFERRED",
+      "source_ids": [
+        "S2"
+      ],
+      "is_core": false,
+      "confidence_rationale": "Recuperación de fundamentos como decisión pedagógica.",
+      "contradictions": []
+    },
+    {
+      "claim_id": "C4",
+      "text": "Funciones reales y subfamilias propuestas",
+      "classification": "ACADEMICALLY_INFERRED",
+      "source_ids": [
+        "S2",
+        "S3"
+      ],
+      "is_core": true,
+      "confidence_rationale": "Bloque histórico y desglose docente; profundidad pendiente de revisión.",
+      "contradictions": []
+    },
+    {
+      "claim_id": "C5",
+      "text": "Sistemas, complejos y vigencia exacta",
+      "classification": "UNRESOLVED",
+      "source_ids": [
+        "S2",
+        "S3"
+      ],
+      "is_core": false,
+      "confidence_rationale": "No se ha confirmado su alcance actual.",
+      "contradictions": []
+    }
+  ],
+  "units": [
+    {
+      "unit_id": "M0",
+      "title": "Fundamentos",
+      "claim_ids": [
+        "C3"
+      ],
+      "foundation_notes": "Distributividad y equivalencia; apoyo transversal"
+    },
+    {
+      "unit_id": "M1",
+      "title": "Polinomios",
+      "claim_ids": [
+        "C2"
+      ],
+      "foundation_notes": "Operaciones, productos notables, factorización y división"
+    },
+    {
+      "unit_id": "M2",
+      "title": "Expresiones racionales y radicales",
+      "claim_ids": [
+        "C2"
+      ],
+      "foundation_notes": "Simplificación y restricciones"
+    },
+    {
+      "unit_id": "M3",
+      "title": "Ecuaciones",
+      "claim_ids": [
+        "C2"
+      ],
+      "foundation_notes": "Equivalencia, verificación y aplicaciones"
+    },
+    {
+      "unit_id": "M4",
+      "title": "Inecuaciones",
+      "claim_ids": [
+        "C2"
+      ],
+      "foundation_notes": "Orden, intervalos y signos"
+    },
+    {
+      "unit_id": "M5",
+      "title": "Plano cartesiano",
+      "claim_ids": [
+        "C4"
+      ],
+      "foundation_notes": "Coordenadas, distancia y rectas"
+    },
+    {
+      "unit_id": "M6",
+      "title": "Funciones",
+      "claim_ids": [
+        "C4"
+      ],
+      "foundation_notes": "Dominio, rango y gráficas"
+    },
+    {
+      "unit_id": "M7",
+      "title": "Funciones polinómicas y racionales",
+      "claim_ids": [
+        "C4"
+      ],
+      "foundation_notes": "Ceros y asíntotas"
+    },
+    {
+      "unit_id": "M8",
+      "title": "Composición e inversas",
+      "claim_ids": [
+        "C4"
+      ],
+      "foundation_notes": "Dominio y composición"
+    },
+    {
+      "unit_id": "M9",
+      "title": "Exponenciales y logaritmos",
+      "claim_ids": [
+        "C4"
+      ],
+      "foundation_notes": "Ecuaciones y modelación"
+    }
+  ],
+  "variations": [
+    "Organización por bloques y parciales variable."
+  ],
+  "unresolved_questions": [
+    "Sílabo vigente único; sistemas y complejos; cotejo de fuentes primarias."
+  ],
+  "comparison_notes": [
+    "Comparación UCR registrada previamente; no revalidada ni usada para determinar núcleo."
+  ],
+  "books_pending": [
+    "Cotejo por sección de ediciones alternativas y derechos de reutilización."
+  ],
+  "research_notes": "Borrador consolidado de observaciones de corridas anteriores; fuentes externas no reabiertas en esta corrida. Revisión documental pendiente antes de aprobación."
+}

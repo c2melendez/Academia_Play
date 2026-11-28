@@ -1,0 +1,24 @@
+{
+  "design_revision_id": "9988754f5897bf58ec1e3a2ce73c732f5228d03114ce267226cc0df76c38568b",
+  "design_path": "sistema-maestro/docs/mm110/MM110_DISENO_PEDAGOGICO.md",
+  "design_commit": "123e1e4e592d538bd5da235d45062019dad50fa0",
+  "design_blob": "6bf2c983be1e2673e279ede339358bdd83cc2740",
+  "canonicalization": "UTF-8 NFC LF exactly one final LF",
+  "status": "DESIGN_APPROVED",
+  "approval_status": "HUMAN_APPROVED",
+  "scope": "Adopción provisional del núcleo reconstruido MM-110 y primer corte F01; migración contractual previa a implementación",
+  "limitations": [
+    "No certificación institucional",
+    "M1–M9 planificación preliminar",
+    "Reutilización pendiente de inventario",
+    "Sin aprobación docente o empírica"
+  ],
+  "approval": {
+    "date": "2026-11-25",
+    "source": "direct_explicit_user_instruction_in_conversation",
+    "command": "APROBAR_DISEÑO 9988754f5897bf58ec1e3a2ce73c732f5228d03114ce267226cc0df76c38568b",
+    "approved_revision_id": "9988754f5897bf58ec1e3a2ce73c732f5228d03114ce267226cc0df76c38568b",
+    "scope": "Adopción provisional del núcleo reconstruido MM-110 y primer corte F01; migración contractual previa a implementación"
+  },
+  "next_action": "Preparar y validar migración contractual específica v4.3 para currículo reconstruido antes de implementar M0; registrar adopción sin atribuir oficialidad. Mantener revisión docente y empírica pendientes."
+}

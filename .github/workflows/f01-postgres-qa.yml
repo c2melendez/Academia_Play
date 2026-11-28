@@ -1,0 +1,38 @@
+name: Academia Play — F01 PostgreSQL QA
+on:
+  pull_request:
+  push:
+    branches: [curriculum/mm110]
+permissions:
+  contents: read
+jobs:
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: f01_test
+          POSTGRES_PASSWORD: ci_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d f01_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'psycopg[binary]==3.2.9'
+      - name: Apply real schema and role
+        env:
+          PGPASSWORD: ci_only
+        run: |
+          psql -h 127.0.0.1 -U postgres -d f01_test -v ON_ERROR_STOP=1 -c 'CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role;'
+          psql -h 127.0.0.1 -U postgres -d f01_test -v ON_ERROR_STOP=1 -f infra/sql/f01_private_persistence.sql
+          psql -h 127.0.0.1 -U postgres -d f01_test -v ON_ERROR_STOP=1 -f infra/sql/f01_application_role.sql
+          psql -h 127.0.0.1 -U postgres -d f01_test -v ON_ERROR_STOP=1 -c "ALTER ROLE academia_f01_app LOGIN PASSWORD 'ci_only';"
+      - run: python sistema-maestro/tests/postgres_f01_integration.py

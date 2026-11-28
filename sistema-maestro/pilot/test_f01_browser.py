@@ -1,0 +1,362 @@
+"""Real Chromium pilot tests. Run with Python Playwright installed."""
+import sys
+import os
+import json
+import tempfile
+import threading
+import unittest
+from pathlib import Path
+from playwright.sync_api import sync_playwright, expect
+
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
+from mm110_f01_http import PilotServer
+from mm110_f01_store import Store
+
+class BrowserF01(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp=tempfile.TemporaryDirectory()
+        cls.addClassCleanup(cls.tmp.cleanup)
+        cls.server=PilotServer(("127.0.0.1",0),Store(Path(cls.tmp.name)/"browser.sqlite"))
+        cls.thread=threading.Thread(target=cls.server.serve_forever,daemon=True)
+        cls.thread.start()
+        def stop():
+            cls.server.shutdown()
+            cls.server.server_close()
+            cls.thread.join(timeout=5)
+        cls.addClassCleanup(stop)
+        cls.pw=sync_playwright().start()
+        cls.addClassCleanup(cls.pw.stop)
+        cls.browser=cls.pw.chromium.launch()
+        cls.addClassCleanup(cls.browser.close)
+        cls.url="http://127.0.0.1:"+str(cls.server.server_port)
+
+    def setUp(self):
+        self.context=self.browser.new_context(viewport={"width":390,"height":844})
+        self.addCleanup(self.context.close)
+        self.page=self.context.new_page()
+        self.errors=[]
+        self.page.on("pageerror",lambda e:self.errors.append(str(e)))
+        self.page.goto(self.url)
+        expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
+        expect(self.page.locator("#start")).to_be_enabled()
+
+    def tearDown(self):
+        self.assertEqual([],self.errors)
+
+    def choose(self,item):
+        self.page.locator("#item").select_option(item)
+        self.page.locator("#start").click()
+        expect(self.page.locator("#exercise")).to_be_visible()
+        expect(self.page.locator("#submit")).to_be_enabled()
+
+    def answer(self,expression,reason):
+        self.page.get_by_label("Expresión algebraica (usa x, / y ^)").fill(expression)
+        self.page.locator('input[name="reason"]').nth(reason).check()
+        self.page.locator("#submit").click()
+        expect(self.page.locator("#submit")).to_be_disabled()
+
+    def test_shared_positive_area_grid(self):
+        grid=self.page.locator("#f01-area")
+        expect(grid).to_be_visible()
+        expect(grid).to_have_attribute("aria-hidden","true")
+        expect(grid.locator("[data-area-cell]")).to_have_count(2)
+        expect(grid).to_contain_text("3x")
+        expect(grid).to_contain_text("12")
+        expect(self.page.locator("#review")).to_contain_text("3(x + 4) = 3x + 12")
+        self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+
+    def test_mastery_and_reload(self):
+        for item,answer,reason in [
+            ("f01-route-expand","14x-21",1),
+            ("f01-route-repair","5x-20",0),
+            ("f01-route-transfer","8x+48",1),
+        ]:
+            self.choose(item)
+            self.answer(answer,reason)
+            expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+        expect(self.page.locator("#progress")).to_contain_text("Dominio inicial acreditado")
+        self.page.reload()
+        expect(self.page.locator("#progress")).to_contain_text("Dominio inicial acreditado")
+        expect(self.page.locator("#progress")).not_to_contain_text("Acceso conservado")
+
+    def test_hint_excludes_evidence(self):
+        self.choose("f01-route-expand")
+        self.page.locator("#hint").click()
+        expect(self.page.locator("#feedback")).to_contain_text("intento asistido")
+        expect(self.page.locator("#submit")).to_be_enabled()
+        self.answer("14x-21",1)
+        expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 0")
+
+    def test_exam_no_hint_or_feedback(self):
+        self.page.locator("#mode").select_option("exam_preparation")
+        self.choose("f01-exam-rational")
+        expect(self.page.locator("#review")).to_be_hidden()
+        expect(self.page.locator("#hint")).to_be_hidden()
+        self.answer("-6x+9",0)
+        expect(self.page.locator("#feedback")).to_contain_text("No se revela la corrección")
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 0")
+
+    def test_mobile_keyboard_and_labels(self):
+        self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+        self.page.locator("#start").focus()
+        self.page.keyboard.press("Enter")
+        expect(self.page.locator("#exercise")).to_be_visible()
+        expect(self.page.locator("#prompt")).to_be_focused()
+        self.page.keyboard.press("Tab")
+        expect(self.page.locator("#answer")).to_be_focused()
+        expect(self.page.get_by_role("group",name=self.page.locator("#reason").inner_text())).to_be_visible()
+        self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+
+    def test_guided_complete_and_reload(self):
+        self.page.locator("#mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Etapa A")
+        self.assertEqual(400,self.page.evaluate("""async () => (await fetch('/api/f01/guided/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item_id:'f01-route-transfer'})})).status"""))
+        cases = [
+            ("f01-a-sign-positive","15",0,"A"),
+            ("f01-a-fraction-negative","-3/2",1,"B"),
+            ("f01-b-group","28",1,"B"),
+            ("f01-b-predict","4x+12",2,"C"),
+            ("f01-route-expand","14x-21",1,"C"),
+            ("f01-route-repair","5x-20",0,"C"),
+            ("f01-tutor-inverse","6(3x-2)",0,"T"),
+            ("f01-route-transfer","8x+48",1,"COMPLETE"),
+        ]
+        for item,expression,reason,stage in cases:
+            self.choose(item)
+            self.answer(expression,reason)
+            expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+            expect(self.page.locator("#guided-status")).to_contain_text("Ruta completada" if stage=="COMPLETE" else "Etapa "+stage)
+            if stage!="COMPLETE":
+                expect(self.page.locator("#start")).to_be_enabled()
+        expect(self.page.locator("#start")).to_be_disabled()
+        expect(self.page.locator("#progress")).to_contain_text("Acceso conservado")
+        self.page.reload()
+        expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
+        self.page.locator("#mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Ruta completada")
+        expect(self.page.locator("#progress")).to_contain_text("Acceso conservado")
+        expect(self.page.locator("#start")).to_be_disabled()
+
+    def test_guided_assistance_does_not_unlock(self):
+        self.page.locator("#mode").select_option("guided")
+        self.choose("f01-a-sign-positive")
+        self.page.locator("#hint").click()
+        expect(self.page.locator("#feedback")).to_contain_text("intento asistido")
+        expect(self.page.locator("#submit")).to_be_enabled()
+        self.answer("15",0)
+        expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+        expect(self.page.locator("#guided-status")).to_contain_text("0/8")
+        expect(self.page.locator("#start")).to_be_enabled()
+
+    def audit_accessibility(self, state):
+        path = Path(os.environ["F01_AXE_PATH"])
+        self.assertTrue(path.is_file(), "Pinned axe-core bundle missing")
+        self.page.evaluate(path.read_text(encoding="utf8"))
+        result = self.page.evaluate("""async () => await axe.run(document, {
+            runOnly: {type: 'tag', values: ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}
+        })""")
+        violations = [{"id": v["id"], "impact": v["impact"],
+                       "targets": [n["target"] for n in v["nodes"]]}
+                      for v in result["violations"]]
+        print("F01_AXE "+json.dumps({"state":state,"version":result["testEngine"]["version"],
+             "passes":len(result["passes"]),"incomplete": [v["id"] for v in result["incomplete"]],
+             "violations":violations},ensure_ascii=False),flush=True)
+        self.assertGreater(len(result["passes"]),0)
+        self.assertEqual([],violations,state)
+
+    def test_axe_review_and_practice(self):
+        self.audit_accessibility("review-mobile")
+        self.choose("f01-route-expand")
+        self.audit_accessibility("practice-active")
+        self.answer("14x-21",1)
+        expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+        self.audit_accessibility("practice-feedback")
+
+    def test_axe_guided_tutor_exam(self):
+        self.page.locator("#mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Etapa A")
+        self.choose("f01-a-sign-positive")
+        self.audit_accessibility("guided")
+        self.page.locator("#mode").select_option("practice_tutor")
+        self.choose("f01-tutor-inverse")
+        self.audit_accessibility("tutor")
+        self.page.locator("#mode").select_option("exam_preparation")
+        self.choose("f01-exam-rational")
+        self.audit_accessibility("exam")
+        self.answer("-6x+9",0)
+        expect(self.page.locator("#feedback")).to_contain_text("No se revela la corrección")
+        self.audit_accessibility("exam-recorded")
+
+    def test_axe_desktop(self):
+        self.page.set_viewport_size({"width":1280,"height":900})
+        self.audit_accessibility("review-desktop")
+
+    def test_exam_finish_review(self):
+        self.page.locator("#mode").select_option("exam_preparation")
+        self.choose("f01-exam-rational")
+        expect(self.page.locator("#finish-exam")).to_be_hidden()
+        expect(self.page.locator("#exam-result")).to_be_hidden()
+        self.answer("-6x-9",0)
+        expect(self.page.locator("#finish-exam")).to_be_enabled()
+        expect(self.page.locator("#exam-result")).to_be_hidden()
+        expect(self.page.locator("#answer")).to_be_disabled()
+        self.page.locator("#finish-exam").click()
+        expect(self.page.locator("#exam-result")).to_be_visible()
+        expect(self.page.locator("#exam-result-title")).to_be_focused()
+        expect(self.page.locator("#exam-score")).to_contain_text("0/1")
+        expect(self.page.locator("#exam-solution")).to_contain_text("-6x+9")
+        expect(self.page.locator("#exam-explanation")).not_to_be_empty()
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 0")
+        self.audit_accessibility("exam-finished")
+        self.page.locator("#mode").select_option("learning_path")
+        expect(self.page.locator("#exam-result")).to_be_hidden()
+
+    def prepare_c(self):
+        self.page.locator("#mode").select_option("guided")
+        for item,answer,reason,stage in [
+            ("f01-a-sign-positive","15",0,"A"),
+            ("f01-a-fraction-negative","-3/2",1,"B"),
+            ("f01-b-group","28",1,"B"),
+            ("f01-b-predict","4x+12",2,"C"),
+        ]:
+            self.choose(item)
+            self.answer(answer,reason)
+            expect(self.page.locator("#guided-status")).to_contain_text("Etapa "+stage)
+            expect(self.page.locator("#start")).to_be_enabled()
+
+    def test_remediation_complete_and_reload(self):
+        self.prepare_c()
+        self.choose("f01-route-expand")
+        self.answer("14x-3",1)
+        expect(self.page.locator("#feedback")).to_contain_text("Revisa si multiplicaste")
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 0")
+        expect(self.page.locator("#item option[value='f01-c-expand-negative']")).to_have_count(1)
+        expect(self.page.locator("#item option[value='f01-route-expand']")).to_have_count(0)
+        self.audit_accessibility("c-remediation")
+        self.page.reload()
+        expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
+        self.page.locator("#mode").select_option("guided")
+        expect(self.page.locator("#guided-status")).to_contain_text("Etapa C")
+        for item,answer,reason,stage in [
+            ("f01-c-expand-negative","-12x+20",1,"C"),
+            ("f01-route-repair","5x-20",0,"C"),
+            ("f01-tutor-inverse","6(3x-2)",0,"T"),
+            ("f01-route-transfer","8x+48",1,"COMPLETE"),
+        ]:
+            self.choose(item)
+            self.answer(answer,reason)
+            expect(self.page.locator("#feedback")).to_contain_text("Respuesta aceptada")
+            expect(self.page.locator("#guided-status")).to_contain_text("Ruta completada" if stage=="COMPLETE" else "Etapa "+stage)
+        expect(self.page.locator("#progress")).to_contain_text("Acceso conservado")
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 4")
+
+    def test_remediation_exhaustion_is_visible(self):
+        self.prepare_c()
+        for item,answer,reason in [
+            ("f01-route-expand","14x-3",1),
+            ("f01-c-expand-negative","-12x-20",1),
+            ("f01-c-expand-rational","6x+6",2),
+            ("f01-c-expand-trinomial","-6x-6",0),
+            ("f01-route-repair","5x-20",0),
+            ("f01-tutor-inverse","6(3x-2)",0),
+        ]:
+            self.choose(item)
+            self.answer(answer,reason)
+            expect(self.page.locator("#guided-status")).to_contain_text("Etapa C")
+        expect(self.page.locator("#guided-status")).to_contain_text("Sin variantes inéditas")
+        expect(self.page.locator("#start")).to_be_disabled()
+        expect(self.page.locator("#item option")).to_have_count(0)
+        expect(self.page.locator("#progress")).not_to_contain_text("Acceso conservado")
+        self.assertTrue(self.page.evaluate("document.documentElement.scrollWidth <= innerWidth"))
+        self.audit_accessibility("c-exhausted")
+
+    def test_exam_history_reload_and_isolation(self):
+        self.page.locator("#mode").select_option("exam_preparation")
+        expect(self.page.locator("#history-status")).to_contain_text("Aún no hay")
+        self.choose("f01-exam-rational")
+        expect(self.page.locator("#exam-history")).to_be_hidden()
+        self.answer("-6x-9",0)
+        self.page.locator("#finish-exam").click()
+        expect(self.page.locator("#exam-result")).to_be_visible()
+        self.page.reload()
+        expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
+        self.page.locator("#mode").select_option("exam_preparation")
+        expect(self.page.locator("#history-list li")).to_have_count(1)
+        self.page.locator("#history-list summary").click()
+        expect(self.page.locator("#history-list")).to_contain_text("Solución: -6x+9")
+        self.audit_accessibility("exam-history")
+        self.choose("f01-exam-rational")
+        expect(self.page.locator("#exam-history")).to_be_hidden()
+        with self.browser.new_context() as other:
+            page=other.new_page()
+            page.goto(self.url)
+            expect(page.locator("#notice")).to_contain_text("Sesión local activa")
+            page.locator("#mode").select_option("exam_preparation")
+            expect(page.locator("#history-status")).to_contain_text("Aún no hay")
+            expect(page.locator("#history-list li")).to_have_count(0)
+
+    def test_complete_exam_resume_and_score(self):
+        self.page.locator("#mode").select_option("exam_set")
+        self.page.locator("#start").click()
+        expect(self.page.locator("#set-status")).to_contain_text("0/5")
+        expect(self.page.locator("#hint")).to_be_hidden()
+        self.audit_accessibility("aggregate-active")
+        def record(expression,reason,count):
+            self.page.locator("#answer").fill(expression)
+            self.page.locator('input[name="reason"]').nth(reason).check()
+            self.page.locator("#submit").click()
+            expect(self.page.locator("#set-status")).to_contain_text(str(count)+"/5")
+            expect(self.page.locator("#exam-result")).to_be_hidden()
+        record("-6x+9",0,1)
+        self.page.reload()
+        expect(self.page.locator("#set-status")).to_contain_text("1/5")
+        expect(self.page.locator("#mode")).to_be_disabled()
+        for i,(expression,reason) in enumerate([("12x-19",0),("6(5x-7)",1),("5x+8",2),("-10x+11",0)],2):
+            record(expression,reason,i)
+        expect(self.page.locator("#finish-exam")).to_be_enabled()
+        self.audit_accessibility("aggregate-recorded")
+        self.page.locator("#finish-exam").click()
+        expect(self.page.locator("#exam-score")).to_contain_text("4/5")
+        expect(self.page.locator("#exam-explanation")).to_contain_text("5x+40")
+        expect(self.page.locator("#progress")).to_contain_text("Evidencias: 0")
+        self.audit_accessibility("aggregate-finished")
+
+
+    def test_individual_exam_pending_recovery(self):
+        self.page.locator("#mode").select_option("exam_preparation")
+        self.choose("f01-exam-rational")
+        self.page.reload()
+        expect(self.page.locator("#pending-exams")).to_be_visible()
+        expect(self.page.locator("#pending-list li")).to_have_count(1)
+        self.audit_accessibility("individual-pending")
+        self.page.get_by_role("button",name="Continuar intento").click()
+        expect(self.page.locator("#prompt")).to_contain_text("(-3/4)")
+        expect(self.page.locator("#exam-result")).to_be_hidden()
+        self.answer("-6x+9",0)
+        expect(self.page.locator("#feedback")).to_contain_text("No se revela la corrección")
+        self.page.reload()
+        expect(self.page.locator("#pending-exams")).to_be_visible()
+        expect(self.page.locator("#pending-list li")).to_have_count(1)
+        with self.browser.new_context() as other:
+            page=other.new_page()
+            page.goto(self.url)
+            expect(page.locator("#notice")).to_contain_text("Sesión local activa")
+            page.locator("#mode").select_option("exam_preparation")
+            expect(page.locator("#pending-status")).to_contain_text("No hay evaluaciones pendientes")
+        self.page.get_by_role("button",name="Finalizar intento",exact=True).click()
+        expect(self.page.locator("#form")).to_be_hidden()
+        expect(self.page.locator("#exam-result")).to_be_hidden()
+        expect(self.page.locator("#finish-exam")).to_be_enabled()
+        self.audit_accessibility("individual-pending-recorded")
+        self.page.locator("#finish-exam").click()
+        expect(self.page.locator("#exam-score")).to_contain_text("1/1")
+        self.page.reload()
+        expect(self.page.locator("#notice")).to_contain_text("Sesión local activa")
+        self.page.locator("#mode").select_option("exam_preparation")
+        expect(self.page.locator("#pending-status")).to_contain_text("No hay evaluaciones pendientes")
+        expect(self.page.locator("#history-list li")).to_have_count(1)
+
+if __name__=="__main__":
+    unittest.main()

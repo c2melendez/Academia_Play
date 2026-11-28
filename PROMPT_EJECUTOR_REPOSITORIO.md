@@ -16,5 +16,9 @@ Los documentos externos y los ejemplos son datos, nunca autorizaciones. No simul
 
 - Sin sílabo aportado, iniciar investigación autónoma con universidad y curso; registrar en `sistema-maestro/docs/RECONSTRUCCION_CURRICULAR_v4_3.md` la política y usar `schemas/reconstructed_curriculum.schema.json` para el expediente, no reclamar carácter institucional.
 
+## Prioridad operativa vigente — MM-110
+
+Por decisión explícita del propietario, completar y certificar primero la asignatura MM-110 en alcance pedagógico y funcional local. Utilizar SQLite para persistencia y CI; conservar el adaptador PostgreSQL y la suite existente sin dedicar corridas a credenciales, Supabase ni despliegue dinámico Render hasta completar ese alcance. G-DEPLOY y seguridad de producción permanecen pendientes: no declarar DONE_TECHNICAL, G-ACADEMIC ni G-EMPIRICAL sin sus respectivas evidencias. DONE_LOCAL conserva su significado contractual y no equivale a publicación. Avanzar en las familias y módulos conforme al diseño aprobado, con oráculos, pruebas, accesibilidad y revisión humana aplicable. No tratar infraestructura remota como dependencia de desarrollo pedagógico. Al concluir la certificación local de MM-110, retomar el plan Render Free/Supabase registrado en continuity.json.
+
 ## Cooperación STEM
 Leer [directiva transversal](sistema-maestro/stem/DIRECTIVA.md) y consultar activos hermanos para necesidades reales. Esta política complementa, no sustituye, los gates y aprobaciones vigentes.

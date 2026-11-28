@@ -9,7 +9,9 @@ def arr(typ,**k):return S('array',items=typ,**k)
 string=S('string',minLength=1)
 ids=arr(string,minItems=1,uniqueItems=True)
 base={'$schema':'https://json-schema.org/draft/2020-12/schema','title':'Academia Play Manifest v4.1','type':'object','additionalProperties':False}
-source=obj({'source_id':string,'kind':S('string',enum=['SYLLABUS','TEXTBOOK','RESEARCH']),'edition':string,'license_status':S('string',enum=['OWNED','LICENSED','STRUCTURE_ONLY','UNKNOWN']),'sha256':S('string',pattern='^[0-9a-f]{64}$'),'inspected_pages':arr(S('integer',minimum=1),minItems=1,uniqueItems=True),'verification':S('string',enum=['OPENED','NOT_VERIFIED','SOURCE_MISSING'])})
+source=obj({'source_id':string,'kind':S('string',enum=['SYLLABUS','TEXTBOOK','RESEARCH','RECONSTRUCTED']),'edition':string,'license_status':S('string',enum=['OWNED','LICENSED','STRUCTURE_ONLY','UNKNOWN']),'sha256':S('string',pattern='^[0-9a-f]{64}$'),'inspected_pages':arr(S('integer',minimum=1),minItems=0,uniqueItems=True),'verification':S('string',enum=['OPENED','NOT_VERIFIED','SOURCE_MISSING'])})
+source['properties']['reconstruction']=obj({'dossier_path':string,'design_revision_id':S('string',pattern='^[0-9a-f]{64}$'),'approval_path':string})
+source['allOf']=[{'if':{'properties':{'kind':{'const':'RECONSTRUCTED'}}},'then':{'required':['reconstruction'],'properties':{'inspected_pages':{'maxItems':0},'verification':{'const':'OPENED'},'license_status':{'const':'STRUCTURE_ONLY'}}},'else':{'properties':{'inspected_pages':{'minItems':1}},'not':{'required':['reconstruction']}}}]
 source_ref=obj({'source_id':string,'pages':arr(S('integer',minimum=1),minItems=1,uniqueItems=True)})
 institution=obj({'institution_id':string,'name':string,'locale':string,'privacy_policy_status':S('string',enum=['REVIEWED','PENDING_REVIEW'])})
 course=obj({'course_id':string,'institution_id':string,'course_version':string,'discipline':S('string',enum=['MATH','PHYSICS','CHEMISTRY','ENGINEERING','OTHER']),'syllabus_source_id':string,'objective_ids':ids,'route_ids':ids,'review_status':S('string',enum=['DRAFT','REVIEW_REQUIRED','REVIEWED'])})

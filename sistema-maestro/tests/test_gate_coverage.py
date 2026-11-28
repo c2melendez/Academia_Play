@@ -17,6 +17,8 @@ class CandidateClosureTests(unittest.TestCase):
         self.continuity["module_states"] = {"M0": "DONE_TECHNICAL"}
 
     def test_design_not_approved_cannot_close(self):
+        self.continuity["course_design_status"] = "DESIGN_PROPOSED"
+        self.continuity["approved_design_revision"] = None
         errors = validate_candidate_closure(self.continuity, [], "M0", SHA)
         self.assertTrue(any("approved design revision" in e for e in errors), errors)
 

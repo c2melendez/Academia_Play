@@ -1,0 +1,32 @@
+name: Academia Play — MM110 browser QA
+on:
+  pull_request:
+    paths:
+      - 'sistema-maestro/pilot/**'
+      - 'sistema-maestro/scripts/**'
+      - 'sistema-maestro/docs/mm110/MM110_M1_BANK.json'
+      - '.github/workflows/f01-browser.yml'
+permissions:
+  contents: read
+jobs:
+  chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser test dependency
+        run: python -m pip install playwright==1.51.0
+      - name: Install Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Install pinned accessibility auditor
+        run: npm install --prefix "$RUNNER_TEMP/f01-axe" --ignore-scripts --no-audit --no-fund --save-exact axe-core@4.10.3
+      - name: Verify exact STEM mathematical contrasts on curriculum PRs
+        if: github.base_ref == 'curriculum/mm110'
+        run: python -m unittest discover -s sistema-maestro/tests -p 'test_stem_mm110_contrasts.py' -v
+      - name: Run real browser pilot suite
+        env:
+          F01_AXE_PATH: ${{ runner.temp }}/f01-axe/node_modules/axe-core/axe.min.js
+        run: python -m unittest discover -s sistema-maestro/pilot -p 'test_*_browser.py' -v

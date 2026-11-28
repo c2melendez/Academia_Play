@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Academia Play | MM-110 Polinomios</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5fa;color:#18243b;font:1rem/1.55 system-ui,sans-serif}main{max-width:960px;margin:auto;padding:1rem}header{background:#142d50;color:white;padding:1.2rem}header div{max-width:928px;margin:auto}h1,h2,h3{line-height:1.25}h1{margin:.2rem 0}section{background:white;padding:1rem;border:1px solid #cbd5e1;border-radius:.8rem;margin:1rem 0}nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.5rem}button,select,input{font:inherit;color:inherit}button,select{max-width:100%;min-height:44px;border:1px solid #64748b;border-radius:.5rem;background:white;padding:.5rem .8rem}button{cursor:pointer}button.primary,button[aria-pressed=true]{background:#174778;color:white;border-color:#174778}button:disabled{opacity:.65;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #b34c00;outline-offset:3px}fieldset{min-width:0;border:1px solid #b8c5d4;border-radius:.5rem;margin:1rem 0;padding:.7rem}legend{font-weight:650}label.option{display:flex;align-items:center;gap:.6rem;padding:.6rem;min-height:44px}input[type=text]{width:100%;padding:.7rem;border:1px solid #64748b;border-radius:.4rem;margin-bottom:.7rem}.expression{font-size:1.4rem;background:#eaf1fa;padding:1rem;border-radius:.5rem;overflow-wrap:anywhere}.rule{border-left:4px solid #174778;padding:.6rem 1rem;background:#eef4fa}.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:250px}th,td{overflow-wrap:anywhere;padding:.6rem;border:1px solid #94a3b8;text-align:left}th{background:#eaf1fa}tr:nth-child(even){background:#f4f7fa}.feedback{padding:.8rem;background:#eaf2fb;border-left:4px solid #174778;margin-top:1rem}.ok{background:#e5f4ea;border-color:#25643f}.bad{background:#fff1e8;border-color:#a03f15}.muted{color:#48576e}a{color:#174778}[hidden]{display:none!important}progress{width:100%;height:1rem}footer{font-size:.9rem;color:#48576e}
+</style></head><body>
+<header><div><small>ACADEMIA PLAY · MM-110</small><h1>M1 · Polinomios</h1><p>Modo Repaso y práctica formativa</p></div></header>
+<main><p class="muted">Piloto local. Las respuestas formativas se conservan localmente; no acreditan dominio autónomo.</p>
+<button id="start-exam" type="button" class="primary" hidden>Iniciar examen M1</button>
+<nav id="families" aria-label="Familias de competencias"></nav><p id="notice" role="status" aria-live="polite"></p><p id="progress" role="status"></p>
+<section id="review" hidden aria-labelledby="review-title"><h2 id="review-title" tabindex="-1"></h2><p id="rule" class="rule"></p><p id="expression" class="expression"></p>
+<form id="prediction"><fieldset><legend id="question"></legend><div id="prediction-choices"></div></fieldset><button class="primary" type="submit">Comprobar predicción</button></form>
+<div id="worked" hidden><h3>Construcción paso a paso</h3><div id="m1-area" hidden aria-hidden="true"></div><p id="m1-area-caption" class="muted" hidden>Modelo de áreas esquemático para x positivo. Cada región corresponde a un producto de la tabla; la identidad algebraica vale para todos los reales.</p><p id="review-feedback" class="feedback" role="status"></p><div class="scroll" tabindex="0" role="region" aria-label="Tabla del procedimiento"><table><caption id="table-caption">Organizador del procedimiento</caption><thead id="columns"></thead><tbody id="rows"></tbody></table></div><button id="next-step" type="button">Mostrar siguiente paso</button><p id="step-status" role="status"></p></div></section>
+<section id="practice" hidden aria-labelledby="practice-title"><h2 id="practice-title">Práctica formativa</h2><label for="practice-mode">Modalidad</label><select id="practice-mode"><option value="free">Práctica libre</option><option value="guided">Ruta guiada A–B–C–T</option></select><p id="guided-status" role="status"></p><label for="activity">Actividad</label><select id="activity"></select><p id="stage"></p><p id="prompt" class="expression"></p><form id="assessment"><div id="answer"></div><fieldset><legend id="reasoning"></legend><div id="reason-choices"></div></fieldset><button class="primary" type="submit">Comprobar respuesta</button></form><p id="result" role="status" hidden></p><button id="next-activity" type="button">Siguiente actividad</button></section>
+<section id="exam" hidden aria-labelledby="exam-title">
+<h2 id="exam-title" tabindex="-1">Evaluación acumulativa M1</h2>
+<p id="exam-count" role="status"></p><progress id="exam-progress" aria-label="Respuestas registradas" max="6" value="0"></progress>
+<p id="exam-prompt" class="expression"></p>
+<form id="exam-form"><div id="exam-answer"></div><fieldset><legend id="exam-reasoning"></legend><div id="exam-choices"></div></fieldset><button type="submit" class="primary">Registrar respuesta</button></form>
+<p id="exam-status" role="status"></p><button id="finish-exam" type="button" class="primary" hidden>Finalizar y revisar</button>
+<div id="exam-review" hidden><h3 id="exam-score" tabindex="-1"></h3><ol id="exam-reviews"></ol><button id="back-study" type="button">Volver al repaso</button></div>
+</section>
+<footer role="contentinfo">Escribe potencias con ^ (por ejemplo, x^2) y fracciones con /. En el examen, las soluciones se muestran al finalizar.</footer>
+</main>
+<script>/* STEM_AREA_GRID */</script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+let catalog, family, item, organizer, exam, examItem, guidedState, revealRows=[], step=0, busy=false;
+const stages={A:"Fundamentos",B:"Puente conceptual",C:"Competencia",T:"Transferencia"};
+function node(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;}
+async function api(path,body){const options=body===undefined?{}:{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)};const r=await fetch(path,options);if(r.status===409)throw new Error("No quedan evaluaciones inéditas en el banco actual.");if(!r.ok)throw new Error("No se pudo completar la solicitud ("+r.status+").");return r.json();}
+function lock(on){busy=on;document.querySelectorAll("button,select,input").forEach(e=>e.disabled=on);if(!on&&step>=revealRows.length)$("next-step").disabled=true;if(!on&&guidedState?.stage==="COMPLETE"){$("activity").disabled=true;$("next-activity").disabled=true;}}
+async function action(fn){if(busy)return;lock(true);$("notice").textContent="";try{await fn();}catch(e){$("notice").textContent=e.message||"No se pudo completar la operación.";}finally{lock(false);}}
+function choices(container,name,values){container.replaceChildren();values.forEach((v,i)=>{const l=node("label");l.className="option";const input=node("input");input.type="radio";input.name=name;input.value=String(i);input.required=true;l.append(input,node("span",v));container.append(l);});}
+function choice(name){const e=document.querySelector('input[name="'+name+'"]:checked');if(!e)throw new Error("Selecciona una opción.");return Number(e.value);}
+function feedback(el,good,text){el.hidden=false;el.className="feedback "+(good?"ok":"bad");el.textContent=(good?"Correcto. ":"Revisa el procedimiento. ")+text;}
+function showStep(){if(step>=revealRows.length)return;const tr=node("tr");revealRows[step].forEach(v=>tr.append(node("td",v)));$("rows").append(tr);step++;if(family==="F04"||family==="F05"){const symbolic=family==="F04";renderStemAreaGrid($("m1-area"),revealRows.map(row=>row.slice(1)),step,symbolic?"symbolic-products":"area");$("m1-area").hidden=false;$("m1-area-caption").textContent=symbolic?"Cuadrícula simbólica de productos: los coeficientes negativos conservan su signo. No representa áreas ni longitudes negativas. La tabla siguiente ofrece el mismo procedimiento.":"Modelo de áreas esquemático para x positivo. Cada región corresponde a un producto de la tabla; la identidad algebraica vale para todos los reales.";$("m1-area-caption").hidden=false;}$("step-status").textContent="Paso "+step+" de "+revealRows.length;$("next-step").disabled=step>=revealRows.length;}
+function renderItem(){item=catalog.items.find(i=>i.id===$("activity").value);if(!item)return;$("stage").textContent=stages[item.stage];$("prompt").textContent=item.prompt;$("reasoning").textContent=item.reasoning_prompt;choices($("reason-choices"),"reason",item.choices);$("answer").replaceChildren();$("result").hidden=true;
+const names=item.operation==="division"?["Cociente","Residuo"]:item.operation==="factor_product"?["Primer factor","Segundo factor"]:["Respuesta"];
+names.forEach((name,i)=>{const l=node("label",name);l.htmlFor="ans"+i;const field=node("input");field.id="ans"+i;field.type="text";field.maxLength=256;field.required=true;field.autocomplete="off";$("answer").append(l,field);});if(item.operation==="degree"){const l=node("label");l.className="option";const c=node("input");c.type="checkbox";c.id="undefined-degree";c.addEventListener("change",()=>{$("ans0").required=!c.checked;$("ans0").readOnly=c.checked;if(c.checked)$("ans0").value="";});l.append(c,node("span","Grado indefinido (polinomio cero)"));$("answer").append(l);}}
+async function refreshProgress(){const p=await api("/api/m1/progress");const count=Object.values(p.families).reduce((n,f)=>n+f.completed.length,0);$("progress").textContent="Actividades formativas aceptadas: "+count+" de "+catalog.items.length+"; sin acreditación de dominio.";}
+async function refreshActivities(){
+    const guided=$("practice-mode").value==="guided";
+    guidedState=guided?await api("/api/m1/guided/"+family):null;
+    $("guided-status").textContent=guidedState?(guidedState.stage==="COMPLETE"?"Ruta completada: 5 de 5 actividades. No acredita dominio.":"Etapa "+guidedState.stage+" · "+stages[guidedState.stage]+" · "+guidedState.completed.length+" de 5 actividades aceptadas"):"";
+    $("activity").replaceChildren();
+    catalog.items.filter(i=>i.family===family&&(!guidedState||guidedState.pending.includes(i.id))).forEach(i=>{const o=node("option",stages[i.stage]+" · "+i.id.split("-").pop());o.value=i.id;$("activity").append(o);});
+    const complete=guidedState?.stage==="COMPLETE";
+    $("assessment").hidden=!!complete;$("prompt").hidden=!!complete;$("stage").hidden=!!complete;
+    $("next-activity").hidden=!!complete;$("activity").disabled=!!complete;
+    if(!complete)renderItem();
+    else $("result").hidden=true;
+}
+$("practice-mode").addEventListener("change",()=>action(refreshActivities));
+async function selectFamily(id){organizer=await api("/api/m1/review/"+id);family=id;document.querySelectorAll("#families button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.family===id)));$("review-title").textContent=id+" · "+organizer.title;$("rule").textContent=organizer.rule;$("expression").textContent=organizer.expression;$("question").textContent=organizer.question;choices($("prediction-choices"),"prediction-choice",organizer.choices);$("worked").hidden=true;$("m1-area").hidden=true;$("m1-area").replaceChildren();$("m1-area-caption").hidden=true;revealRows=[];step=0;$("rows").replaceChildren();$("columns").replaceChildren();$("step-status").textContent="";await refreshActivities();$("review").hidden=false;$("practice").hidden=false;$("review-title").focus();}
+$("prediction").addEventListener("submit",e=>{e.preventDefault();action(async()=>{const result=await api("/api/m1/predict",{family,choice:choice("prediction-choice")});feedback($("review-feedback"),result.correct,result.feedback);$("worked").hidden=false;revealRows=result.rows;step=0;$("rows").replaceChildren();const tr=node("tr");organizer.columns.forEach(c=>{const th=node("th",c);th.scope="col";tr.append(th);});$("columns").replaceChildren(tr);showStep();});});
+$("next-step").addEventListener("click",showStep);$("activity").addEventListener("change",renderItem);
+$("next-activity").addEventListener("click",()=>{const s=$("activity");s.selectedIndex=(s.selectedIndex+1)%s.options.length;renderItem();$("ans0").focus();});
+$("assessment").addEventListener("submit",e=>{e.preventDefault();action(async()=>{let answer=$("ans0").value.trim();if(item.operation==="degree"){if($("undefined-degree").checked)answer=null;else if(/^\d{1,2}$/.test(answer))answer=Number(answer);else throw new Error("Escribe un grado entero no negativo.");}if(item.operation==="division"||item.operation==="factor_product")answer=[answer,$("ans1").value.trim()];const key=choice("reason");let result;if($("practice-mode").value==="guided"){const a=await api("/api/m1/guided/start",{family,item_id:item.id});result=await api("/api/m1/submit",{attempt_id:a.attempt_id,answer,reason_choice:key});}else result=await api("/api/m1/assess",{item_id:item.id,answer,reason_choice:key});if(result.status==="ASSESSED")feedback($("result"),result.accepted,result.feedback);else feedback($("result"),false,result.status==="RETRY"?"La comprobación no concluyó. Intenta nuevamente.":"Revisa el formato de la respuesta.");await refreshProgress();if($("practice-mode").value==="guided"&&result.status==="ASSESSED"&&result.accepted){await refreshActivities();feedback($("result"),true,result.feedback);}});});
+async function loadStudy(){
+    $("exam").hidden=true;$("exam-review").hidden=true;$("families").hidden=false;$("progress").hidden=false;
+    catalog=await api("/api/m1/catalog");await refreshProgress();$("families").replaceChildren();
+    for(const f of catalog.families){const b=node("button",f.id+" · "+f.title);b.type="button";b.dataset.family=f.id;b.setAttribute("aria-pressed","false");b.addEventListener("click",()=>action(()=>selectFamily(f.id)));$("families").append(b);}
+    await selectFamily(catalog.families[0].id);$("start-exam").hidden=false;
+}
+function renderExam(data){
+    exam=data;for(const id of ["review","practice","families","progress","start-exam"])$(id).hidden=true;
+    $("exam").hidden=false;$("exam-review").hidden=true;
+    const n=exam.items.filter(i=>i.recorded).length;$("exam-count").textContent=n+" de "+exam.maximum+" respuestas registradas";$("exam-progress").max=exam.maximum;$("exam-progress").value=n;
+    examItem=exam.items.find(i=>!i.recorded);$("exam-form").hidden=!examItem;$("finish-exam").hidden=!!examItem;
+    $("exam-prompt").textContent=examItem?examItem.family+" · "+examItem.prompt:"Todas las respuestas han sido registradas.";
+    $("exam-answer").replaceChildren();$("exam-choices").replaceChildren();
+    if(examItem){
+        const names=examItem.operation==="division"?["Cociente","Residuo"]:examItem.operation==="factor_product"?["Primer factor","Segundo factor"]:["Respuesta"];
+        names.forEach((name,i)=>{const l=node("label",name);l.htmlFor="exam-ans"+i;const input=node("input");input.id=l.htmlFor;input.type="text";input.required=true;input.maxLength=256;input.autocomplete="off";$("exam-answer").append(l,input);});
+        if(examItem.operation==="degree"){const l=node("label");l.className="option";const input=node("input");input.type="checkbox";input.id="exam-undefined";input.addEventListener("change",()=>{$("exam-ans0").required=!input.checked;$("exam-ans0").readOnly=input.checked;if(input.checked)$("exam-ans0").value="";});l.append(input,node("span","Grado indefinido (polinomio cero)"));$("exam-answer").append(l);}
+        $("exam-reasoning").textContent=examItem.reasoning_prompt;choices($("exam-choices"),"exam-reason",examItem.choices);
+    }
+    $("exam-title").focus();
+}
+$("start-exam").addEventListener("click",()=>action(async()=>{$("exam-status").textContent="";renderExam(await api("/api/m1/exam/start",{}));}));
+$("exam-form").addEventListener("submit",e=>{e.preventDefault();action(async()=>{
+    let answer=$("exam-ans0").value.trim();
+    if(examItem.operation==="degree"){if($("exam-undefined").checked)answer=null;else if(/^\d{1,2}$/.test(answer))answer=Number(answer);else throw new Error("Escribe un grado entero no negativo.");}
+    if(examItem.operation==="division"||examItem.operation==="factor_product")answer=[answer,$("exam-ans1").value.trim()];
+    const result=await api("/api/m1/submit",{attempt_id:examItem.attempt_id,answer,reason_choice:choice("exam-reason")});
+    if(result.status==="RECORDED"){renderExam(await api("/api/m1/exam/active"));$("exam-status").textContent="Respuesta registrada. No se revela la corrección.";}
+    else $("exam-status").textContent=result.status==="RETRY"?"Comprobación inconclusa; intenta nuevamente.":"Revisa el formato de la respuesta.";
+});});
+$("finish-exam").addEventListener("click",()=>action(async()=>{
+    const review=await api("/api/m1/exam/finish",{exam_id:exam.exam_id});
+    $("finish-exam").hidden=true;$("exam-status").textContent="Evaluación finalizada.";$("exam-review").hidden=false;
+    $("exam-score").textContent="Resultado: "+review.score+" de "+review.maximum;
+    $("exam-reviews").replaceChildren();for(const r of review.reviews){const i=exam.items.find(i=>i.id===r.item_id);const li=node("li");li.append(node("h4",i.family+" · "+(r.accepted?"Correcta":"No aceptada")),node("p",i.prompt),node("p","Respuesta esperada: "+(r.expected===null?"grado indefinido":Array.isArray(r.expected)?r.expected.join("; "):r.expected)),node("p","Justificación: "+i.choices[r.correct_reason]),node("p",r.explanation));$("exam-reviews").append(li);}
+    $("exam-score").focus();
+}));
+$("back-study").addEventListener("click",()=>action(loadStudy));
+action(async()=>{await api("/api/m1/session",{});const pending=await api("/api/m1/exam/active");if(pending)renderExam(pending);else await loadStudy();});
+</script></body></html>

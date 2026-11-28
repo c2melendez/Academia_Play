@@ -1,0 +1,522 @@
+{
+  "schema_version": "4.1",
+  "institutions": [
+    {
+      "institution_id": "unah",
+      "name": "Universidad Nacional Autónoma de Honduras",
+      "locale": "es-HN",
+      "privacy_policy_status": "PENDING_REVIEW"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "mm110-reconstruction",
+      "kind": "RECONSTRUCTED",
+      "edition": "Propuesta reconstruida 2008/2024; adopción provisional F01",
+      "license_status": "STRUCTURE_ONLY",
+      "sha256": "cc08330c467f8c38a39274f5be80eb5b2133dec6f8327ab2347fd1a58c5b6b13",
+      "inspected_pages": [],
+      "verification": "OPENED",
+      "reconstruction": {
+        "dossier_path": "sistema-maestro/docs/mm110/MM110_RECONSTRUCCION_CURRICULAR.json",
+        "approval_path": "sistema-maestro/docs/mm110/MM110_REVISION_F01.json",
+        "design_revision_id": "9988754f5897bf58ec1e3a2ce73c732f5228d03114ce267226cc0df76c38568b"
+      }
+    },
+    {
+      "source_id": "swokowski-13",
+      "kind": "TEXTBOOK",
+      "edition": "13.ª edición, PDF páginas físicas; p. impresa 4",
+      "license_status": "STRUCTURE_ONLY",
+      "sha256": "fd7e66c407e92cf18ea05dbce53c8e51a0bf8b57520ca7353dd0842f8a2d4b1a",
+      "inspected_pages": [
+        23
+      ],
+      "verification": "OPENED"
+    },
+    {
+      "source_id": "sullivan-11",
+      "kind": "TEXTBOOK",
+      "edition": "Algebra & Trigonometry 11.ª, PDF páginas físicas; impresas 10 y 16",
+      "license_status": "STRUCTURE_ONLY",
+      "sha256": "065643ca28eafee671574a3f1c1453dfc51b911aa9c63efe42c4395dc79965e9",
+      "inspected_pages": [
+        48,
+        54
+      ],
+      "verification": "OPENED"
+    }
+  ],
+  "courses": [
+    {
+      "course_id": "unah-mm110",
+      "institution_id": "unah",
+      "course_version": "f01-r3",
+      "discipline": "MATH",
+      "syllabus_source_id": "mm110-reconstruction",
+      "objective_ids": [
+        "mm110-f01"
+      ],
+      "route_ids": [
+        "mm110-f01-route"
+      ],
+      "review_status": "REVIEW_REQUIRED"
+    }
+  ],
+  "objectives": [
+    {
+      "objective_id": "mm110-f01",
+      "course_id": "unah-mm110",
+      "description": "Desarrollar y factorizar expresiones polinómicas en x con coeficientes racionales exactos mediante distributividad y justificar equivalencia general; apoyo habilitante de M1/C2",
+      "prerequisite_ids": [],
+      "source_refs": [
+        {
+          "source_id": "swokowski-13",
+          "pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "sullivan-11",
+          "pages": [
+            48,
+            54
+          ]
+        }
+      ],
+      "misconception_ids": [
+        "f01-omit",
+        "f01-sign",
+        "f01-identity"
+      ]
+    }
+  ],
+  "oracles": [
+    {
+      "oracle_id": "mm110-poly-q-exact",
+      "kind": "SYMBOLIC",
+      "fixture_ids": [
+        "f01-exact-positive",
+        "f01-false-identity",
+        "f01-inconclusive"
+      ],
+      "has_negative": true,
+      "has_inconclusive": true,
+      "domain_policy": "PLAN: polinomios en x sobre Q, igualdad en R; gramática cerrada y límites explícitos",
+      "tolerance_policy": "Coeficientes racionales exactos; sin muestreo",
+      "runtime_isolation": "PROCESS_LIMITED"
+    }
+  ],
+  "engines": [],
+  "misconceptions": [
+    {
+      "misconception_id": "f01-omit",
+      "objective_ids": [
+        "mm110-f01"
+      ],
+      "hypothesis": "Omite un término",
+      "diagnostic_question": "¿Cuántos productos se necesitan?",
+      "remediation_strategy": "Marcar cada sumando",
+      "verification_test_id": "test-f01-omit",
+      "status": "HYPOTHESIS"
+    },
+    {
+      "misconception_id": "f01-sign",
+      "objective_ids": [
+        "mm110-f01"
+      ],
+      "hypothesis": "Pierde el signo",
+      "diagnostic_question": "¿Qué signo tiene el producto de dos negativos?",
+      "remediation_strategy": "Practicar signos con productos racionales",
+      "verification_test_id": "test-f01-sign",
+      "status": "HYPOTHESIS"
+    },
+    {
+      "misconception_id": "f01-identity",
+      "objective_ids": [
+        "mm110-f01"
+      ],
+      "hypothesis": "Confunde identidad y coincidencia",
+      "diagnostic_question": "¿Basta una sustitución para demostrar igualdad?",
+      "remediation_strategy": "Buscar contraejemplo y comparar coeficientes",
+      "verification_test_id": "test-f01-identity",
+      "status": "HYPOTHESIS"
+    }
+  ],
+  "activities": [
+    {
+      "activity_id": "f01-distributivity",
+      "course_id": "unah-mm110",
+      "course_version": "f01-r3",
+      "objective_ids": [
+        "mm110-f01"
+      ],
+      "prerequisite_ids": [],
+      "source_refs": [
+        {
+          "source_id": "swokowski-13",
+          "pages": [
+            23
+          ]
+        },
+        {
+          "source_id": "sullivan-11",
+          "pages": [
+            48,
+            54
+          ]
+        }
+      ],
+      "cognitive_operation": "Predecir, expandir, reparar, factorizar y transferir",
+      "scenario": "Piloto local: signos y fracciones, agrupación y predicción, expansión, reparación, factorización y transferencia. Fundamentos excluidos de dominio por controlador.",
+      "expected_reasoning": "Multiplicar cada término, conservar signos y justificar equivalencia general",
+      "oracle_id": "mm110-poly-q-exact",
+      "feedback_by_error": [
+        {
+          "misconception_id": "f01-omit",
+          "rule": "El factor exterior multiplica cada término; omitir uno cambia el polinomio.",
+          "diagnostic_question": "¿Cuántos productos se necesitan?",
+          "remediation": "Marcar cada sumando",
+          "explanation": "El factor exterior multiplica cada término; omitir uno cambia el polinomio."
+        },
+        {
+          "misconception_id": "f01-sign",
+          "rule": "Dos factores negativos producen un producto positivo.",
+          "diagnostic_question": "¿Qué signo tiene el producto de dos negativos?",
+          "remediation": "Practicar signos con productos racionales",
+          "explanation": "Dos factores negativos producen un producto positivo."
+        },
+        {
+          "misconception_id": "f01-identity",
+          "rule": "Coincidir en un punto no demuestra identidad general.",
+          "diagnostic_question": "¿Basta una sustitución para demostrar igualdad?",
+          "remediation": "Buscar contraejemplo y comparar coeficientes",
+          "explanation": "Coincidir en un punto no demuestra identidad general."
+        }
+      ],
+      "hint_policy_id": "f01-faded-hints",
+      "difficulty_rubric": "De factores positivos a negativos y racionales, reparación e inversión; no variar solo constantes",
+      "transfer_variant_id": "f01-v-transfer",
+      "accessibility_fallback": "Texto y tabla equivalentes, teclado y lector de pantalla",
+      "evidence_rationale": "F01 r3 aprobado; 34 actividades reconciliadas con código, diez de examen. CI 41e1c04 verificado: contract 281, browser 14, PostgreSQL local 5. Ampliación y rotación del examen pendientes de CI específico. Eficacia empírica y revisión docente pendientes.",
+      "interaction_type": "SYMBOLIC_WITH_OPTIONAL_AREA",
+      "revision": "r3-pilot",
+      "variants": [
+        {
+          "variant_id": "f01-v-a-sign-positive",
+          "family": "foundation-sign",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-a-sign-positive"
+        },
+        {
+          "variant_id": "f01-v-a-fraction-negative",
+          "family": "foundation-fraction",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-a-fraction-negative"
+        },
+        {
+          "variant_id": "f01-v-b-predict",
+          "family": "foundation-prediction",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-b-predict"
+        },
+        {
+          "variant_id": "f01-v-b-group",
+          "family": "foundation-grouping",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-b-group"
+        },
+        {
+          "variant_id": "f01-v-expand",
+          "family": "expansion",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-route-expand"
+        },
+        {
+          "variant_id": "f01-v-repair",
+          "family": "repair",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-route-repair"
+        },
+        {
+          "variant_id": "f01-v-tutor",
+          "family": "inverse",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-tutor-inverse"
+        },
+        {
+          "variant_id": "f01-v-transfer",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-route-transfer"
+        },
+        {
+          "variant_id": "f01-v-exam",
+          "family": "rational-identity",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-rational"
+        },
+        {
+          "variant_id": "f01-v-transfer-perimeter",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-perimeter"
+        },
+        {
+          "variant_id": "f01-v-transfer-discount",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-discount"
+        },
+        {
+          "variant_id": "f01-v-transfer-balance",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-balance"
+        },
+        {
+          "variant_id": "f01-v-transfer-reserve-fuel",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-reserve-fuel"
+        },
+        {
+          "variant_id": "f01-v-transfer-reserve-temperature",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-reserve-temperature"
+        },
+        {
+          "variant_id": "f01-v-transfer-reserve-scale",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-reserve-scale"
+        },
+        {
+          "variant_id": "f01-v-transfer-reserve-sharing",
+          "family": "contextual",
+          "representation": "VERBAL",
+          "role": "TRANSFER",
+          "item_id": "f01-transfer-reserve-sharing"
+        },
+        {
+          "variant_id": "f01-v-c-expand-negative",
+          "family": "expansion",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-expand-negative"
+        },
+        {
+          "variant_id": "f01-v-c-expand-rational",
+          "family": "expansion",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-expand-rational"
+        },
+        {
+          "variant_id": "f01-v-c-repair-sign",
+          "family": "repair",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-repair-sign"
+        },
+        {
+          "variant_id": "f01-v-c-repair-rational",
+          "family": "repair",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-repair-rational"
+        },
+        {
+          "variant_id": "f01-v-c-inverse-negative",
+          "family": "inverse",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-inverse-negative"
+        },
+        {
+          "variant_id": "f01-v-c-inverse-rational",
+          "family": "inverse",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-inverse-rational"
+        },
+        {
+          "variant_id": "f01-v-c-expand-trinomial",
+          "family": "expansion",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-expand-trinomial"
+        },
+        {
+          "variant_id": "f01-v-c-repair-nested",
+          "family": "repair",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-repair-nested"
+        },
+        {
+          "variant_id": "f01-v-c-inverse-combine",
+          "family": "inverse",
+          "representation": "ALGEBRAIC",
+          "role": "PRACTICE",
+          "item_id": "f01-c-inverse-combine"
+        },
+        {
+          "variant_id": "f01-v-exam-repair",
+          "family": "exam-repair",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-repair"
+        },
+        {
+          "variant_id": "f01-v-exam-inverse",
+          "family": "exam-inverse",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-inverse"
+        },
+        {
+          "variant_id": "f01-v-exam-context",
+          "family": "exam-context",
+          "representation": "VERBAL",
+          "role": "EXAM",
+          "item_id": "f01-exam-context"
+        },
+        {
+          "variant_id": "f01-v-exam-combined",
+          "family": "exam-combined",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-combined"
+        },
+        {
+          "variant_id": "f01-v-exam-rational-b",
+          "family": "rational-identity",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-rational-b"
+        },
+        {
+          "variant_id": "f01-v-exam-repair-b",
+          "family": "exam-repair",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-repair-b"
+        },
+        {
+          "variant_id": "f01-v-exam-inverse-b",
+          "family": "exam-inverse",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-inverse-b"
+        },
+        {
+          "variant_id": "f01-v-exam-context-b",
+          "family": "exam-context",
+          "representation": "VERBAL",
+          "role": "EXAM",
+          "item_id": "f01-exam-context-b"
+        },
+        {
+          "variant_id": "f01-v-exam-combined-b",
+          "family": "exam-combined",
+          "representation": "ALGEBRAIC",
+          "role": "EXAM",
+          "item_id": "f01-exam-combined-b"
+        }
+      ],
+      "mode_item_ids": {
+        "learning_path": [
+          "f01-a-sign-positive",
+          "f01-a-fraction-negative",
+          "f01-b-predict",
+          "f01-b-group",
+          "f01-route-expand",
+          "f01-route-repair",
+          "f01-route-transfer",
+          "f01-transfer-perimeter",
+          "f01-transfer-discount",
+          "f01-transfer-balance",
+          "f01-transfer-reserve-fuel",
+          "f01-transfer-reserve-temperature",
+          "f01-transfer-reserve-scale",
+          "f01-transfer-reserve-sharing",
+          "f01-c-expand-negative",
+          "f01-c-expand-rational",
+          "f01-c-repair-sign",
+          "f01-c-repair-rational",
+          "f01-c-expand-trinomial",
+          "f01-c-repair-nested"
+        ],
+        "practice_tutor": [
+          "f01-tutor-inverse",
+          "f01-c-inverse-negative",
+          "f01-c-inverse-rational",
+          "f01-c-inverse-combine"
+        ],
+        "exam_preparation": [
+          "f01-exam-rational",
+          "f01-exam-repair",
+          "f01-exam-inverse",
+          "f01-exam-context",
+          "f01-exam-combined",
+          "f01-exam-rational-b",
+          "f01-exam-repair-b",
+          "f01-exam-inverse-b",
+          "f01-exam-context-b",
+          "f01-exam-combined-b"
+        ]
+      }
+    }
+  ],
+  "labs": [],
+  "modules": [
+    {
+      "module_id": "M0",
+      "course_id": "unah-mm110",
+      "objective_ids": [
+        "mm110-f01"
+      ],
+      "depends_on": [],
+      "acceptance_test_ids": [
+        "test-f01-oracle",
+        "test-f01-transfer",
+        "test-f01-progress",
+        "test-f01-accessibility"
+      ],
+      "status": "IN_PROGRESS"
+    }
+  ],
+  "routes": [
+    {
+      "route_id": "mm110-f01-route",
+      "course_id": "unah-mm110",
+      "objective_id": "mm110-f01",
+      "unlock_policy": "MASTERY",
+      "mastery_rule": {
+        "distinct_variant_families": 2,
+        "requires_transfer": true,
+        "unassisted_required": true
+      },
+      "diagnostic_oracle_id": "",
+      "diagnostic_evidence_required": false,
+      "repeat_access": true
+    }
+  ]
+}

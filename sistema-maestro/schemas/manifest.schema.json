@@ -58,7 +58,8 @@
             "enum": [
               "SYLLABUS",
               "TEXTBOOK",
-              "RESEARCH"
+              "RESEARCH",
+              "RECONSTRUCTED"
             ]
           },
           "edition": {
@@ -84,7 +85,7 @@
               "type": "integer",
               "minimum": 1
             },
-            "minItems": 1,
+            "minItems": 0,
             "uniqueItems": true
           },
           "verification": {
@@ -93,6 +94,29 @@
               "OPENED",
               "NOT_VERIFIED",
               "SOURCE_MISSING"
+            ]
+          },
+          "reconstruction": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "dossier_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "design_revision_id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "approval_path": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "dossier_path",
+              "design_revision_id",
+              "approval_path"
             ]
           }
         },
@@ -104,6 +128,45 @@
           "sha256",
           "inspected_pages",
           "verification"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "kind": {
+                  "const": "RECONSTRUCTED"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "reconstruction"
+              ],
+              "properties": {
+                "inspected_pages": {
+                  "maxItems": 0
+                },
+                "verification": {
+                  "const": "OPENED"
+                },
+                "license_status": {
+                  "const": "STRUCTURE_ONLY"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "inspected_pages": {
+                  "minItems": 1
+                }
+              },
+              "not": {
+                "required": [
+                  "reconstruction"
+                ]
+              }
+            }
+          }
         ]
       },
       "minItems": 1
